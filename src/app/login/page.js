@@ -11,7 +11,6 @@ export default function LoginPage() {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // 관리자 로그인 분기 (임시)
     if (email === "admin@maumrecord.com") {
       router.push("/admin");
     } else {
@@ -31,8 +30,8 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
               placeholder="example@email.com"
+              className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <div>
@@ -42,8 +41,8 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
               placeholder="••••••••"
+              className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
           <button

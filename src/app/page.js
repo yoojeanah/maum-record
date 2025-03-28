@@ -8,7 +8,7 @@ export default function SplashPage() {
   useEffect(() => {
     const timer = setTimeout(() => {
       router.push("/login");
-    }, 4000); // 4초 후 로그인 페이지로 이동
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, [router]);

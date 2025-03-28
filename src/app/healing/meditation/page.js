@@ -91,7 +91,7 @@ export default function MeditationPage() {
       <HamburgerMenu />
       <ProfileIcon />
 
-      {/* 🧘 안내 문구 */}
+      {/* 안내 문구 */}
       <div
         className={`absolute top-1/3 text-center z-20 h-[90px] flex flex-col items-center justify-center transition-opacity duration-500 ${
           fade ? "opacity-100" : "opacity-0"
@@ -112,7 +112,7 @@ export default function MeditationPage() {
         )}
       </div>
 
-      {/* 🎵 출처 */}
+      {/* 출처 */}
       <div className="absolute top-2/3 text-xs text-center text-gray-500 z-20">
         이 콘텐츠는 VOLI의 AI보이스를 활용하여 제작되었습니다. <br />
         https://voli.ai
@@ -120,11 +120,11 @@ export default function MeditationPage() {
 
       <FooterLogo />
 
-      {/* 🔊 오디오 */}
+      {/* 오디오 */}
       <audio ref={bellAudioRef} src="/music/bell.mp3" />
       <audio ref={audioRef} src="/audio/VOLI_TTS_설아.wav" />
 
-      {/* ✅ 토스트 알림 */}
+      {/* 토스트 알림 */}
       {showToast && (
         <div className="fixed bottom-6 right-6 z-50 bg-white border border-gray-200 rounded-xl shadow-md px-7 py-6 w-96 animate-toast">
           <h2 className="text-lg font-semibold text-gray-800">
@@ -142,7 +142,7 @@ export default function MeditationPage() {
         </div>
       )}
 
-      {/* ✨ 애니메이션 정의 */}
+      {/* 애니메이션 정의 */}
       <style jsx>{`
         @keyframes toast {
           0% {

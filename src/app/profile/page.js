@@ -5,9 +5,12 @@ import { IoIosArrowBack } from "react-icons/io";
 
 export default function ProfilePage() {
   const router = useRouter();
+  const [name, setName] = useState("");
   const [nickname, setNickname] = useState("마음이");
-  const [email, setEmail] = useState("user@maumrecord.com");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [preview, setPreview] = useState("/profile-default.png");
+  const [error, setError] = useState("");
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -22,7 +25,14 @@ export default function ProfilePage() {
 
   const handleSave = (e) => {
     e.preventDefault();
-    console.log("저장된 정보:", { nickname, email });
+
+    if (password !== confirmPassword) {
+      setError("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    setError("");
+    console.log("저장된 정보:", { name, nickname, password });
     alert("회원정보가 저장되었습니다!");
     router.push("/record");
   };
@@ -30,7 +40,6 @@ export default function ProfilePage() {
   const handleDelete = () => {
     const confirmDelete = confirm("정말로 계정을 삭제하시겠습니까?");
     if (confirmDelete) {
-      // TODO: 백엔드로 삭제 요청 보내기
       alert("계정이 삭제되었습니다. 안녕히 가세요!");
       router.push("/login");
     }
@@ -48,7 +57,6 @@ export default function ProfilePage() {
           <IoIosArrowBack className="text-3xl text-gray-700" />
         </button>
 
-        {/* 프로필 이미지 */}
         <div className="flex flex-col items-center mb-6">
           <img
             src={preview}
@@ -57,7 +65,7 @@ export default function ProfilePage() {
               e.target.onerror = null;
               e.target.src = "/profile-default.png";
             }}
-            className="w-24 h-24 rounded-full object-cover border border-gray-300 mb-2 bg-white"
+            className="w-24 h-24 rounded-full object-cover border border-gray-200 mb-2 bg-white"
           />
           <label className="text-sm text-blue-500 cursor-pointer hover:underline">
             프로필 사진 변경
@@ -70,27 +78,52 @@ export default function ProfilePage() {
           </label>
         </div>
 
-        {/* 입력 폼 */}
         <form onSubmit={handleSave} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">이름</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="홍길동"
+              className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">닉네임</label>
             <input
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+              placeholder="마음이"
+              className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">이메일</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">새 비밀번호</label>
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">비밀번호 확인</label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="••••••••"
+              className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
+
+          {error && <p className="text-sm text-red-500">{error}</p>}
 
           <button
             type="submit"
@@ -101,7 +134,6 @@ export default function ProfilePage() {
         </form>
       </div>
 
-      {/* 계정 삭제 버튼 */}
       <div className="w-full max-w-md flex justify-end mt-2">
         <button
           onClick={handleDelete}

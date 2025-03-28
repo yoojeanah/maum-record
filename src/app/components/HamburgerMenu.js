@@ -19,7 +19,6 @@ export default function HamburgerMenu() {
 
   return (
     <>
-      {/* ☰ */}
       <button
         className="absolute top-4 left-4 p-2 z-30"
         onClick={() => setMenuOpen(!menuOpen)}
@@ -32,7 +31,6 @@ export default function HamburgerMenu() {
         </div>
       </button>
 
-      {/* 메뉴 목록 */}
       {menuOpen && (
         <div
           ref={menuRef}
@@ -52,7 +50,7 @@ export default function HamburgerMenu() {
           </button>
           <button
             onClick={() => router.push("/login")}
-            className="w-full text-left text-gray-800 font-semibold hover:text-red-500"
+            className="w-full text-left text-gray-800 font-semibold"
           >
             로그아웃
           </button>
