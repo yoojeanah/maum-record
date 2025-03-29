@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import withAdminAuth from '@/app/components/admin/withAdminAuth';
+import withAdminAuth from '../../../components/admin/withAdminAuth';
 
 // type UserDetail = {
 //   id: number;

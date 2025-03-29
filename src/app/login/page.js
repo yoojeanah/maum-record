@@ -11,7 +11,9 @@ export default function LoginPage() {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    if (email === "admin@maumrecord.com") {
+    if (email === "admin@maumrecord.com" && password === "admin123") {
+      localStorage.setItem('admin-token', 'mock-token');
+      window.dispatchEvent(new Event('admin-login'));
       router.push("/admin");
     } else {
       router.push("/record");

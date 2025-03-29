@@ -8,7 +8,7 @@ export default function AdminLogoutButton() {
   const handleLogout = () => {
     localStorage.removeItem('admin-token');
     window.dispatchEvent(new Event('admin-logout'));
-    router.push('/admin/login');
+    router.push('/login');
   };
 
   return (

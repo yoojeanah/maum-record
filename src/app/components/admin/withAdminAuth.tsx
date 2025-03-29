@@ -13,7 +13,7 @@ export default function withAdminAuth<T extends {}>(
 	  useEffect(() => {
 		const token = localStorage.getItem('admin-token');
 		if (!token) {
-		  router.replace('/admin/login');
+		  router.replace('/login');
 		} else {
 			setChecked(true);
 		  }

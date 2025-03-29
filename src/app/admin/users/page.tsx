@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import withAdminAuth from '@/app/components/admin/withAdminAuth';
+import withAdminAuth from '../../components/admin/withAdminAuth';
 
 type User = {
   id: number;
