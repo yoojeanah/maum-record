@@ -12,7 +12,7 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -21,8 +21,39 @@ export default function SignupPage() {
     }
 
     setError("");
-    console.log("회원가입 정보:", { name, nickname, email, password });
-    router.push("/login");
+    
+    const signupData = {
+      name,
+      nickname,
+      email,
+      password,
+    };
+
+    try {
+      const res = await fetch("http://localhost:8080/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(signupData),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        setError(errData.message || "회원가입에 실패했습니다.");
+        return;
+      }
+
+      const data = await res.json();
+      console.log("응답 상태코드:", res.status);
+      alert(data.message || "회원가입이 완료되었습니다.");
+
+      // 회원가입 성공 후 로그인 페이지로 이동
+      router.push("/login");
+    } catch (err) {
+      console.error("회원가입 요청 중 오류 발생:", err);
+      setError("회원가입 요청 중 서버 오류가 발생했습니다.");
+    }
   };
 
   return (
