@@ -1,10 +1,10 @@
 'use client';
 
-import HealingProgramList from '../components/admin/HealingProgramList';
+import HealingProgramList from '@/app/components/admin/HealingProgramList';
 import HealingProgramTrendChart from '../components/admin/HealingProgramTrendChart';
 import StatCard from '../components/admin/StatCard';
 import { Users, PenSquare, Smile, Heart } from 'lucide-react';
-import withAdminAuth from '../components/admin/withAdminAuth';
+import withAdminAuth from '@/app/components/admin/withAdminAuth';
 
 type StatsData = {
 	userCount: number;
