@@ -107,7 +107,7 @@ export default function MainPage() {
           <div className="flex gap-6 mb-16">
             <button
               onClick={() => router.push("/signup")}
-              className="bg-blue-500 text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition duration-300 font-bold"
+              className="bg-blue-500 text-white px-6 py-3 rounded-xl hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-400 transition duration-300 font-bold"
             >
               회원가입
             </button>
