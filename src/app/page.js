@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Image from "next/image";
 
 export default function MainPage() {
   const router = useRouter();
@@ -48,9 +49,11 @@ export default function MainPage() {
           <p className="text-lg text-gray-700">
             하루 일기를 10분 이내로 녹음해 보세요. 목소리로 마음을 기록할 수 있어요.
           </p>
-          <img
+          <Image
             src="/images/record-example.png"
             alt="녹음 예시"
+            width={800}
+            height={450}
             style={{ imageRendering: "crisp-edges" }}
             className="rounded-2xl border border-gray-200 shadow-xl w-full max-w-2xl object-contain transition-transform duration-300 hover:scale-105"
           />
@@ -62,9 +65,11 @@ export default function MainPage() {
           <p className="text-lg text-gray-700">
             오늘의 감정을 가다듬기 위해 명상, 요가, 음악 감상 중 하나를 선택해 보세요.
           </p>
-          <img
+          <Image
             src="/images/healing-example.png"
             alt="힐링 프로그램 예시"
+            width={800}
+            height={450}
             style={{ imageRendering: "crisp-edges" }}
             className="rounded-2xl border border-gray-200 shadow-xl w-full max-w-2xl object-contain transition-transform duration-300 hover:scale-105"
           />
@@ -76,9 +81,11 @@ export default function MainPage() {
           <p className="text-lg text-gray-700">
             AI가 당신의 감정을 요약하고 분석해 드려요. 감정에 어울리는 색도 추천해 줘요.
           </p>
-          <img
+          <Image
             src="/images/result-example.png"
             alt="분석 결과 예시"
+            width={800}
+            height={450}
             style={{ imageRendering: "crisp-edges" }}
             className="rounded-2xl border border-gray-200 shadow-xl w-full max-w-2xl object-contain transition-transform duration-300 hover:scale-105"
           />
@@ -90,9 +97,11 @@ export default function MainPage() {
           <p className="text-lg text-gray-700">
             감정 색을 캘린더에 남기고, 마음꽃밭에 꽃 두 송이를 피워 보세요.
           </p>
-          <img
+          <Image
             src="/images/calendar-example.png"
             alt="캘린더 예시"
+            width={800}
+            height={450}
             style={{ imageRendering: "crisp-edges" }}
             className="rounded-2xl border border-gray-200 shadow-xl w-full max-w-2xl object-contain transition-transform duration-300 hover:scale-105"
           />
