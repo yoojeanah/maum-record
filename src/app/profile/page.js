@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { IoIosArrowBack } from "react-icons/io";
+import Image from "next/image";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -58,15 +59,17 @@ export default function ProfilePage() {
         </button>
 
         <div className="flex flex-col items-center mb-6">
-          <img
-            src={preview}
-            alt="프로필 사진"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = "/profile-default.png";
-            }}
-            className="w-24 h-24 rounded-full object-cover border border-gray-200 mb-2 bg-white"
-          />
+          <div className="w-24 h-24 relative mb-2">
+            <Image
+              src={preview}
+              alt="프로필 사진"
+              fill
+              className="rounded-full object-cover border border-gray-200 bg-white"
+              onError={(e) => {
+                e.currentTarget.src = "/profile-default.png";
+              }}
+            />
+          </div>
           <label className="text-sm text-blue-500 cursor-pointer hover:underline">
             프로필 사진 변경
             <input

@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
@@ -11,7 +12,6 @@ export default function CalendarPage() {
   const [customColor, setCustomColor] = useState("#ffeb3b");
   const [alpha, setAlpha] = useState(80);
   const [popupPos, setPopupPos] = useState({ x: 0, y: 0 });
-
   const [monthlyFlowerData, setMonthlyFlowerData] = useState({});
 
   const cellRefs = useRef({});
@@ -23,14 +23,22 @@ export default function CalendarPage() {
   const firstDay = new Date(year, month, 1).getDay();
   const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
   const todayKey = new Date().toISOString().split("T")[0];
-
   const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
 
-  const allFlowerNames = [
-    "Cosmo", "Daffodil", "Daisy", "Lavender", "Lily",
-    "LilyOfTheValley", "Orchid", "Pansy", "Poppy", "Rose",
-    "Sunflower", "Tulip"
-  ];
+  const allFlowerNames = useMemo(
+    () => [
+      "Cosmo", "Daffodil", "Daisy", "Lavender", "Lily",
+      "LilyOfTheValley", "Orchid", "Pansy", "Poppy", "Rose",
+      "Sunflower", "Tulip"
+    ],
+    []
+  );
+
+  const flowerGrid = monthlyFlowerData[monthKey]?.flowerGrid || Array(64).fill(null);
+  const plantedDays = useMemo(
+    () => monthlyFlowerData[monthKey]?.plantedDays || [],
+    [monthlyFlowerData, monthKey]
+  );
 
   const changeMonth = (offset) => {
     const newDate = new Date(year, month + offset);
@@ -49,9 +57,6 @@ export default function CalendarPage() {
     const date = new Date(dateStr);
     return date.getFullYear() === year && date.getMonth() === month;
   });
-
-  const flowerGrid = monthlyFlowerData[monthKey]?.flowerGrid || Array(64).fill(null);
-  const plantedDays = monthlyFlowerData[monthKey]?.plantedDays || [];
 
   useEffect(() => {
     const newDatesToPlant = emotionDatesThisMonth.filter(
@@ -90,7 +95,7 @@ export default function CalendarPage() {
         },
       }));
     }
-  }, [emotionDatesThisMonth.join(","), monthKey]);
+  }, [emotionDatesThisMonth, flowerGrid, plantedDays, allFlowerNames, monthKey]);
 
   useEffect(() => {
     if (selectedDate && cellRefs.current[selectedDate]) {
@@ -118,7 +123,6 @@ export default function CalendarPage() {
       <ProfileIcon />
 
       <div className="flex flex-col md:flex-row gap-4 mt-20 w-full max-w-4xl justify-between items-start mx-auto">
-        {/* 캘린더 */}
         <div className="relative z-10 w-[350px]">
           <div className="flex items-center justify-center gap-4 mb-4">
             <button
@@ -172,7 +176,6 @@ export default function CalendarPage() {
           </div>
         </div>
 
-        {/* 꽃밭 */}
         <div className="w-[350px] h-[350px] border border-dashed border-gray-400 rounded-xl grid grid-cols-8 grid-rows-8 overflow-hidden">
           {flowerGrid.map((flower, i) => (
             <div
@@ -180,9 +183,11 @@ export default function CalendarPage() {
               className="w-[43.75px] h-[43.75px] flex items-center justify-center"
             >
               {flower && (
-                <img
+                <Image
                   src={`/flowers/${flower}.png`}
                   alt={flower}
+                  width={24}
+                  height={24}
                   className="w-6 h-6 object-contain"
                   style={{ imageRendering: "pixelated" }}
                   draggable={false}
