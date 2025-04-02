@@ -40,7 +40,7 @@ export default function CalendarPage() {
 
   const applyEmotionColor = (dateKey) => {
     const rgba =
-      customColor + Math.round((alpha / 100) * 255).toString(16).padStart(2, "0");
+      customColor + Math.round(((100 - alpha) / 100) * 255).toString(16).padStart(2, "0");
     setEmotionMap((prev) => ({ ...prev, [dateKey]: rgba }));
     setSelectedDate(null);
   };
@@ -113,12 +113,11 @@ export default function CalendarPage() {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-indigo-100 px-4 py-10">
+    <div className="relative min-h-screen overflow-x-hidden bg-gradient-to-br from-purple-100 via-blue-100 to-indigo-100 px-4 py-10">
       <HamburgerMenu />
       <ProfileIcon />
 
-      <div className="flex flex-col md:flex-row gap-4 mt-20 w-full max-w-4xl justify-between items-start mx-auto">
-        {/* 캘린더 */}
+      <div className="flex flex-col md:flex-row gap-4 mt-20 w-full max-w-4xl justify-between items-center mx-auto">
         <div className="relative z-10 w-[350px]">
           <div className="flex items-center justify-center gap-4 mb-4">
             <button
@@ -172,7 +171,6 @@ export default function CalendarPage() {
           </div>
         </div>
 
-        {/* 꽃밭 */}
         <div className="w-[350px] h-[350px] border border-dashed border-gray-400 rounded-xl grid grid-cols-8 grid-rows-8 overflow-hidden">
           {flowerGrid.map((flower, i) => (
             <div
@@ -193,13 +191,15 @@ export default function CalendarPage() {
         </div>
       </div>
 
-      <div className="absolute bottom-16 left-0 right-0 text-center z-20">
+      <div className="mt-8 text-center">
         <p className="text-xl font-bold text-gray-800">
           이달에 감정을 {emotionDatesThisMonth.length}일 기록하셨어요.
         </p>
       </div>
 
-      <FooterLogo />
+      <footer className="mt-20 flex justify-center">
+        <FooterLogo />
+      </footer>
 
       {selectedDate && (
         <div

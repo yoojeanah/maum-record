@@ -6,7 +6,6 @@ import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
 
-// 낙서 캔버스
 function ChalkboardCanvas() {
   const canvasRef = useRef(null);
   const isDrawing = useRef(false);
@@ -50,7 +49,6 @@ function ChalkboardCanvas() {
       isDrawing.current = false;
     };
 
-    // 마우스 & 터치 이벤트 등록
     canvas.addEventListener("mousedown", startDrawing);
     canvas.addEventListener("mousemove", draw);
     canvas.addEventListener("mouseup", stopDrawing);
