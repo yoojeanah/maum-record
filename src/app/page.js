@@ -27,7 +27,7 @@ export default function MainPage() {
 
   return (
     <div
-      className="bg-gradient-to-br from-blue-100 to-purple-200 min-h-screen flex flex-col items-center text-gray-800 font-sans font-semibold"
+      className="min-h-screen bg-gradient-to-b from-blue-100 via-purple-100 to-white flex flex-col items-center text-gray-800 font-sans font-semibold"
       style={{
         fontFamily:
           '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
@@ -108,7 +108,7 @@ export default function MainPage() {
         </div>
       </section>
 
-      <section className="relative w-full pt-32 pb-56 flex flex-col items-center bg-gradient-to-t from-white via-white to-purple-100 animate-on-scroll">
+      <section className="relative w-full pt-32 pb-56 flex flex-col items-center animate-on-scroll">
         <div className="relative z-10 flex flex-col items-center gap-6">
           <h2 className="text-2xl font-bold text-gray-800 text-center">
             지금 바로, 당신의 이야기를 기록해 보세요.
