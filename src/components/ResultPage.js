@@ -7,7 +7,7 @@ import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
 
 function formatSummaryToParagraphs(summary, sentencesPerParagraph = 2) {
-  const sentences = summary.split(/(?<=[.!?])\s+/); 
+  const sentences = summary.split(/(?<=[.!?])\s+/);
   let formatted = "";
 
   for (let i = 0; i < sentences.length; i++) {
@@ -33,14 +33,15 @@ export default function ResultPage({
   const [nickname] = useState("마음이");
   const [charIndex, setCharIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState("");
-  const [showFullResult, setShowFullResult] = useState(false);
   const [typingSkipped, setTypingSkipped] = useState(false);
+  const [fadeOut, setFadeOut] = useState(false);
+  const [showFullResult, setShowFullResult] = useState(false);
 
   const formattedSummary = useMemo(() => {
     const totalSentences = longSummary.split(/(?<=[.!?])\s+/).length;
-    const sentencesPerParagraph = Math.ceil(totalSentences / 2); // 절반 기준으로 문단 쪼개기
+    const sentencesPerParagraph = Math.ceil(totalSentences / 2);
     return formatSummaryToParagraphs(longSummary, sentencesPerParagraph);
-  }, [longSummary]);  
+  }, [longSummary]);
 
   useEffect(() => {
     if (typingSkipped) return;
@@ -51,17 +52,24 @@ export default function ResultPage({
         setCharIndex((prev) => prev + 1);
       } else {
         clearInterval(interval);
-        setTimeout(() => setShowFullResult(true), 1000);
+        setTimeout(() => setFadeOut(true), 500);
       }
     }, 40);
 
     return () => clearInterval(interval);
   }, [charIndex, typingSkipped, formattedSummary]);
 
+  useEffect(() => {
+    if (fadeOut) {
+      setTimeout(() => {
+        setShowFullResult(true);
+      }, 1000);
+    }
+  }, [fadeOut]);
+
   const skipTyping = () => {
     setTypingSkipped(true);
-    setDisplayedText(formattedSummary);
-    setShowFullResult(true);
+    setFadeOut(true);
   };
 
   return (
@@ -70,8 +78,15 @@ export default function ResultPage({
       {showFullResult && <ProfileIcon />}
 
       {!showFullResult && (
-        <div className="absolute inset-0 flex items-center justify-center px-6 bg-black z-50 transition-opacity duration-700">
-          <p className="text-white text-lg sm:text-xl md:text-2xl leading-loose max-w-3xl whitespace-pre-wrap">
+        <div
+          className={`absolute inset-0 flex items-center justify-center px-6 bg-black z-50 transition-opacity duration-1000 ${
+            fadeOut ? "opacity-0" : "opacity-100"
+          }`}
+        >
+          <p
+            className="text-white text-lg sm:text-xl md:text-2xl max-w-3xl whitespace-pre-wrap"
+            style={{ lineHeight: "2.0" }}
+          >
             {displayedText}
           </p>
           <button
@@ -86,7 +101,7 @@ export default function ResultPage({
 
       <div
         className={`absolute inset-0 bg-gradient-to-br from-purple-100 via-blue-100 to-indigo-100 flex flex-col items-center justify-center px-4 py-10 transition-opacity duration-1000 ${
-          showFullResult ? "opacity-100" : "opacity-0 pointer-events-none"
+          fadeOut ? "opacity-100" : "opacity-0"
         }`}
       >
         <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-xl text-center">
