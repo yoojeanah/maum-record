@@ -5,6 +5,7 @@ import { FaPlay, FaPause } from "react-icons/fa";
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
+import FeedbackModal from "@/app/components/FeedbackModal";
 
 function ChalkboardCanvas() {
   const canvasRef = useRef(null);
@@ -83,6 +84,7 @@ export default function MusicPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
   const audioRef = useRef(null);
 
   const tracks = [
@@ -136,6 +138,11 @@ export default function MusicPage() {
   };
 
   const handleConfirm = () => {
+    setShowFeedback(true);
+  };
+
+  const handleFeedback = (feedback) => {
+    console.log("음악 피드백:", feedback);
     router.push("/result");
   };
 
@@ -148,9 +155,7 @@ export default function MusicPage() {
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-pink-100 via-purple-200 to-blue-200 flex flex-col items-center justify-center px-4 py-10 overflow-hidden">
-      
       <ChalkboardCanvas />
-
       <HamburgerMenu />
       <ProfileIcon />
 
@@ -166,7 +171,6 @@ export default function MusicPage() {
       </div>
 
       <audio ref={audioRef} onEnded={handleTrackEnd} controls={false} />
-
       <FooterLogo />
 
       {showToast && (
@@ -185,6 +189,8 @@ export default function MusicPage() {
           </button>
         </div>
       )}
+
+      <FeedbackModal show={showFeedback} onSelect={handleFeedback} />
 
       <style jsx>{`
         @keyframes sway {
