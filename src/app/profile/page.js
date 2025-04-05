@@ -82,7 +82,7 @@ export default function ProfilePage() {
         </div>
 
         <form onSubmit={handleSave} className="space-y-4">
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">이름</label>
             <input
               type="text"
@@ -91,7 +91,7 @@ export default function ProfilePage() {
               placeholder="홍길동"
               className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
-          </div>
+          </div> */}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">닉네임</label>

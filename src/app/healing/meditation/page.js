@@ -4,12 +4,14 @@ import { useRouter } from "next/navigation";
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
+import FeedbackModal from "@/app/components/FeedbackModal";
 
 export default function MeditationPage() {
   const [nickname] = useState("마음이");
   const [started, setStarted] = useState(false);
   const [fade, setFade] = useState(true);
   const [showToast, setShowToast] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
   const [videoSrc, setVideoSrc] = useState("");
   const audioRef = useRef(null);
   const bellAudioRef = useRef(null);
@@ -26,7 +28,6 @@ export default function MeditationPage() {
       const next = videoSources[Math.floor(Math.random() * videoSources.length)];
       setVideoSrc(next);
     };
-
     changeVideo();
     const interval = setInterval(changeVideo, 120000);
     return () => clearInterval(interval);
@@ -42,18 +43,9 @@ export default function MeditationPage() {
   }, [started]);
 
   const startMeditation = () => {
-    setTimeout(() => {
-      bellAudioRef.current?.play();
-    }, 1000);
-
-    setTimeout(() => {
-      audioRef.current?.play();
-    }, 4000);
-
-    setTimeout(() => {
-      setShowToast(true);
-    }, 10000);
-
+    setTimeout(() => bellAudioRef.current?.play(), 1000);
+    setTimeout(() => audioRef.current?.play(), 4000);
+    setTimeout(() => setShowToast(true), 10000);
     bellIntervalRef.current = setInterval(() => {
       bellAudioRef.current?.play();
     }, 30000);
@@ -69,6 +61,11 @@ export default function MeditationPage() {
   };
 
   const handleConfirm = () => {
+    setShowFeedback(true);
+  };
+
+  const handleFeedback = (feedback) => {
+    console.log("피드백:", feedback);
     router.push("/result");
   };
 
@@ -134,6 +131,8 @@ export default function MeditationPage() {
           </button>
         </div>
       )}
+
+      <FeedbackModal show={showFeedback} onSelect={handleFeedback} />
 
       <style jsx>{`
         @keyframes toast {

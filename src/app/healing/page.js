@@ -4,11 +4,13 @@ import { useRouter } from "next/navigation";
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
+import FeedbackModal from "@/app/components/FeedbackModal";
 
 export default function HealingPage() {
   const router = useRouter();
   const [nickname] = useState("마음이");
   const [showToast, setShowToast] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -23,6 +25,11 @@ export default function HealingPage() {
   };
 
   const handleConfirm = () => {
+    setShowFeedback(true);
+  };
+
+  const handleFeedback = (feedback) => {
+    console.log("전체 피드백:", feedback);
     router.push("/result");
   };
 
@@ -44,7 +51,6 @@ export default function HealingPage() {
           <span className="text-4xl mb-2">🧘‍♀️</span>
           <h2 className="text-lg font-semibold text-gray-700">명상</h2>
         </div>
-
         <div
           onClick={() => handleSelect("yoga")}
           className="bg-white hover:bg-blue-50 cursor-pointer shadow-md rounded-xl p-6 flex flex-col items-center transition"
@@ -52,7 +58,6 @@ export default function HealingPage() {
           <span className="text-4xl mb-2">🧎</span>
           <h2 className="text-lg font-semibold text-gray-700">요가 스트레칭</h2>
         </div>
-
         <div
           onClick={() => handleSelect("music")}
           className="bg-white hover:bg-blue-50 cursor-pointer shadow-md rounded-xl p-6 flex flex-col items-center transition"
@@ -84,6 +89,8 @@ export default function HealingPage() {
           </button>
         </div>
       )}
+
+      <FeedbackModal show={showFeedback} onSelect={handleFeedback} />
 
       <style jsx>{`
         @keyframes toast {

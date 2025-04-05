@@ -43,10 +43,22 @@ export default function HamburgerMenu() {
             내 캘린더
           </button>
           <button
+            onClick={() => router.push("/dashboard")}
+            className="w-full text-left text-gray-800 font-semibold"
+          >
+            내 대시보드
+          </button>
+          <button
             onClick={() => router.push("/profile")}
             className="w-full text-left text-gray-800 font-semibold"
           >
             회원정보 수정
+          </button>
+          <button
+            onClick={() => router.push("/my-inquiries")}
+            className="w-full text-left text-gray-800 font-semibold"
+          >
+            1:1 문의
           </button>
           <button
             onClick={() => router.push("/login")}

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
+import Notice from "@/app/components/Notice"; 
 import WaveSurfer from "wavesurfer.js";
 
 export default function RecordPage() {
@@ -133,6 +134,7 @@ export default function RecordPage() {
 
   return (
     <div className="relative min-h-screen bg-gray-100 flex flex-col items-center justify-center px-4 pb-16">
+      <Notice /> 
       <HamburgerMenu />
       <ProfileIcon />
 
