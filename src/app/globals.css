@@ -11,3 +11,25 @@ body {
 a {
   @apply hover:underline;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 100, 100, 0.4);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: rgba(180, 180, 180, 0.2);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background-color: rgba(50, 50, 50, 0.1);
+}

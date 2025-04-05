@@ -1,9 +1,6 @@
 "use client";
 import { useState } from "react";
-import Image from "next/image";
 import HamburgerMenu from "@/app/components/HamburgerMenu";
-import ProfileIcon from "@/app/components/ProfileIcon";
-import FooterLogo from "@/app/components/FooterLogo";
 import { Sun, Moon } from "lucide-react";
 
 export default function CalendarPage() {
@@ -24,8 +21,11 @@ export default function CalendarPage() {
     },
     "2025-04-04": {
       emotion: "😊 행복",
-      longSummary:
-        "오랜만에 친구를 만나 즐거운 시간을 보냈고, 맛있는 저녁도 함께 했어요.",
+      longSummary: "오랜만에 친구를 만나 즐거운 시간을 보냈고, 맛있는 저녁도 함께 했어요.",
+    },
+    "2025-04-05": {
+      emotion: "😊 행복",
+      longSummary: "오늘은 정말 완벽한 하루였어요. 아침부터 햇살이 좋아 기분 좋게 일어났고, 친구들과 약속이 있어서 오랜만에 시내에 나갔어요. 카페에서 향긋한 커피를 마시며 두 시간 넘게 이야기꽃을 피웠고, 그 후에는 근처 공원에 가서 산책도 했어요. 벚꽃이 아직 조금 남아 있어서 사진도 많이 찍고, 서로의 근황을 나누며 오랜만에 깊은 대화를 나눌 수 있어서 좋았어요. 점심은 좋아하던 이탈리안 레스토랑에서 파스타랑 피자를 먹었는데, 신메뉴가 생각보다 너무 맛있어서 감탄했어요. 다 먹고 나서 근처 책방에 들렀는데, 오래 찾던 에세이를 우연히 발견해서 진짜 운이 좋다고 느꼈어요. 책 냄새도 좋았고, 조용한 분위기에서 혼자 시간을 보내는 것도 힐링이었어요. 저녁 무렵엔 다른 친구들이랑 합류해서 작은 홈파티도 열었어요. 각자 만든 음식들을 나눠 먹고, 조명 살짝 어둡게 하고 좋아하는 음악 틀어놓고 이런저런 이야기 나누는 그 분위기가 정말 따뜻했어요. 오늘 하루 종일 웃을 일이 많았고, 마음도 꽉 찬 느낌이라 기분 좋게 하루를 마무리할 수 있었어요. 이런 날은 오랜만이라 더 기억에 남을 것 같아요. 진짜, 오늘 같은 하루가 자주 있었으면 좋겠어요.",
     },
   });
 
@@ -59,7 +59,7 @@ export default function CalendarPage() {
   const palette = theme === "light" ? lightPalette : darkPalette;
 
   const getColorByEmotion = (emotion: string | undefined) => {
-    if (!emotion) return theme === "light" ? "#fff" : "#1f2937"; // 기본 배경
+    if (!emotion) return theme === "light" ? "#fff" : "#1f2937";
     return palette.find((e) => emotion.includes(e.emotion))?.color || "#fff";
   };
 
@@ -83,42 +83,29 @@ export default function CalendarPage() {
         }`}
     >
       <HamburgerMenu />
-      {/* <ProfileIcon /> */}
 
       <div className="flex flex-col md:flex-row gap-4 mt-20 w-full max-w-4xl justify-between items-start mx-auto">
         <div className="relative z-10 w-[350px]">
           <div className="flex items-center justify-center gap-4 mb-4">
-            <button
-              onClick={() => changeMonth(-1)}
-              className="text-2xl hover:text-blue-400"
-            >
+            <button onClick={() => changeMonth(-1)} className="text-2xl hover:text-blue-400">
               &lt;
             </button>
-            <h2 className="text-xl font-semibold">
-              {year}년 {month + 1}월
-            </h2>
-            <button
-              onClick={() => changeMonth(1)}
-              className="text-2xl hover:text-blue-400"
-            >
+            <h2 className="text-xl font-semibold">{year}년 {month + 1}월</h2>
+            <button onClick={() => changeMonth(1)} className="text-2xl hover:text-blue-400">
               &gt;
             </button>
           </div>
 
           <div className="grid grid-cols-7 gap-2 text-sm text-center">
             {weekdays.map((day) => (
-              <div key={day} className="font-bold">
-                {day}
-              </div>
+              <div key={day} className="font-bold">{day}</div>
             ))}
             {Array.from({ length: firstDay }).map((_, i) => (
               <div key={`empty-${i}`} />
             ))}
             {Array.from({ length: daysInMonth }, (_, i) => {
               const day = i + 1;
-              const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(
-                day
-              ).padStart(2, "0")}`;
+              const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
               const bgColor = getColorByEmotion(emotionData[key]?.emotion);
               const isToday = key === todayKey;
               return (
@@ -139,7 +126,7 @@ export default function CalendarPage() {
         <div className="relative w-[350px] min-h-[350px]">
           {selectedDate && emotionData[selectedDate] ? (
             <div
-              className={`absolute inset-0 rounded-xl shadow-2xl p-5 text-sm z-40
+              className={`rounded-xl shadow-2xl p-5 text-sm z-40 max-h-[350px] overflow-y-auto
                 ${theme === "light" ? "bg-white text-gray-800" : "bg-gray-800 text-gray-100"}`}
             >
               <div className="flex justify-between items-start mb-3">
@@ -154,12 +141,13 @@ export default function CalendarPage() {
                   ×
                 </button>
               </div>
-              <div className="whitespace-pre-wrap leading-relaxed text-sm mb-4">
+              <div className="whitespace-pre-wrap break-words leading-relaxed text-sm mb-4">
                 {emotionData[selectedDate].longSummary}
               </div>
               <label className="block text-xs font-semibold text-gray-500 mb-1">내 메모</label>
               <textarea
-                className="w-full h-20 border border-gray-300 rounded-md p-2 text-sm mb-3 resize-none"
+                className="w-full h-20 border border-gray-300 rounded-md p-2 text-sm mb-3 resize-none 
+             text-black dark:text-black bg-white dark:bg-white"
                 placeholder="이날에 느낀 나만의 생각을 적어 보세요."
                 value={emotionData[selectedDate].memo || ""}
                 onChange={(e) => {
@@ -195,8 +183,8 @@ export default function CalendarPage() {
         <button
           onClick={() => setTheme((prev) => (prev === "light" ? "dark" : "light"))}
           className={`inline-flex items-center justify-center w-10 h-10 rounded-full 
-    transition hover:scale-105 mb-2 
-    ${theme === "light" ? "bg-white/80 text-gray-700" : "bg-gray-600 text-gray-200"}`}
+            transition hover:scale-105 mb-2 
+            ${theme === "light" ? "bg-white/80 text-gray-700" : "bg-gray-600 text-gray-200"}`}
         >
           {theme === "light" ? (
             <Sun className="w-5 h-5 text-yellow-400" />
@@ -208,8 +196,6 @@ export default function CalendarPage() {
           이달에 감정을 {emotionDatesThisMonth.length}일 기록하셨어요.
         </p>
       </div>
-
-      {/* <FooterLogo /> */}
     </div>
   );
 }
