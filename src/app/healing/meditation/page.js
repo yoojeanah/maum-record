@@ -5,13 +5,15 @@ import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
 import FeedbackModal from "@/app/components/FeedbackModal";
+import AnalysisToast from "@/app/components/AnalysisToast";
 
 export default function MeditationPage() {
-  const [nickname] = useState("마음이");
+  const [nickname, setNickname] = useState("마음이");
   const [started, setStarted] = useState(false);
   const [fade, setFade] = useState(true);
-  const [showToast, setShowToast] = useState(false);
-  const [showFeedback, setShowFeedback] = useState(false);
+// TODO: 알림 상태는 전역 관리로 전환 예정 (Zustand/Redux 등 도입 시)
+// const [showToast, setShowToast] = useState(false);
+// const [showFeedback, setShowFeedback] = useState(false);
   const [videoSrc, setVideoSrc] = useState("");
   const audioRef = useRef(null);
   const bellAudioRef = useRef(null);
@@ -35,17 +37,17 @@ export default function MeditationPage() {
 
   useEffect(() => {
     if (!started) {
-      const idleToastTimer = setTimeout(() => {
-        setShowToast(true);
+      const toastTimer = setTimeout(() => {
+        // setShowToast(true);
       }, 10000);
-      return () => clearTimeout(idleToastTimer);
+      return () => clearTimeout(toastTimer);
     }
   }, [started]);
 
   const startMeditation = () => {
     setTimeout(() => bellAudioRef.current?.play(), 1000);
     setTimeout(() => audioRef.current?.play(), 4000);
-    setTimeout(() => setShowToast(true), 10000);
+    // setTimeout(() => setShowToast(true), 10000);
     bellIntervalRef.current = setInterval(() => {
       bellAudioRef.current?.play();
     }, 30000);
@@ -60,14 +62,14 @@ export default function MeditationPage() {
     }, 300);
   };
 
-  const handleConfirm = () => {
-    setShowFeedback(true);
-  };
+  // const handleConfirm = () => {
+  //   setShowFeedback(true);
+  // };
 
-  const handleFeedback = (feedback) => {
-    console.log("피드백:", feedback);
-    router.push("/result");
-  };
+  // const handleFeedback = (feedback) => {
+  //   console.log("피드백:", feedback);
+  //   router.push("/result");
+  // };
 
   return (
     <div className="relative min-h-screen bg-gray-900 flex flex-col items-center justify-center px-4 py-10">
@@ -115,24 +117,9 @@ export default function MeditationPage() {
       <audio ref={bellAudioRef} src="/music/bell.mp3" />
       <audio ref={audioRef} src="/audio/VOLI_TTS_설아.wav" />
 
-      {showToast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-white border border-gray-200 rounded-xl shadow-md px-7 py-6 w-96 animate-toast">
-          <h2 className="text-lg font-semibold text-gray-800">
-            AI 분석이 완료되었어요!
-          </h2>
-          <p className="text-sm text-gray-600 mt-2">
-            프로그램을 마치고 결과를 확인하시겠어요?
-          </p>
-          <button
-            onClick={handleConfirm}
-            className="mt-4 text-sm bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600 transition"
-          >
-            결과 보러 가기
-          </button>
-        </div>
-      )}
-
-      <FeedbackModal show={showFeedback} onSelect={handleFeedback} />
+      {/* TODO: 전역 알림 시스템 구축 후 알림 및 피드백 팝업 다시 연결할 것
+      {showToast && <AnalysisToast onConfirm={handleConfirm} />}
+      <FeedbackModal show={showFeedback} onSelect={handleFeedback} /> */}
 
       <style jsx>{`
         @keyframes toast {

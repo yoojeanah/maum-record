@@ -6,6 +6,7 @@ import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
 import FeedbackModal from "@/app/components/FeedbackModal";
+import AnalysisToast from "@/app/components/AnalysisToast";
 
 function ChalkboardCanvas() {
   const canvasRef = useRef(null);
@@ -83,8 +84,9 @@ export default function MusicPage() {
   const [nickname, setNickname] = useState("마음이");
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState("");
-  const [showToast, setShowToast] = useState(false);
-  const [showFeedback, setShowFeedback] = useState(false);
+// TODO: 알림 상태는 전역 관리로 전환 예정 (Zustand/Redux 등 도입 시)
+// const [showToast, setShowToast] = useState(false);
+// const [showFeedback, setShowFeedback] = useState(false);
   const audioRef = useRef(null);
 
   const tracks = [
@@ -137,18 +139,18 @@ export default function MusicPage() {
     }
   };
 
-  const handleConfirm = () => {
-    setShowFeedback(true);
-  };
+  // const handleConfirm = () => {
+  //   setShowFeedback(true);
+  // };
 
-  const handleFeedback = (feedback) => {
-    console.log("음악 피드백:", feedback);
-    router.push("/result");
-  };
+  // const handleFeedback = (feedback) => {
+  //   console.log("음악 피드백:", feedback);
+  //   router.push("/result");
+  // };
 
   useEffect(() => {
     const toastTimer = setTimeout(() => {
-      setShowToast(true);
+      // setShowToast(true);
     }, 10000);
     return () => clearTimeout(toastTimer);
   }, []);
@@ -173,24 +175,9 @@ export default function MusicPage() {
       <audio ref={audioRef} onEnded={handleTrackEnd} controls={false} />
       <FooterLogo />
 
-      {showToast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-white border border-gray-200 rounded-xl shadow-md px-7 py-6 w-96 animate-toast">
-          <h2 className="text-lg font-semibold text-gray-800">
-            AI 분석이 완료되었어요!
-          </h2>
-          <p className="text-sm text-gray-600 mt-2">
-            프로그램을 마치고 결과를 확인하시겠어요?
-          </p>
-          <button
-            onClick={handleConfirm}
-            className="mt-4 text-sm bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600 transition"
-          >
-            결과 보러 가기
-          </button>
-        </div>
-      )}
-
-      <FeedbackModal show={showFeedback} onSelect={handleFeedback} />
+      {/* TODO: 전역 알림 시스템 구축 후 알림 및 피드백 팝업 다시 연결할 것
+      <AnalysisToast onConfirm={handleConfirm} />
+      <FeedbackModal show={showFeedback} onSelect={handleFeedback} /> */}
 
       <style jsx>{`
         @keyframes sway {

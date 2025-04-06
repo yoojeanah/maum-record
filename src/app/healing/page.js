@@ -1,3 +1,7 @@
+// 힐링 프로그램 선택 페이지('/healing')입니다 
+// TODO: AI 분석 완료 여부를 백엔드에서 실시간으로 전달받는 방식(WebSocket 등)으로 변경 예정
+// 현재는 10초 후 자동 노출되며, 전역 상태나 세션 유지 기능은 미구현 상태입니다 - meditation, yoga, music 파일에서는 주석 처리
+// AnalysisToast는 별도 컴포넌트로 분리되었으며, 페이지 이동과 무관한 전역 알림으로 확장 가능
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -5,18 +9,19 @@ import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
 import FeedbackModal from "@/app/components/FeedbackModal";
+import AnalysisToast from "@/app/components/AnalysisToast";
 
 export default function HealingPage() {
   const router = useRouter();
-  const [nickname] = useState("마음이");
+  const [nickname, setNickname] = useState("마음이");
   const [showToast, setShowToast] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const toastTimer = setTimeout(() => {
       setShowToast(true);
     }, 10000);
-    return () => clearTimeout(timer);
+    return () => clearTimeout(toastTimer);
   }, []);
 
   const handleSelect = (type) => {
@@ -73,23 +78,7 @@ export default function HealingPage() {
 
       <FooterLogo />
 
-      {showToast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-white border border-gray-200 rounded-xl shadow-md px-7 py-6 w-96 animate-toast">
-          <h2 className="text-lg font-semibold text-gray-800">
-            AI 분석이 완료되었어요!
-          </h2>
-          <p className="text-sm text-gray-600 mt-2">
-            프로그램을 마치고 결과를 확인하시겠어요?
-          </p>
-          <button
-            onClick={handleConfirm}
-            className="mt-4 text-sm bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600 transition"
-          >
-            결과 보러 가기
-          </button>
-        </div>
-      )}
-
+      {showToast && <AnalysisToast onConfirm={handleConfirm} />}
       <FeedbackModal show={showFeedback} onSelect={handleFeedback} />
 
       <style jsx>{`
