@@ -5,14 +5,31 @@ import Link from "next/link";
 
 export default function SignupPage() {
   const router = useRouter();
-  const [name, setName] = useState("");
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [error, setError] = useState("");
 
-  const handleSignup = async (e) => {
+  const validatePassword = (pwd) => {
+    const minLength = /.{8,}/;
+    const upper = /[A-Z]/;
+    const lower = /[a-z]/;
+    const number = /[0-9]/;
+    const special = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/;
+  
+    if (!minLength.test(pwd)) return "8자 이상 입력해주세요.";
+    if (!upper.test(pwd)) return "대문자를 하나 이상 포함해주세요.";
+    if (!lower.test(pwd)) return "소문자를 하나 이상 포함해주세요.";
+    if (!number.test(pwd)) return "숫자를 하나 이상 포함해주세요.";
+    if (!special.test(pwd)) return "특수문자를 하나 이상 포함해주세요.";
+  
+    return "";
+  };
+
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -23,14 +40,13 @@ export default function SignupPage() {
     setError("");
     
     const signupData = {
-      name,
       nickname,
       email,
       password,
     };
 
     try {
-      const res = await fetch("http://localhost:8080/api/signup", {
+      const res = await fetch("http://localhost:8080/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,18 +76,7 @@ export default function SignupPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-200 flex items-center justify-center">
       <div className="bg-white shadow-xl rounded-2xl p-10 w-96">
         <h2 className="text-2xl font-bold text-center mb-6 text-blue-600">회원가입</h2>
-        <form onSubmit={handleSignup} className="space-y-4">
-          <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">이름</label>
-            <input
-              type="text"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="홍길동"
-              className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
-            />
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block mb-1 text-sm font-medium text-gray-700">닉네임</label>
             <input
@@ -100,10 +105,18 @@ export default function SignupPage() {
               type="password"
               required
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                const pwd = e.target.value;
+                setPassword(pwd);
+                const errorMsg = validatePassword(pwd);
+                setPasswordError(errorMsg);
+              }}
               placeholder="••••••••"
               className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
+            {passwordError && (
+              <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+            ) }
           </div>
           <div>
             <label className="block mb-1 text-sm font-medium text-gray-700">비밀번호 확인</label>
