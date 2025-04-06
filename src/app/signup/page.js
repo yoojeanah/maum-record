@@ -19,11 +19,11 @@ export default function SignupPage() {
     const number = /[0-9]/;
     const special = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/;
   
-    if (!minLength.test(pwd)) return "8자 이상 입력해주세요.";
-    if (!upper.test(pwd)) return "대문자를 하나 이상 포함해주세요.";
-    if (!lower.test(pwd)) return "소문자를 하나 이상 포함해주세요.";
-    if (!number.test(pwd)) return "숫자를 하나 이상 포함해주세요.";
-    if (!special.test(pwd)) return "특수문자를 하나 이상 포함해주세요.";
+    if (!minLength.test(pwd)) return "8자 이상 입력해 주세요.";
+    if (!upper.test(pwd)) return "대문자를 하나 이상 포함해 주세요.";
+    if (!lower.test(pwd)) return "소문자를 하나 이상 포함해 주세요.";
+    if (!number.test(pwd)) return "숫자를 하나 이상 포함해 주세요.";
+    if (!special.test(pwd)) return "특수문자를 하나 이상 포함해 주세요.";
   
     return "";
   };
