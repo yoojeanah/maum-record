@@ -3,6 +3,7 @@
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
+    "checkJs": false,                
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -14,9 +15,9 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": ".",                      // ✅ 절대 경로 기준
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]                   // ✅ @ -> src 매핑
+      "@/*": ["src/*"]
     },
     "plugins": [
       {
@@ -25,11 +26,12 @@
     ]
   },
   "include": [
-    "src",                               // ✅ src 전체 포함
+    "src",
     "next-env.d.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "**/*.js"  
   ]
 }

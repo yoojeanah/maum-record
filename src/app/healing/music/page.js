@@ -144,7 +144,6 @@ export default function MusicPage() {
   // };
 
   // const handleFeedback = (feedback) => {
-  //   console.log("음악 피드백:", feedback);
   //   router.push("/result");
   // };
 
@@ -177,7 +176,7 @@ export default function MusicPage() {
 
       {/* TODO: 전역 알림 시스템 구축 후 알림 및 피드백 팝업 다시 연결할 것
       <AnalysisToast onConfirm={handleConfirm} />
-      <FeedbackModal show={showFeedback} onSelect={handleFeedback} /> */}
+      <FeedbackModal show={showFeedback} onSelect={handleFeedback} nickname={nickname} /> */}
 
       <style jsx>{`
         @keyframes sway {

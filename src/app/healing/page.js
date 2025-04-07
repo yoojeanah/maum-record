@@ -34,7 +34,6 @@ export default function HealingPage() {
   };
 
   const handleFeedback = (feedback) => {
-    console.log("전체 피드백:", feedback);
     router.push("/result");
   };
 
@@ -79,7 +78,7 @@ export default function HealingPage() {
       <FooterLogo />
 
       {showToast && <AnalysisToast onConfirm={handleConfirm} />}
-      <FeedbackModal show={showFeedback} onSelect={handleFeedback} />
+      <FeedbackModal show={showFeedback} onSelect={handleFeedback} nickname={nickname} />
 
       <style jsx>{`
         @keyframes toast {
