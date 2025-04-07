@@ -1,12 +1,11 @@
 import { notFound } from "next/navigation";
 import { MailOpen } from 'lucide-react';
+import Image from "next/image";
 
-type Props = {
-	params: { id: string }
-}
+type Params = Promise<{ id: string }>
 
-export default async function InquiryDetailPage({ params }: Props) {
-	const { id } = await params;
+export default async function InquiryDetailPage({ params }: { params: Params }) {
+	const { id } = await params
 
 	// mock data
 	const mockInquiry = {
@@ -34,7 +33,7 @@ export default async function InquiryDetailPage({ params }: Props) {
 				{mockInquiry.imageUrl && (
 					<div className="mt-4">
 						<strong>첨부 이미지:</strong>
-						<img src={mockInquiry.imageUrl} alt="첨부 이미지" className="max-w-sm mt-2 rounded border" />
+						<Image src={mockInquiry.imageUrl} alt="첨부 이미지" width={400} height={300} className="max-w-sm mt-2 rounded border" />
 					</div>
 					)}
 				</div>
