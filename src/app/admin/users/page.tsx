@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import withAdminAuth from '../../components/admin/withAdminAuth';
+import { Users } from 'lucide-react';
 
 type User = {
   id: number;
@@ -70,7 +71,7 @@ function AdminUserPage() {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">👤 사용자 관리</h2>
+      <h2 className="inline-flex gap-2 items-center text-2xl font-bold mb-4"><Users className='w-8 h-8'/>사용자 관리</h2>
       <div className="overflow-x-auto shadow border rounded-lg bg-white">
         <table className="min-w-full bg-white text-sm text-left whitespace-nowrap">
           <thead className="bg-gray-100 text-left text-gray-600 font-medium">

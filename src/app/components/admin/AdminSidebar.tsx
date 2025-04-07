@@ -29,8 +29,7 @@ export default function AdminSidebar() {
         <nav className="flex flex-col gap-4 text-gray-700 font-semibold text-md lg:text-lg">
           <Link href="/admin" className="hover:text-blue-600">대시보드</Link>
           <Link href="/admin/users" className="hover:text-blue-600">사용자 관리</Link>
-          {/* <Link href="/admin/stats" className="hover:text-blue-600">통계</Link>
-          <Link href="/admin/settings" className="hover:text-blue-600">설정</Link> */}
+          <Link href="/admin/inquiries"className='hover:text-blue-600'>1:1 문의 관리</Link>
         </nav>
       </aside>
     </>

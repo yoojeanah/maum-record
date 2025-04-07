@@ -5,6 +5,7 @@ import HealingProgramTrendChart from '../components/admin/HealingProgramTrendCha
 import StatCard from '../components/admin/StatCard';
 import { Users, PenSquare, Smile, Heart } from 'lucide-react';
 import withAdminAuth from '@/app/components/admin/withAdminAuth';
+import { LayoutDashboard } from 'lucide-react';
 
 type StatsData = {
 	userCount: number;
@@ -56,7 +57,7 @@ function AdminDashboardPage() {
 
 	return (
 		<div className="space-y-6">
-			<h2 className="text-2xl font-bold">📊 관리자 대시보드</h2>
+			<h2 className="inline-flex items-center gap-2 text-2xl font-bold"> <LayoutDashboard className='w-8 h-8'/>관리자 대시보드</h2>
 
 			{/* 요약 카드 */}
 			<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
