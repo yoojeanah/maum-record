@@ -101,7 +101,7 @@ export default function MeditationPage() {
         ) : (
           <div className="text-xl sm:text-2xl md:text-3xl text-white font-semibold leading-relaxed">
             <div>{nickname} 님,</div>
-            <div className="pl-4">마음을 편안하게 가라앉히세요. 🧘‍♀️</div>
+            <div className="pl-4">마음을 편안하게 가라앉히세요. 🔔</div>
           </div>
         )}
       </div>

@@ -5,16 +5,16 @@ type Props = {
 	params: { id: string }
 }
 
-export default function InquiryDetailPage({ params }: Props) {
-	const { id } = params;
+export default async function InquiryDetailPage({ params }: Props) {
+	const { id } = await params;
 
 	// mock data
 	const mockInquiry = {
 		id,
-		title: "앱 오류 문의합니다",
+		title: "앱 오류 문의합니다.",
 		email: "yoojin@example.com",
 		createdAt: "2025-04-01T10:12:00Z",
-		content: "명상 프로그램으로 들어가려고 하는데, 이 페이지에서 계속 클릭이 안돼요.",
+		content: "명상 프로그램으로 들어가려고 하는데, 이 페이지에서 계속 클릭이 안 돼요.",
 		imageUrl: "/mock-images/inquiry-example.png",
 		status: "pending",
 	}
@@ -34,7 +34,7 @@ export default function InquiryDetailPage({ params }: Props) {
 				{mockInquiry.imageUrl && (
 					<div className="mt-4">
 						<strong>첨부 이미지:</strong>
-						<img src={mockInquiry.imageUrl} alt="첨부이미지" className="max-w-sm mt-2 rounded border" />
+						<img src={mockInquiry.imageUrl} alt="첨부 이미지" className="max-w-sm mt-2 rounded border" />
 					</div>
 					)}
 				</div>
