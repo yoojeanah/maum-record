@@ -25,7 +25,7 @@ export default function AdminHeader() {
 
   return (
     <header className="h-16 px-4 sm:px-6 flex items-center justify-between bg-white border-b sticky top-0 z-10 shadow-sm">
-      <h1 className="text-xl sm:text-lg font-bold text-gray-800 sm:ml-10">관리자 페이지</h1>
+      <h1 className="text-xl sm:text-lg font-bold text-blue-700 sm:ml-10">관리자 페이지</h1>
 
       {isLoggedIn && (
         <div className="flex items-center space-x-4 text-sm text-gray-600">
