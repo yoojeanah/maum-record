@@ -1,11 +1,4 @@
-'use client';
-import React from 'react';
-
-type Props = {
-  onConfirm: () => void;
-};
-
-export default function AnalysisToast({ onConfirm }: Props) {
+export default function AnalysisToast({ onConfirm }) {
     return (
       <div className="fixed bottom-6 right-6 z-50 bg-white border border-gray-200 rounded-xl shadow-md px-7 py-6 w-96 animate-toast">
         <h2 className="text-lg font-semibold text-gray-800">

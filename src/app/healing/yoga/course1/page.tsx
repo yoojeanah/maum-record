@@ -1,12 +1,13 @@
-'use client';
-
-import { useEffect, useState, useRef } from "react";
+"use client";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { publicRequest } from "@/lib/axiosInstance";
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
-import Image from "next/image";
+import FeedbackModal from "@/app/components/FeedbackModal";
+import AnalysisToast from "@/app/components/AnalysisToast";
 
 interface Pose {
   id: string;
@@ -16,9 +17,11 @@ interface Pose {
   image: string;
 }
 
-export default function CoursePage({ params }: { params: { courseId: string } }) {
+export default function Course1Page() {
+  // TODO: 알림 상태는 전역 관리로 전환 예정 (Zustand/Redux 등 도입 시)
+  // const [showToast, setShowToast] = useState(false);
+  // const [showFeedback, setShowFeedback] = useState(false);
   const router = useRouter();
-  const courseId = parseInt(params.courseId, 10);  // URL에서 가져온 courseId를 정수로 변환
 
   const [poses, setPoses] = useState<Pose[]>([]);
   const [isStarted, setIsStarted] = useState(false);
@@ -31,9 +34,16 @@ export default function CoursePage({ params }: { params: { courseId: string } })
   const current = poses[index];
 
   useEffect(() => {
+    const toastTimer = setTimeout(() => {
+      // setShowToast(true);
+    }, 10000);
+    return () => clearTimeout(toastTimer);
+  }, []);
+
+  useEffect(() => {
     const fetchPoses = async () => {
       try {
-        const res = await publicRequest.get(`/api/yoga-courses/${courseId}`);
+        const res = await publicRequest.get(`/api/yoga-courses/1`);
         setPoses(res.data.poses);
         setTimeLeft(res.data.poses[0]?.duration || 0);
       } catch (err) {
@@ -42,7 +52,7 @@ export default function CoursePage({ params }: { params: { courseId: string } })
     };
 
     fetchPoses();
-  }, [courseId]);
+  }, []);
 
   useEffect(() => {
     if (!isStarted || poses.length === 0) return;
@@ -102,6 +112,14 @@ export default function CoursePage({ params }: { params: { courseId: string } })
 
     return () => clearInterval(timer);
   }, [index, isPreparing, isStarted, poses]);
+
+  // const handleConfirm = () => {
+  //   setShowFeedback(true);
+  // };
+
+  // const handleFeedback = (feedback) => {
+  //   router.push("/result");
+  // };
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-pink-100 via-purple-200 to-blue-200 flex flex-col items-center px-4 py-10 pb-28 overflow-hidden">
@@ -177,7 +195,28 @@ export default function CoursePage({ params }: { params: { courseId: string } })
       )}
 
       <FooterLogo />
+
       <audio ref={bellRef} src="/music/bell.mp3" preload="auto" />
+
+      {/* TODO: 전역 알림 시스템 구축 후 알림 및 피드백 팝업 다시 연결할 것
+      <AnalysisToast onConfirm={handleConfirm} />
+      <FeedbackModal show={showFeedback} onSelect={handleFeedback} nickname={nickname} /> */}
+
+      <style jsx>{`
+        @keyframes toast {
+          0% {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-toast {
+          animation: toast 0.4s ease-out;
+        }
+      `}</style>
     </div>
   );
 }

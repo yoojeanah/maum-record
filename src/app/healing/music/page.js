@@ -1,13 +1,12 @@
-'use client';
-
-import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { FaPlay, FaPause } from 'react-icons/fa';
-import HamburgerMenu from '@/app/components/HamburgerMenu';
-import ProfileIcon from '@/app/components/ProfileIcon';
-import FooterLogo from '@/app/components/FooterLogo';
-import { useUserStore } from '@/store/useUserStore';
-import { useToastStore } from '@/store/useToastStore';
+"use client";
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { FaPlay, FaPause } from "react-icons/fa";
+import HamburgerMenu from "@/app/components/HamburgerMenu";
+import ProfileIcon from "@/app/components/ProfileIcon";
+import FooterLogo from "@/app/components/FooterLogo";
+import FeedbackModal from "@/app/components/FeedbackModal";
+import AnalysisToast from "@/app/components/AnalysisToast";
 
 function ChalkboardCanvas() {
   const canvasRef = useRef(null);
@@ -15,14 +14,14 @@ function ChalkboardCanvas() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
     ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = '#ffffff';
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#ffffff";
 
     const getPos = (e) => {
       const rect = canvas.getBoundingClientRect();
@@ -52,22 +51,22 @@ function ChalkboardCanvas() {
       isDrawing.current = false;
     };
 
-    canvas.addEventListener('mousedown', startDrawing);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', stopDrawing);
-    canvas.addEventListener('mouseleave', stopDrawing);
-    canvas.addEventListener('touchstart', startDrawing);
-    canvas.addEventListener('touchmove', draw);
-    canvas.addEventListener('touchend', stopDrawing);
+    canvas.addEventListener("mousedown", startDrawing);
+    canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("mouseup", stopDrawing);
+    canvas.addEventListener("mouseleave", stopDrawing);
+    canvas.addEventListener("touchstart", startDrawing);
+    canvas.addEventListener("touchmove", draw);
+    canvas.addEventListener("touchend", stopDrawing);
 
     return () => {
-      canvas.removeEventListener('mousedown', startDrawing);
-      canvas.removeEventListener('mousemove', draw);
-      canvas.removeEventListener('mouseup', stopDrawing);
-      canvas.removeEventListener('mouseleave', stopDrawing);
-      canvas.removeEventListener('touchstart', startDrawing);
-      canvas.removeEventListener('touchmove', draw);
-      canvas.removeEventListener('touchend', stopDrawing);
+      canvas.removeEventListener("mousedown", startDrawing);
+      canvas.removeEventListener("mousemove", draw);
+      canvas.removeEventListener("mouseup", stopDrawing);
+      canvas.removeEventListener("mouseleave", stopDrawing);
+      canvas.removeEventListener("touchstart", startDrawing);
+      canvas.removeEventListener("touchmove", draw);
+      canvas.removeEventListener("touchend", stopDrawing);
     };
   }, []);
 
@@ -75,26 +74,28 @@ function ChalkboardCanvas() {
     <canvas
       ref={canvasRef}
       className="fixed top-0 left-0 w-full h-full z-0"
-      style={{ touchAction: 'none', pointerEvents: 'auto' }}
+      style={{ touchAction: "none", pointerEvents: "auto" }}
     />
   );
 }
 
 export default function MusicPage() {
   const router = useRouter();
-  const { nickname } = useUserStore(); // 전역 nickname 사용
-  const { showToast } = useToastStore(); // 전역 토스트
+  const [nickname, setNickname] = useState("마음이");
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState('');
+  const [currentTrack, setCurrentTrack] = useState("");
+// TODO: 알림 상태는 전역 관리로 전환 예정 (Zustand/Redux 등 도입 시)
+// const [showToast, setShowToast] = useState(false);
+// const [showFeedback, setShowFeedback] = useState(false);
   const audioRef = useRef(null);
 
   const tracks = [
-    '/music/1.mp3',
-    '/music/2.mp3',
-    '/music/3.mp3',
-    '/music/4.mp3',
-    '/music/5.mp3',
-    '/music/6.mp3',
+    "/music/1.mp3",
+    "/music/2.mp3",
+    "/music/3.mp3",
+    "/music/4.mp3",
+    "/music/5.mp3",
+    "/music/6.mp3",
   ];
 
   const togglePlay = () => {
@@ -110,23 +111,17 @@ export default function MusicPage() {
         setCurrentTrack(newTrack);
         audio.src = newTrack;
         audio.load();
-        audio
-          .play()
-          .then(() => {
-            setIsPlaying(true);
-          })
-          .catch((err) => {
-            console.warn('재생 실패:', err.message);
-          });
+        audio.play().then(() => {
+          setIsPlaying(true);
+        }).catch((err) => {
+          console.warn("재생 실패:", err.message);
+        });
       } else {
-        audio
-          .play()
-          .then(() => {
-            setIsPlaying(true);
-          })
-          .catch((err) => {
-            console.warn('재생 실패:', err.message);
-          });
+        audio.play().then(() => {
+          setIsPlaying(true);
+        }).catch((err) => {
+          console.warn("재생 실패:", err.message);
+        });
       }
     }
   };
@@ -139,17 +134,25 @@ export default function MusicPage() {
       audio.src = nextTrack;
       audio.load();
       audio.play().catch((err) => {
-        console.warn('다음 트랙 재생 실패:', err.message);
+        console.warn("다음 트랙 재생 실패:", err.message);
       });
     }
   };
 
+  // const handleConfirm = () => {
+  //   setShowFeedback(true);
+  // };
+
+  // const handleFeedback = (feedback) => {
+  //   router.push("/result");
+  // };
+
   useEffect(() => {
     const toastTimer = setTimeout(() => {
-      showToast(); // 10초 후 전역 토스트 띄우기
+      // setShowToast(true);
     }, 10000);
     return () => clearTimeout(toastTimer);
-  }, [showToast]);
+  }, []);
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-pink-100 via-purple-200 to-blue-200 flex flex-col items-center justify-center px-4 py-10 overflow-hidden">
@@ -171,17 +174,15 @@ export default function MusicPage() {
       <audio ref={audioRef} onEnded={handleTrackEnd} controls={false} />
       <FooterLogo />
 
+      {/* TODO: 전역 알림 시스템 구축 후 알림 및 피드백 팝업 다시 연결할 것
+      <AnalysisToast onConfirm={handleConfirm} />
+      <FeedbackModal show={showFeedback} onSelect={handleFeedback} nickname={nickname} /> */}
+
       <style jsx>{`
         @keyframes sway {
-          0% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-          100% {
-            transform: translateY(0);
-          }
+          0% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+          100% { transform: translateY(0); }
         }
 
         .animate-sway {
