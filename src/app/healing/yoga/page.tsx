@@ -34,8 +34,8 @@ export default function YogaPage() {
   const [courses, setCourses] = useState<YogaCourse[]>([
     {
       id: 1,
-      title: "하루를 여는 기초 요가",
-      summary: "부드러운 스트레칭으로 하루를 가볍게 시작하세요.",
+      title: "코스 1",
+      summary: "업데이트 예정입니다.",
       locked: true,
       poses: [],
     },

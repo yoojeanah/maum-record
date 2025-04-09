@@ -77,9 +77,9 @@ export default function MainPage() {
 
         <div className="animate-on-scroll" data-animate="fade-in-zoom">
           <Feature
-            emoji="🌸"
+            emoji="🌱"
             title="기록 남기기"
-            text="감정 색을 캘린더에 남기고, 마음꽃밭에 꽃 두 송이를 피워 보세요."
+            text="감정 색을 캘린더에 남기고, 마음나무를 하루하루 키워 보세요."
             image="/images/calendar-example.png"
           />
         </div>
