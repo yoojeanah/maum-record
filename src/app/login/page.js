@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import axios from "axios";
+import { publicRequest } from "@/lib/axiosInstance";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,14 +21,10 @@ export default function LoginPage() {
 
     try {
       // httpOnly Cookie 기반 로그인
-      const response = await axios.post("http://localhost:8080/auth/login", {
+      const response = await publicRequest.post("/auth/login", {
         email,
         password,
-      },
-        {
-          withCredentials: true, // 쿠키 포함
-        }
-      );
+      });
 
       // 백엔드에서 role: 'admin'을 응답
       if (response.data.role === "admin") {
