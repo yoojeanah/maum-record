@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { logoutUser } from "@/lib/logout";
 
 export default function HamburgerMenu() {
   const router = useRouter();
@@ -16,6 +17,11 @@ export default function HamburgerMenu() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleLogout = async () => {
+    await logoutUser(); // 백엔드에 logout 요청
+    router.push("/login"); // 로그인 페이지로 이동
+  }
 
   return (
     <>
@@ -61,7 +67,7 @@ export default function HamburgerMenu() {
             1:1 문의
           </button>
           <button
-            onClick={() => router.push("/login")}
+            onClick={handleLogout}
             className="w-full text-left text-gray-800 font-semibold"
           >
             로그아웃

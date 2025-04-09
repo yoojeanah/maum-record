@@ -1,22 +1,43 @@
+// src/app/login/page.js
+// 로그인 페이지
+
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
+import axios from "axios";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  // 로그인 핸들러
+  // httpOnly Cookie 기반 로그인
+  // 로그인 성공 시, 백엔드에서 role: 'admin'을 응답받으면 -> admin 페이지로 이동
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (email === "admin@maumrecord.com" && password === "admin123") {
-      localStorage.setItem('admin-token', 'mock-token');
-      window.dispatchEvent(new Event('admin-login'));
-      router.push("/admin");
-    } else {
-      router.push("/record");
+    try {
+      // httpOnly Cookie 기반 로그인
+      const response = await axios.post("http://localhost:8080/auth/login", {
+        email,
+        password,
+      },
+        {
+          withCredentials: true, // 쿠키 포함
+        }
+      );
+
+      // 백엔드에서 role: 'admin'을 응답
+      if (response.data.role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/record");
+      }
+    } catch (err) {
+      console.error("로그인 실패: ", err);
+      alert("로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.");
     }
   };
 
