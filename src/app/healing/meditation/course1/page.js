@@ -1,27 +1,24 @@
-"use client";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import HamburgerMenu from "@/app/components/HamburgerMenu";
-import ProfileIcon from "@/app/components/ProfileIcon";
-import FooterLogo from "@/app/components/FooterLogo";
-import FeedbackModal from "@/app/components/FeedbackModal";
-import AnalysisToast from "@/app/components/AnalysisToast";
+'use client';
+
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import HamburgerMenu from '@/app/components/HamburgerMenu';
+import ProfileIcon from '@/app/components/ProfileIcon';
+import FooterLogo from '@/app/components/FooterLogo';
+import { useUserStore } from '@/store/useUserStore';
 
 export default function MeditationPage() {
-  const [nickname, setNickname] = useState("마음이");
+  const { nickname } = useUserStore();
   const [started, setStarted] = useState(false);
   const [fade, setFade] = useState(true);
-// TODO: 알림 상태는 전역 관리로 전환 예정 (Zustand/Redux 등 도입 시)
-// const [showToast, setShowToast] = useState(false);
-// const [showFeedback, setShowFeedback] = useState(false);
-  const [videoSrc, setVideoSrc] = useState("");
-  const audioRef = useRef(null);
-  const bellAudioRef = useRef(null);
-  const bellIntervalRef = useRef(null);
+  const [videoSrc, setVideoSrc] = useState('');
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const bellAudioRef = useRef<HTMLAudioElement>(null);
+  const bellIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
 
   const videoSources = useMemo(
-    () => ["/video/1.mp4", "/video/2.mp4", "/video/3.mp4", "/video/4.mp4"],
+    () => ['/video/1.mp4', '/video/2.mp4', '/video/3.mp4', '/video/4.mp4'],
     []
   );
 
@@ -35,19 +32,10 @@ export default function MeditationPage() {
     return () => clearInterval(interval);
   }, [videoSources]);
 
-  useEffect(() => {
-    if (!started) {
-      const toastTimer = setTimeout(() => {
-        // setShowToast(true);
-      }, 10000);
-      return () => clearTimeout(toastTimer);
-    }
-  }, [started]);
-
   const startMeditation = () => {
     setTimeout(() => bellAudioRef.current?.play(), 1000);
     setTimeout(() => audioRef.current?.play(), 4000);
-    // setTimeout(() => setShowToast(true), 10000);
+
     bellIntervalRef.current = setInterval(() => {
       bellAudioRef.current?.play();
     }, 30000);
@@ -61,14 +49,6 @@ export default function MeditationPage() {
       startMeditation();
     }, 300);
   };
-
-  // const handleConfirm = () => {
-  //   setShowFeedback(true);
-  // };
-
-  // const handleFeedback = (feedback) => {
-  //   router.push("/result");
-  // };
 
   return (
     <div className="relative min-h-screen bg-gray-900 flex flex-col items-center justify-center px-4 py-10">
@@ -88,7 +68,7 @@ export default function MeditationPage() {
 
       <div
         className={`absolute top-1/3 text-center z-20 h-[90px] flex flex-col items-center justify-center transition-opacity duration-500 ${
-          fade ? "opacity-100" : "opacity-0"
+          fade ? 'opacity-100' : 'opacity-0'
         }`}
       >
         {!started ? (
@@ -115,26 +95,6 @@ export default function MeditationPage() {
 
       <audio ref={bellAudioRef} src="/music/bell.mp3" />
       <audio ref={audioRef} src="/audio/VOLI_TTS_설아.wav" />
-
-      {/* TODO: 전역 알림 시스템 구축 후 알림 및 피드백 팝업 다시 연결할 것
-      {showToast && <AnalysisToast onConfirm={handleConfirm} />}
-      <FeedbackModal show={showFeedback} onSelect={handleFeedback} nickname={nickname} /> */}
-
-      <style jsx>{`
-        @keyframes toast {
-          0% {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-toast {
-          animation: toast 0.4s ease-out;
-        }
-      `}</style>
     </div>
   );
 }
