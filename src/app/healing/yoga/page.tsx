@@ -1,14 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import { publicRequest } from "@/lib/axiosInstance"; // axiosInstance 추가
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
 import FeedbackModal from "@/app/components/FeedbackModal";
 import AnalysisToast from "@/app/components/AnalysisToast";
 
-// ✅ 타입 인터페이스 정의
+// 타입 인터페이스 정의
 interface Pose {
   id: string;
   name: string;
@@ -31,7 +31,7 @@ export default function YogaPage() {
   // const [showFeedback, setShowFeedback] = useState(false);
   const router = useRouter();
 
-  const [courses, setCourses] = useState<YogaCourse[]>([ // 더미 기반 - 서버 응답 오면 setCourses()로 덮어씀
+  const [courses, setCourses] = useState<YogaCourse[]>([
     {
       id: 1,
       title: "하루를 여는 기초 요가",
@@ -107,7 +107,7 @@ export default function YogaPage() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.get<{ courses: YogaCourse[] }>("/api/yoga-courses");
+        const res = await publicRequest.get<{ courses: YogaCourse[] }>("/api/yoga-courses");
         setCourses(res.data.courses);
       } catch (error) {
         console.error("코스 데이터를 불러오는 중 오류 발생:", error);
@@ -145,15 +145,15 @@ export default function YogaPage() {
             onClick={() => {
               if (!course.locked) handleNavigate(course.id);
             }}
-            className={`rounded-xl shadow-md p-6 flex flex-col justify-center items-center min-h-[150px] transition ${course.locked ? "bg-white opacity-60 cursor-default" : "bg-white hover:bg-purple-50 cursor-pointer"}`}
+            className={`rounded-xl shadow-md p-6 flex flex-col justify-center items-center min-h-[150px] transition ${
+              course.locked
+                ? "bg-white opacity-60 cursor-default"
+                : "bg-white hover:bg-purple-50 cursor-pointer"
+            }`}
             style={course.locked ? { pointerEvents: "none" } : {}}
           >
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">
-              {course.title}
-            </h2>
-            <p className="text-sm text-gray-600 text-center">
-              {course.summary}
-            </p>
+            <h2 className="text-lg font-semibold text-gray-800 mb-2">{course.title}</h2>
+            <p className="text-sm text-gray-600 text-center">{course.summary}</p>
           </div>
         ))}
       </div>

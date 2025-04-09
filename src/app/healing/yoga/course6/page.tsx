@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import Image from "next/image";
+import { publicRequest } from "@/lib/axiosInstance";
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
@@ -17,7 +17,7 @@ interface Pose {
   image: string;
 }
 
-export default function Course1Page() {
+export default function Course6Page() {
   // TODO: 알림 상태는 전역 관리로 전환 예정 (Zustand/Redux 등 도입 시)
   // const [showToast, setShowToast] = useState(false);
   // const [showFeedback, setShowFeedback] = useState(false);
@@ -43,7 +43,7 @@ export default function Course1Page() {
   useEffect(() => {
     const fetchPoses = async () => {
       try {
-        const res = await axios.get("/api/yoga-courses/6");
+        const res = await publicRequest.get(`/api/yoga-courses/6`);
         setPoses(res.data.poses);
         setTimeLeft(res.data.poses[0]?.duration || 0);
       } catch (err) {

@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import Image from "next/image";
+import { publicRequest } from "@/lib/axiosInstance";
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
@@ -43,7 +43,7 @@ export default function Course1Page() {
   useEffect(() => {
     const fetchPoses = async () => {
       try {
-        const res = await axios.get("/api/yoga-courses/1");
+        const res = await publicRequest.get(`/api/yoga-courses/1`);
         setPoses(res.data.poses);
         setTimeLeft(res.data.poses[0]?.duration || 0);
       } catch (err) {
