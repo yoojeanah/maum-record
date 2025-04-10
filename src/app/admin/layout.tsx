@@ -1,10 +1,9 @@
 // app/admin/layout.tsx
-import { ReactNode } from 'react';
-import AdminSidebar from '../components/admin/AdminSidebar';
-import AdminHeader from '../components/admin/AdminHeader';
+import { ReactNode } from "react";
+import AdminSidebar from "../components/admin/AdminSidebar";
+import AdminHeader from "../components/admin/AdminHeader";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
-  
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
@@ -16,9 +15,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <AdminHeader />
 
         {/* Page Content */}
-        <main className="p-6">
-          {children}
-        </main>
+        <main className="p-6">{children}</main>
       </div>
     </div>
   );

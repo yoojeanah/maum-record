@@ -5,7 +5,6 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
-import axios from "axios";
 import { publicRequest } from "@/lib/axiosInstance";
 
 export default function LoginPage() {
@@ -41,10 +40,14 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-200 flex items-center justify-center">
       <div className="bg-white shadow-xl rounded-2xl p-10 w-96">
-        <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">MaumRecord</h1>
+        <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">
+          MaumRecord
+        </h1>
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-600">이메일</label>
+            <label className="block mb-1 text-sm font-medium text-gray-600">
+              이메일
+            </label>
             <input
               type="email"
               required
@@ -55,7 +58,9 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-600">비밀번호</label>
+            <label className="block mb-1 text-sm font-medium text-gray-600">
+              비밀번호
+            </label>
             <input
               type="password"
               required

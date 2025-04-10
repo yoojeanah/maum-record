@@ -56,7 +56,7 @@ export default function SignupPage() {
         email,
         password,
       });
-      
+
       alert("회원가입이 완료되었습니다.");
       router.push("/login");
     } catch (err) {
@@ -68,12 +68,15 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-200 flex items-center justify-center">
       <div className="bg-white shadow-xl rounded-2xl p-10 w-96">
-        <h2 className="text-2xl font-bold text-center mb-6 text-blue-600">회원가입</h2>
+        <h2 className="text-2xl font-bold text-center mb-6 text-blue-600">
+          회원가입
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-
-        {/* 닉네임 */}
+          {/* 닉네임 */}
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">닉네임</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              닉네임
+            </label>
             <input
               type="text"
               required
@@ -86,7 +89,9 @@ export default function SignupPage() {
 
           {/* 이메일 */}
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">이메일</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              이메일
+            </label>
             <input
               type="email"
               required
@@ -106,7 +111,9 @@ export default function SignupPage() {
 
           {/* 비밀번호 */}
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">비밀번호</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              비밀번호
+            </label>
             <input
               type="password"
               required
@@ -119,14 +126,17 @@ export default function SignupPage() {
             />
             {pwdFocus && !validPwd && (
               <p className="text-red-500 text-sm mt-1">
-                비밀번호는 8~24자, 소문자, 대문자, 숫자, 특수문자를 포함해야 합니다.
+                비밀번호는 8~24자, 소문자, 대문자, 숫자, 특수문자를 포함해야
+                합니다.
               </p>
             )}
           </div>
 
           {/* 비밀번호 확인 */}
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">비밀번호 확인</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              비밀번호 확인
+            </label>
             <input
               type="password"
               required

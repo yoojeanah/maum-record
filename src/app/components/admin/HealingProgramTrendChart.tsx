@@ -1,4 +1,7 @@
-'use client';
+// src/app/components/admin/HealingProgramTrendChart.tsx
+// 힐링 프로그램 사용 추이 차트 컴포넌트
+
+"use client";
 
 import {
   LineChart,
@@ -9,34 +12,72 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
-} from 'recharts';
+} from "recharts";
+import { useEffect, useState } from "react";
 
-const data = [
-  { date: '3/17', 명상: 8, 음악감상: 5, 호흡운동: 3 },
-  { date: '3/18', 명상: 6, 음악감상: 7, 호흡운동: 2 },
-  { date: '3/19', 명상: 10, 음악감상: 4, 호흡운동: 5 },
-  { date: '3/20', 명상: 5, 음악감상: 6, 호흡운동: 4 },
-  { date: '3/21', 명상: 7, 음악감상: 8, 호흡운동: 3 },
-  { date: '3/22', 명상: 4, 음악감상: 6, 호흡운동: 2 },
-  { date: '3/23', 명상: 9, 음악감상: 7, 호흡운동: 4 },
-];
+export type HealingTrendItem = {
+  date: string;
+  [program: string]: string | number;
+};
 
-export default function HealingProgramTrendChart() {
+interface Props {
+  trends: HealingTrendItem[];
+}
+
+export default function HealingProgramTrendChart({ trends }: Props) {
+  // 추출된 동적 key
+  const [programKeys, setProgramKeys] = useState<string[]>([]);
+
+  // trends(객체의 배열) 데이터에서 동적 key 추출
+  useEffect(() => {
+    if (trends.length > 0) {
+      const keys = Object.keys(trends[0]).filter((key) => key !== "date"); // 첫번째 객체에서 'date' 제외한 key들 추출
+      setProgramKeys(keys);
+    }
+  }, [trends]);
+
   return (
     <div className="bg-white p-4 rounded-xl shadow">
-      <h3 className="text-lg font-semibold mb-4">📈 힐링 프로그램 사용 추이 (최근 7일)</h3>
+      <h3 className="text-lg font-semibold mb-4">
+        📈 힐링 프로그램 사용 추이 (최근 7일)
+      </h3>
       <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+        <LineChart
+          data={trends}
+          margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
+        >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="date" />
           <YAxis />
           <Tooltip />
           <Legend />
-          <Line type="monotone" dataKey="명상" stroke="#3b82f6" strokeWidth={2} />
-          <Line type="monotone" dataKey="음악감상" stroke="#10b981" strokeWidth={2} />
-          <Line type="monotone" dataKey="호흡운동" stroke="#f97316" strokeWidth={2} />
+
+          {programKeys.map((key, idx) => (
+            <Line
+              key={key}
+              type="monotone"
+              dataKey={key}
+              stroke={getColor(idx)}
+              strokeWidth={2}
+            />
+          ))}
         </LineChart>
       </ResponsiveContainer>
     </div>
   );
 }
+
+// 동적으로 색상 반환하는 함수
+const getColor = (index: number) => {
+  const colors = [
+    "#3b82f6",
+    "#10b981",
+    "#f97316",
+    "#6366f1",
+    "#ec4899",
+    "#22d3ee",
+    "#facc15",
+    "#8b5cf6",
+  ];
+  return colors[index % colors.length];
+};

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import withAdminAuth from '../../components/admin/withAdminAuth';
-import { Users } from 'lucide-react';
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import withAdminAuth from "@/app/components/auth/withAdminAuth";
+import { Users } from "lucide-react";
 
 type User = {
   id: number;
@@ -11,7 +11,7 @@ type User = {
   createdAt: string;
   journalCount: number;
   lastHealingProgram?: string; // e.g., '명상'
-  lastHealingDate?: string;    // e.g., '2025-03-22'
+  lastHealingDate?: string; // e.g., '2025-03-22'
   active: boolean;
 };
 
@@ -22,11 +22,11 @@ function AdminUserPage() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch('/api/admin/users');
+        const res = await fetch("/api/admin/users");
         const data = await res.json();
         setUsers(data);
       } catch (err) {
-        console.error('사용자 데이터를 불러오지 못했습니다.', err);
+        console.error("사용자 데이터를 불러오지 못했습니다.", err);
       } finally {
         setLoading(false);
       }
@@ -64,14 +64,18 @@ function AdminUserPage() {
   if (loading) return <p className="p-6">로딩 중...</p>;
 
   const maskEmail = (email: string) => {
-    const [name, domain] = email.split('@');
-    const maskedName = name.length > 2 ? name.slice(0, 2) + '*'.repeat(name.length - 2) : name;
+    const [name, domain] = email.split("@");
+    const maskedName =
+      name.length > 2 ? name.slice(0, 2) + "*".repeat(name.length - 2) : name;
     return `${maskedName}@${domain}`;
   };
 
   return (
     <div className="p-6">
-      <h2 className="inline-flex gap-2 items-center text-2xl font-bold mb-4"><Users className='w-8 h-8'/>사용자 관리</h2>
+      <h2 className="inline-flex gap-2 items-center text-2xl font-bold mb-4">
+        <Users className="w-8 h-8" />
+        사용자 관리
+      </h2>
       <div className="overflow-x-auto shadow border rounded-lg bg-white">
         <table className="min-w-full bg-white text-sm text-left whitespace-nowrap">
           <thead className="bg-gray-100 text-left text-gray-600 font-medium">
@@ -88,14 +92,24 @@ function AdminUserPage() {
             {users.map((user) => (
               <tr key={user.id}>
                 <td className="px-4 py-2">{maskEmail(user.email)}</td>
-                <td className="px-4 py-2">{new Date(user.createdAt).toLocaleDateString()}</td>
+                <td className="px-4 py-2">
+                  {new Date(user.createdAt).toLocaleDateString()}
+                </td>
                 <td className="px-4 py-2 text-center">{user.journalCount}</td>
                 <td className="px-4 py-2 text-center">
-                  {user.lastHealingProgram ? `${user.lastHealingProgram} (${user.lastHealingDate})` : '없음'}
+                  {user.lastHealingProgram
+                    ? `${user.lastHealingProgram} (${user.lastHealingDate})`
+                    : "없음"}
                 </td>
                 <td className="px-4 py-2">
-                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${user.active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                    {user.active ? '활성' : '비활성'}
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                      user.active
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {user.active ? "활성" : "비활성"}
                   </span>
                 </td>
                 <td className="px-4 py-2">
@@ -114,5 +128,6 @@ function AdminUserPage() {
     </div>
   );
 }
-
-export default withAdminAuth(AdminUserPage);
+// TODO: 관리자 페이지 구현 완료시, 관리자 인증 HOC를 추가
+// export default withAdminAuth(AdminUserPage);
+export default AdminUserPage;

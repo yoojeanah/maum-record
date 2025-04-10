@@ -9,12 +9,12 @@ const BASE_URL = "http://localhost:8080";
 // 기본 instance (로그인/회원가입용 - 토큰 필요 없음)
 // 로그인 전
 export const publicRequest = axios.create({
-	baseURL: BASE_URL,
-	withCredentials: true, // 쿠키를 서버에 자동 포함시키기 위해 true로 설정
+  baseURL: BASE_URL,
+  withCredentials: true, // 쿠키를 서버에 자동 포함시키기 위해 true로 설정
 });
 
 // 보호된 API instance (Authorization 헤더 자동 포함)
 export const authRequest = axios.create({
-	baseURL: BASE_URL,
-	withCredentials: true,
+  baseURL: BASE_URL,
+  withCredentials: true,
 });
