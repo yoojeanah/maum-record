@@ -1,10 +1,12 @@
 "use client";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { publicRequest } from "@/lib/axiosInstance";
+
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
-import Notice from "@/app/components/Notice"; 
+import Notice from "@/app/components/Notice";
 import WaveSurfer from "wavesurfer.js";
 
 export default function RecordPage() {
@@ -84,7 +86,6 @@ export default function RecordPage() {
       secondsRef.current = 0;
       setRecordingTime("00:00");
       setProgress(0);
-
       intervalRef.current = setInterval(updateTimer, 1000);
     } catch (err) {
       alert("마이크 접근 권한이 필요합니다.");
@@ -115,10 +116,25 @@ export default function RecordPage() {
     }
   };
 
+  // ✅ 프론트는 응답 데이터를 받지 않고 성공 여부만 확인
   const handleSubmit = async () => {
     if (!audioBlob) return alert("녹음 파일이 없습니다.");
-    console.log("녹음 제출됨 🎉 (시연용)");
-    router.push("/analyzing");
+
+    const formData = new FormData();
+    formData.append("file", audioBlob, "recording.webm");
+
+    try {
+      await publicRequest.post("/api/audio/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      router.push("/analyzing");
+    } catch (err) {
+      console.error("❌ 업로드 실패:", err);
+      alert("녹음 업로드에 실패했습니다.");
+    }
   };
 
   const isLoggedIn = true;
@@ -134,7 +150,7 @@ export default function RecordPage() {
 
   return (
     <div className="relative min-h-screen bg-gray-100 flex flex-col items-center justify-center px-4 pb-16">
-      <Notice /> 
+      <Notice />
       <HamburgerMenu />
       <ProfileIcon />
 
