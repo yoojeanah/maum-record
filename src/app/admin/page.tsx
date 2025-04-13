@@ -1,8 +1,6 @@
 // src/app/admin/page.tsx
 // 관리자 대시보드 페이지
 
-//TODO: 클릭 시 문의 목록 페이지로 이동
-
 "use client";
 
 import { authRequest } from "@/lib/axiosInstance";
