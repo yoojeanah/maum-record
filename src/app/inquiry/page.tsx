@@ -1,20 +1,37 @@
 "use client";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { publicRequest } from "@/lib/axiosInstance";
 
 export default function ContactAdminPage() {
   const router = useRouter();
+  const [title, setTitle] = useState(""); // ✅ 제목 상태 추가
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleSubmit = () => {
-    if (!message && !file) return;
-    setSubmitted(true);
-    setMessage("");
-    setFile(null);
+  const handleSubmit = async () => {
+    if (!title.trim() && !message.trim() && !file) return;
+
+    const formData = new FormData();
+    formData.append("title", title);        // ✅ 제목 추가
+    formData.append("message", message);
+    if (file) formData.append("file", file);
+
+    try {
+      await publicRequest.post("/api/inquiries", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setSubmitted(true);
+      setTitle("");    // ✅ 제목 초기화
+      setMessage("");
+      setFile(null);
+    } catch (error) {
+      alert("문의 전송에 실패했습니다.");
+      console.error("문의 전송 오류:", error);
+    }
   };
 
   return (
@@ -27,13 +44,22 @@ export default function ContactAdminPage() {
           </div>
         ) : (
           <>
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div className="text-center">
                 <h2 className="text-2xl font-bold text-gray-800">관리자에게 문의하기</h2>
                 <p className="text-sm text-gray-500 mt-1">
                   궁금한 점이나 요청사항을 자유롭게 남겨 주세요.
                 </p>
               </div>
+
+              {/* ✅ 제목 입력 필드 */}
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="문의 제목을 입력하세요."
+                className="w-full border border-gray-300 rounded-md p-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400"
+              />
 
               <textarea
                 value={message}

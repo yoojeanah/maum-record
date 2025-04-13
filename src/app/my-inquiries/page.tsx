@@ -1,31 +1,34 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { publicRequest } from "@/lib/axiosInstance";
+
+interface Inquiry {
+  id: number;
+  title: string;
+  content: string;
+  status: string;
+  date: string;
+  reply: string;
+}
 
 export default function MyInquiriesPage() {
   const router = useRouter();
-  const [inquiries] = useState([
-    {
-      id: 1,
-      title: "감정 분석 결과가 이상해요",
-      content:
-        "녹음한 일기에서 분명 행복한 내용을 말했는데, 분석 결과가 우울로 나왔어요.",
-      status: "답변 완료",
-      date: "2024. 03. 12.",
-      reply:
-        "분석 알고리즘이 감정 단어 외에도 말투와 맥락을 함께 고려하기 때문에 오차가 발생할 수 있어요. 개선에 참고하겠습니다!",
-    },
-    {
-      id: 2,
-      title: "일기 녹음 업로드가 안 돼요",
-      content: "오늘 아침에 일기 녹음을 시도했는데, 업로드 중 멈추는 현상이 발생했어요.",
-      status: "답변 대기",
-      date: "2024. 03. 10.",
-      reply: "",
-    },
-  ]);
-
+  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchInquiries = async () => {
+      try {
+        const res = await publicRequest.get("/api/inquiries");
+        setInquiries(res.data);
+      } catch (error) {
+        console.error("문의 내역 조회 실패:", error);
+      }
+    };
+
+    fetchInquiries();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 flex justify-center">
@@ -50,27 +53,35 @@ export default function MyInquiriesPage() {
             </tr>
           </thead>
           <tbody>
-            {inquiries.map((q) => (
-              <tr key={q.id} className="border-b">
-                <td className="py-2">{q.title}</td>
-                <td className="py-2">{q.date}</td>
-                <td className="py-2">
-                  {q.status === "답변 완료" ? (
-                    <span className="text-green-600">{q.status}</span>
-                  ) : (
-                    <span className="text-gray-400">{q.status}</span>
-                  )}
-                </td>
-                <td className="py-2 text-right">
-                  <button
-                    onClick={() => setSelected(q.id)}
-                    className="text-blue-500 hover:underline"
-                  >
-                    보기
-                  </button>
+            {inquiries.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="text-center py-8 text-gray-400">
+                  문의 내역이 없습니다.
                 </td>
               </tr>
-            ))}
+            ) : (
+              inquiries.map((q) => (
+                <tr key={q.id} className="border-b">
+                  <td className="py-2">{q.title}</td>
+                  <td className="py-2">{q.date}</td>
+                  <td className="py-2">
+                    {q.status === "답변 완료" ? (
+                      <span className="text-green-600">{q.status}</span>
+                    ) : (
+                      <span className="text-gray-400">{q.status}</span>
+                    )}
+                  </td>
+                  <td className="py-2 text-right">
+                    <button
+                      onClick={() => setSelected(q.id)}
+                      className="text-blue-500 hover:underline"
+                    >
+                      보기
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
 

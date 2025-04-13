@@ -4,23 +4,9 @@ import { useRouter } from "next/navigation";
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
-import FeedbackModal from "@/app/components/FeedbackModal";
-import AnalysisToast from "@/app/components/AnalysisToast";
 
 export default function MeditationPage() {
-  const [nickname, setNickname] = useState("마음이");
-// TODO: 알림 상태는 전역 관리로 전환 예정 (Zustand/Redux 등 도입 시)
-// const [showToast, setShowToast] = useState(false);
-// const [showFeedback, setShowFeedback] = useState(false);
   const router = useRouter();
-
-  // const handleConfirm = () => {
-  //   setShowFeedback(true);
-  // };
-
-  // const handleFeedback = (feedback) => {
-  //   router.push("/result");
-  // };
 
   const handleNavigate = (course: number) => {
     router.push(`/healing/meditation/course${course}`);
@@ -30,7 +16,7 @@ export default function MeditationPage() {
     { id: 1, title: "종소리 명상 🔔", desc: "고요한 울림에 마음을 천천히 실어보는 시간" },
     { id: 2, title: "에세이 명상 📖", desc: "문장들 속에서 사유를 깊이 새겨보는 시간" },
     { id: 3, title: "모닥불 소리 명상 🔥", desc: "타닥대는 불소리에 기대어 마음을 내려놓는 시간" },
-  ];  
+  ];
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-pink-100 via-purple-200 to-blue-200 flex flex-col items-center px-4 py-10 overflow-hidden">
@@ -59,26 +45,6 @@ export default function MeditationPage() {
       </div>
 
       <FooterLogo />
-
-      {/* TODO: 전역 알림 시스템 구축 후 알림 및 피드백 팝업 다시 연결할 것
-      <AnalysisToast onConfirm={handleConfirm} />
-      <FeedbackModal show={showFeedback} onSelect={handleFeedback} nickname={nickname} /> */}
-
-      <style jsx>{`
-        @keyframes toast {
-          0% {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-toast {
-          animation: toast 0.4s ease-out;
-        }
-      `}</style>
     </div>
   );
 }
