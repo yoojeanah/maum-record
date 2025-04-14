@@ -2,6 +2,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { publicRequest } from "@/lib/axiosInstance";
+import { useUser } from "@/context/UserContext";
 
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
@@ -17,7 +18,7 @@ export default function RecordPage() {
   const [audioBlob, setAudioBlob] = useState(null);
   const [recordingTime, setRecordingTime] = useState("00:00");
   const [progress, setProgress] = useState(0);
-  const [nickname] = useState("마음이");
+  const { nickname } = useUser();
 
   const audioChunksRef = useRef([]);
   const intervalRef = useRef(null);
@@ -116,7 +117,7 @@ export default function RecordPage() {
     }
   };
 
-  // ✅ 프론트는 응답 데이터를 받지 않고 성공 여부만 확인
+  // 프론트는 응답 데이터를 받지 않고 성공 여부만 확인
   const handleSubmit = async () => {
     if (!audioBlob) return alert("녹음 파일이 없습니다.");
 

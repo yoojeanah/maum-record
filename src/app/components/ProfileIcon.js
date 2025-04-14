@@ -1,10 +1,13 @@
 "use client";
 import Image from "next/image";
+import { useUser } from "@/context/UserContext"; 
 
 export default function ProfileIcon() {
+  const { profileImage } = useUser(); 
+
   return (
     <Image
-      src="/profile-default.png"
+      src={profileImage || "/profile-default.png"}
       alt="프로필"
       width={48}
       height={48}

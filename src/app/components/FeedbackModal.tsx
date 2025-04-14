@@ -84,9 +84,3 @@ export default function FeedbackModal({ show, onSelect, nickname }: FeedbackModa
     </div>
   );
 }
-
-// 예시
-// {
-//   "feedback": "좋았다",
-//   "categories": ["명상", "음악 감상"]
-// }

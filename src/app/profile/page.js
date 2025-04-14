@@ -3,25 +3,29 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { IoIosArrowBack } from "react-icons/io";
 import Image from "next/image";
+import { useUser } from "@/context/UserContext";
 
 export default function ProfilePage() {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [nickname, setNickname] = useState("마음이");
+  const { setNickname: setGlobalNickname, setProfileImage } = useUser(); // 전역 상태 함수 불러오기
+
+  const [nickname, setNickname] = useState(""); // 수정 입력 필드
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [preview, setPreview] = useState("/profile-default.png");
+  const [file, setFile] = useState(null); // 파일 상태 추가
   const [error, setError] = useState("");
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const selected = e.target.files[0];
+    if (!selected) return;
 
+    setFile(selected); // 원본 저장
     const reader = new FileReader();
     reader.onloadend = () => {
       setPreview(reader.result);
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(selected);
   };
 
   const handleSave = (e) => {
@@ -32,8 +36,14 @@ export default function ProfilePage() {
       return;
     }
 
+    // 여기서 전역 상태 업데이트
+    setGlobalNickname(nickname); // 전역 닉네임 갱신
+    if (file) {
+      const tempUrl = URL.createObjectURL(file); // 이미지 임시 URL 생성
+      setProfileImage(tempUrl); // 전역 프로필 이미지 갱신
+    }
+
     setError("");
-    console.log("저장된 정보:", { name, nickname, password });
     alert("회원정보가 저장되었습니다!");
     router.push("/record");
   };
@@ -82,24 +92,13 @@ export default function ProfilePage() {
         </div>
 
         <form onSubmit={handleSave} className="space-y-4">
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">이름</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="홍길동"
-              className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
-            />
-          </div> */}
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">닉네임</label>
             <input
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
-              placeholder="마음이"
+              placeholder="닉네임을 입력하세요"
               className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
           </div>

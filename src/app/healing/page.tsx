@@ -1,13 +1,13 @@
 "use client";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/context/UserContext";
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
 
 export default function HealingPage() {
   const router = useRouter();
-  const [nickname, setNickname] = useState("마음이");
+  const { nickname } = useUser(); // 전역 닉네임 가져오기
 
   const handleSelect = (type: string) => {
     console.log(`✅ 선택된 힐링 프로그램: ${type}`);

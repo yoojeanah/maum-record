@@ -1,16 +1,15 @@
 "use client";
 import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useUser } from "@/context/UserContext"; 
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
 
 export default function MeditationPage() {
-  const [nickname, setNickname] = useState("마음이");
+  const { nickname } = useUser(); 
   const [started, setStarted] = useState(false);
   const [fade, setFade] = useState(true);
   const fireplaceRef = useRef<HTMLAudioElement | null>(null);
-  const router = useRouter();
 
   const startMeditation = () => {
     setTimeout(() => {
