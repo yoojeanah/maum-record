@@ -46,7 +46,7 @@ export default function SignupPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validEmail || !validPwd || !match) {
-      setError("입력한 정보를 확인해주세요.");
+      setError("입력한 정보를 확인해 주세요.");
       return;
     }
 
