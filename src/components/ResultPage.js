@@ -1,6 +1,8 @@
 "use client";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { FaFastForward } from "react-icons/fa";
-import { useState, useEffect, useMemo } from "react";
+import { useUser } from "@/context/UserContext";
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
@@ -28,7 +30,9 @@ export default function ResultPage({
   positive,
   negative,
 }) {
-  const [nickname] = useState("마음이");
+  const { nickname } = useUser();
+  const router = useRouter();
+
   const [charIndex, setCharIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState("");
   const [typingSkipped, setTypingSkipped] = useState(false);

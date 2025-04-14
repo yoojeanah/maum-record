@@ -1,19 +1,18 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useUser } from "@/context/UserContext";
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
 
 export default function MeditationPage() {
-  const [nickname, setNickname] = useState("마음이");
+  const { nickname } = useUser();
   const [started, setStarted] = useState(false);
   const [fade, setFade] = useState(true);
   const [videoSrc, setVideoSrc] = useState("");
   const audioRef = useRef<HTMLAudioElement>(null);
   const bellAudioRef = useRef<HTMLAudioElement>(null);
   const bellIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const router = useRouter();
 
   const videoSources = useMemo(
     () => ["/video/1.mp4", "/video/2.mp4", "/video/3.mp4", "/video/4.mp4"],

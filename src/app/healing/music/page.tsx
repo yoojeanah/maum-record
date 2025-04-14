@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FaPlay, FaPause } from 'react-icons/fa';
+import { useUser } from "@/context/UserContext";
 import HamburgerMenu from '@/app/components/HamburgerMenu';
 import ProfileIcon from '@/app/components/ProfileIcon';
 import FooterLogo from '@/app/components/FooterLogo';
@@ -81,8 +82,8 @@ function ChalkboardCanvas() {
 }
 
 export default function MusicPage() {
+  const { nickname } = useUser();
   const router = useRouter();
-  const [nickname, setNickname] = useState("마음이");
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState('');
   const audioRef = useRef<HTMLAudioElement | null>(null);
