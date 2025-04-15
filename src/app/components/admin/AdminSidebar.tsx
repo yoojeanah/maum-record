@@ -2,14 +2,20 @@
 // 관리자 페이지 사이드바 컴포넌트
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function AdminSidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   const toggleSidebar = () => setIsOpen(!isOpen);
+
+  const handleNavClick = (path: string) => {
+    setIsOpen(false);
+    router.push(path);
+  };
 
   return (
     <>
@@ -32,15 +38,24 @@ export default function AdminSidebar() {
           MaumRecord
         </div>
         <nav className="flex flex-col gap-4 text-gray-700 font-semibold text-md lg:text-lg">
-          <Link href="/admin" className="hover:text-blue-600">
+          <button
+            onClick={() => handleNavClick("/admin")}
+            className="hover:text-blue-600"
+          >
             대시보드
-          </Link>
-          <Link href="/admin/users" className="hover:text-blue-600">
+          </button>
+          <button
+            onClick={() => handleNavClick("/admin/users")}
+            className="hover:text-blue-600"
+          >
             사용자 관리
-          </Link>
-          <Link href="/admin/inquiries" className="hover:text-blue-600">
+          </button>
+          <button
+            onClick={() => handleNavClick("/admin/inquiries")}
+            className="hover:text-blue-600"
+          >
             1:1 문의 관리
-          </Link>
+          </button>
         </nav>
       </aside>
     </>
