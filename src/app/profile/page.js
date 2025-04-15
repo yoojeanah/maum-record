@@ -7,12 +7,14 @@ import { useUser } from "@/context/UserContext";
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { setNickname: setGlobalNickname, setProfileImage } = useUser(); // 전역 상태 함수 불러오기
+  const { nickname: globalNickname, profileImage, setNickname: setGlobalNickname, setProfileImage } = useUser();
 
-  const [nickname, setNickname] = useState(""); // 수정 입력 필드
+  // const [nickname, setNickname] = useState("");
+  const [nickname, setNickname] = useState(globalNickname || ""); // 전역 닉네임 반영
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [preview, setPreview] = useState("/profile-default.png");
+  // const [preview, setPreview] = useState("/profile-default.png");
+  const [preview, setPreview] = useState(profileImage || "/profile-default.png"); // 전역 프로필 반영
   const [file, setFile] = useState(null); // 파일 상태 추가
   const [error, setError] = useState("");
 
