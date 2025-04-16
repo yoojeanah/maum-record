@@ -25,7 +25,6 @@ function formatSummaryToParagraphs(summary, sentencesPerParagraph = 2) {
 
 export default function ResultPage({
   longSummary,
-  shortSummary,
   emotion,
   positive,
   negative,
@@ -74,6 +73,37 @@ export default function ResultPage({
     setFadeOut(true);
   };
 
+  const emotionEmojiMap = {
+    공포: "😱",
+    놀람: "😲",
+    분노: "😠",
+    슬픔: "😢",
+    중립: "😐",
+    행복: "😊",
+    혐오: "🤢",
+  };
+
+  const emotionWithEmoji = `${emotionEmojiMap[emotion] || ""} ${emotion}`;
+
+  let emotionMessage = "";
+  if (emotion === "공포") {
+    emotionMessage = "괜찮아요, 당신은 혼자가 아니에요. 천천히 숨을 고르며 이겨낼 수 있어요.";
+  } else if (emotion === "놀람") {
+    emotionMessage = "놀라셨죠? 하지만 당신은 언제나 빠르게 적응하는 멋진 사람이에요!";
+  } else if (emotion === "분노") {
+    emotionMessage = "마음이 많이 답답했겠어요. 감정을 잘 표현한 당신, 정말 멋져요.";
+  } else if (emotion === "슬픔") {
+    emotionMessage = "슬픔이 밀려올 땐 잠시 쉬어가도 괜찮아요. 오늘도 애썼어요.";
+  } else if (emotion === "중립") {
+    emotionMessage = "평온한 하루였네요. 그런 날도 참 소중해요. 오늘도 수고했어요!";
+  } else if (emotion === "행복") {
+    emotionMessage = "오늘도 빛나는 하루를 보냈군요! 당신의 긍정이 멋져요.";
+  } else if (emotion === "혐오") {
+    emotionMessage = "불쾌한 순간이 있었군요. 마음을 지킨 당신, 정말 대단해요.";
+  } else {
+    emotionMessage = "오늘 하루도 고생 많으셨어요.";
+  }
+
   return (
     <div className="relative min-h-screen">
       {showFullResult && <HamburgerMenu />}
@@ -111,12 +141,12 @@ export default function ResultPage({
             {nickname} 님의 하루 요약
           </h2>
           <p className="text-gray-700 text-base leading-relaxed mb-4 whitespace-pre-wrap">
-            {shortSummary}
+            {emotionMessage}
           </p>
 
           <div className="flex justify-around text-sm text-gray-700 mb-2">
             <div>
-              감정: <span className="font-semibold">{emotion}</span>
+              감정: <span className="font-semibold">{emotionWithEmoji}</span>
             </div>
             <div>
               긍정 지수: <span className="font-semibold">{positive}%</span>
