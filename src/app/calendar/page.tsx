@@ -30,6 +30,16 @@ export default function CalendarPage() {
     fetchEmotionData();
   }, []);
 
+  const emotionEmojiMap: { [key: string]: string } = {
+    공포: "😱",
+    놀람: "😲",
+    분노: "😠",
+    슬픔: "😢",
+    중립: "😐",
+    행복: "😊",
+    혐오: "🤢",
+  };
+
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -142,7 +152,9 @@ export default function CalendarPage() {
               <div className="flex justify-between items-start mb-3">
                 <div>
                   <p className="text-xs text-gray-500">{selectedDate}</p>
-                  <p className="text-lg font-semibold mt-1">{emotionData[selectedDate].emotion}</p>
+                  <p className="text-lg font-semibold mt-1">
+                    {`${emotionEmojiMap[emotionData[selectedDate].emotion] || ""} ${emotionData[selectedDate].emotion}`}
+                  </p>
                 </div>
                 <button
                   onClick={() => setSelectedDate(null)}

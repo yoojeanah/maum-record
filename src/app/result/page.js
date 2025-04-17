@@ -25,7 +25,6 @@ export default function Page() {
   return (
     <ResultPage
       longSummary={result.longSummary}
-      shortSummary={result.shortSummary}
       emotion={result.emotion}
       positive={result.positive}
       negative={result.negative}

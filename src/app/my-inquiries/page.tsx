@@ -10,6 +10,7 @@ interface Inquiry {
   status: string;
   date: string;
   reply: string;
+  answeredAt?: string;
 }
 
 export default function MyInquiriesPage() {
@@ -76,7 +77,7 @@ export default function MyInquiriesPage() {
                       onClick={() => setSelected(q.id)}
                       className="text-blue-500 hover:underline"
                     >
-                      보기
+                      상세 보기
                     </button>
                   </td>
                 </tr>
@@ -98,6 +99,11 @@ export default function MyInquiriesPage() {
                       <div className="bg-gray-100 p-3 rounded text-sm">
                         <p className="text-gray-600">📩 관리자 답변</p>
                         <p className="mt-1 text-gray-800">{inquiry.reply}</p>
+                        {inquiry.answeredAt && (
+                          <p className="text-gray-400 text-xs mt-2">
+                            답변일시: {inquiry.answeredAt}
+                          </p>
+                        )}
                       </div>
                     ) : (
                       <p className="text-sm text-gray-400">아직 답변이 등록되지 않았습니다.</p>
