@@ -24,42 +24,16 @@ export default function InquiriesPageContent() {
 
   useEffect(() => {
     // 백엔드 연동
-    // const fetchInquiries = async () => {
-    //   try {
-    //     const res = await authRequest.get("/admin/inquiries");
-    //     setAllInquiries(res.data);
-    //   } catch (err) {
-    //     console.error("문의사항 데이터 불러오기 실패: ", err);
-    //     alert("문의사항 데이터 불러오기 실패");
-    //   }
-    // };
-    // fetchInquiries();
-
-    // 백엔드 연동 전에 임시로 화면 보고 싶을 때, 위 백연동 코드 주석처리하고, 이 코드를 실행시키세요
-    const mockData: Inquiry[] = [
-      {
-        id: 1,
-        email: "mock1@example.com",
-        title: "캘린더가 안보여요",
-        createdAt: "2025-04-07T10:12:00Z",
-        status: "pending",
-      },
-      {
-        id: 2,
-        email: "mock2@example.com",
-        title: "명상 프로그램이 멈춰요",
-        createdAt: "2025-04-10T10:12:00Z",
-        status: "answered",
-      },
-      {
-        id: 3,
-        email: "mock2@example.com",
-        title: "요가 프로그램 추가해주세요",
-        createdAt: "2025-04-10T10:12:00Z",
-        status: "pending",
-      },
-    ];
-    setAllInquiries(mockData);
+    const fetchInquiries = async () => {
+      try {
+        const res = await authRequest.get("/admin/inquiries");
+        setAllInquiries(res.data);
+      } catch (err) {
+        console.error("문의사항 데이터 불러오기 실패: ", err);
+        alert("문의사항 데이터 불러오기 실패");
+      }
+    };
+    fetchInquiries();
   }, []);
 
   // 필터 적용: 미답변(pending) 건만 필터링해서 state 변수 filteredInquiries에 저장
