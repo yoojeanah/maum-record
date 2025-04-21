@@ -56,9 +56,8 @@ function AdminDashboardPage() {
   }, []);
 
   return (
-    <div className="m-4 space-y-4">
+    <div className="p-6">
       <h2 className="inline-flex items-center gap-2 text-2xl font-bold">
-        {" "}
         <LayoutDashboard className="w-8 h-8" />
         관리자 대시보드
       </h2>

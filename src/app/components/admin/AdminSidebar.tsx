@@ -56,6 +56,12 @@ export default function AdminSidebar() {
           >
             1:1 문의 관리
           </button>
+          <button
+            onClick={() => handleNavClick("/admin/yoga/poses")}
+            className="hover:text-blue-600"
+          >
+            요가 포즈 관리
+          </button>
         </nav>
       </aside>
     </>
