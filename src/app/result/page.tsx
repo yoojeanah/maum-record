@@ -3,8 +3,15 @@ import { useEffect, useState } from "react";
 import ResultPage from "@/components/ResultPage";
 import { publicRequest } from "@/lib/axiosInstance";
 
+type ResultData = {
+  longSummary: string;
+  emotion: string;
+  positive: number;
+  negative: number;
+};
+
 export default function Page() {
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState<ResultData | null>(null);
 
   useEffect(() => {
     const fetchResult = async () => {

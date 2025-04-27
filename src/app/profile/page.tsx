@@ -9,43 +9,77 @@ export default function ProfilePage() {
   const router = useRouter();
   const { nickname: globalNickname, profileImage, setNickname: setGlobalNickname, setProfileImage } = useUser();
 
-  // const [nickname, setNickname] = useState("");
-  const [nickname, setNickname] = useState(globalNickname || ""); // 전역 닉네임 반영
+  const [nickname, setNickname] = useState(globalNickname || "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  // const [preview, setPreview] = useState("/profile-default.png");
-  const [preview, setPreview] = useState(profileImage || "/profile-default.png"); // 전역 프로필 반영
-  const [file, setFile] = useState(null); // 파일 상태 추가
-  const [error, setError] = useState("");
+  const [preview, setPreview] = useState(profileImage || "/profile-default.png");
+  const [file, setFile] = useState<File | null>(null);
 
-  const handleImageChange = (e) => {
+  const [nicknameError, setNicknameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+
     const selected = e.target.files[0];
-    if (!selected) return;
 
-    setFile(selected); // 원본 저장
+    if (selected.size > 5 * 1024 * 1024) {
+      alert("5MB 이하 파일만 업로드 가능합니다.");
+      return;
+    }
+
+    if (!selected.type.startsWith("image/")) {
+      alert("이미지 파일만 업로드할 수 있습니다.");
+      return;
+    }
+
+    setFile(selected);
     const reader = new FileReader();
     reader.onloadend = () => {
-      setPreview(reader.result);
+      setPreview(reader.result as string);
     };
     reader.readAsDataURL(selected);
   };
 
-  const handleSave = (e) => {
+  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    let isValid = true;
+
+    if (nickname.trim() === "") {
+      setNicknameError("닉네임을 입력해 주세요.");
+      isValid = false;
+    } else if (nickname.trim().length > 5) {
+      setNicknameError("닉네임은 5자 이하로 입력해 주세요.");
+      isValid = false;
+    } else {
+      setNicknameError("");
+    }
+
     if (password !== confirmPassword) {
-      setError("비밀번호가 일치하지 않습니다.");
-      return;
+      setConfirmPasswordError("비밀번호가 일치하지 않습니다.");
+      isValid = false;
+    } else {
+      setConfirmPasswordError("");
     }
 
-    // 여기서 전역 상태 업데이트
-    setGlobalNickname(nickname); // 전역 닉네임 갱신
+    // 비밀번호가 입력됐는데 8자 미만이면 에러
+    if (password && password.length < 8) {
+      setPasswordError("비밀번호는 대/소문자, 숫자, 특수문자를 포함한 8~24자여야 합니다.");
+      isValid = false;
+    } else {
+      setPasswordError("");
+    }
+
+    if (!isValid) return;
+
+    setGlobalNickname(nickname);
     if (file) {
-      const tempUrl = URL.createObjectURL(file); // 이미지 임시 URL 생성
-      setProfileImage(tempUrl); // 전역 프로필 이미지 갱신
+      const tempUrl = URL.createObjectURL(file);
+      setProfileImage(tempUrl);
     }
 
-    setError("");
     alert("회원정보가 저장되었습니다!");
     router.push("/record");
   };
@@ -94,17 +128,22 @@ export default function ProfilePage() {
         </div>
 
         <form onSubmit={handleSave} className="space-y-4">
+          {/* 닉네임 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">닉네임</label>
             <input
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
-              placeholder="닉네임을 입력하세요"
+              placeholder="마음이"
               className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
+            {nicknameError && (
+              <p className="text-red-500 text-sm mt-1">{nicknameError}</p>
+            )}
           </div>
 
+          {/* 새 비밀번호 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">새 비밀번호</label>
             <input
@@ -114,8 +153,12 @@ export default function ProfilePage() {
               placeholder="••••••••"
               className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
+            {passwordError && (
+              <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+            )}
           </div>
 
+          {/* 비밀번호 확인 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">비밀번호 확인</label>
             <input
@@ -125,9 +168,10 @@ export default function ProfilePage() {
               placeholder="••••••••"
               className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
+            {confirmPasswordError && (
+              <p className="text-red-500 text-sm mt-1">{confirmPasswordError}</p>
+            )}
           </div>
-
-          {error && <p className="text-sm text-red-500">{error}</p>}
 
           <button
             type="submit"

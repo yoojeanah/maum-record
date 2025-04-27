@@ -7,7 +7,15 @@ import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
 
-function formatSummaryToParagraphs(summary, sentencesPerParagraph = 2) {
+type ResultPageProps = {
+  longSummary: string;
+  emotion: string;
+  positive: number;
+  negative: number;
+};
+
+// 요약 문장을 단락 단위로 포맷팅
+function formatSummaryToParagraphs(summary: string, sentencesPerParagraph = 2) {
   const sentences = summary.split(/(?<=[.!?])\s+/);
   let formatted = "";
 
@@ -23,12 +31,7 @@ function formatSummaryToParagraphs(summary, sentencesPerParagraph = 2) {
   return formatted.trim();
 }
 
-export default function ResultPage({
-  longSummary,
-  emotion,
-  positive,
-  negative,
-}) {
+export default function ResultPage({ longSummary, emotion, positive, negative }: ResultPageProps) {
   const { nickname } = useUser();
   const router = useRouter();
 
@@ -44,6 +47,7 @@ export default function ResultPage({
     return formatSummaryToParagraphs(longSummary, sentencesPerParagraph);
   }, [longSummary]);
 
+  // 타자 애니메이션 효과
   useEffect(() => {
     if (typingSkipped) return;
 
@@ -60,6 +64,7 @@ export default function ResultPage({
     return () => clearInterval(interval);
   }, [charIndex, typingSkipped, formattedSummary]);
 
+  // 페이드 아웃 후 전체 결과 표시
   useEffect(() => {
     if (fadeOut) {
       setTimeout(() => {
@@ -68,12 +73,14 @@ export default function ResultPage({
     }
   }, [fadeOut]);
 
+  // 타자 효과 스킵
   const skipTyping = () => {
     setTypingSkipped(true);
     setFadeOut(true);
   };
 
-  const emotionEmojiMap = {
+  // 감정 이모지 매핑
+  const emotionEmojiMap: Record<string, string> = {
     공포: "😱",
     놀람: "😲",
     분노: "😠",
@@ -85,6 +92,7 @@ export default function ResultPage({
 
   const emotionWithEmoji = `${emotionEmojiMap[emotion] || ""} ${emotion}`;
 
+  // 감정별 응원 메시지
   let emotionMessage = "";
   if (emotion === "공포") {
     emotionMessage = "괜찮아요, 당신은 혼자가 아니에요. 천천히 숨을 고르며 이겨낼 수 있어요.";
@@ -109,6 +117,7 @@ export default function ResultPage({
       {showFullResult && <HamburgerMenu />}
       {showFullResult && <ProfileIcon />}
 
+      {/* 타자 효과 화면 */}
       {!showFullResult && (
         <div
           className={`absolute inset-0 flex items-center justify-center px-6 bg-black z-50 transition-opacity duration-1000 ${
@@ -131,6 +140,7 @@ export default function ResultPage({
         </div>
       )}
 
+      {/* 전체 결과 화면 */}
       <div
         className={`absolute inset-0 bg-gradient-to-br from-purple-100 via-blue-100 to-indigo-100 flex flex-col items-center justify-center px-4 py-10 transition-opacity duration-1000 ${
           fadeOut ? "opacity-100" : "opacity-0"
