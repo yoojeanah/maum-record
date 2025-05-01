@@ -61,6 +61,12 @@ export default function HamburgerMenu() {
             className="absolute top-16 left-4 bg-white border rounded-md shadow-lg w-48 p-4 z-50 space-y-2"
           >
             <button
+              onClick={() => router.push("/record")}
+              className="w-full text-left text-gray-800 font-semibold"
+            >
+              일기 녹음하기
+            </button>
+            <button
               onClick={() => router.push("/calendar")}
               className="w-full text-left text-gray-800 font-semibold"
             >
