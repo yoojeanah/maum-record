@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { publicRequest } from "@/lib/axiosInstance";
 import { useUser } from "@/context/UserContext";
+import { useToast } from "@/context/ToastContext";
 
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
@@ -12,13 +13,15 @@ import WaveSurfer from "wavesurfer.js";
 
 export default function RecordPage() {
   const router = useRouter();
+  const { nickname } = useUser();
+  const { setJobId } = useToast();
+
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [audioBlob, setAudioBlob] = useState(null);
   const [recordingTime, setRecordingTime] = useState("00:00");
   const [progress, setProgress] = useState(0);
-  const { nickname } = useUser();
 
   const audioChunksRef = useRef([]);
   const intervalRef = useRef(null);
@@ -117,7 +120,6 @@ export default function RecordPage() {
     }
   };
 
-  // 프론트는 응답 데이터를 받지 않고 성공 여부만 확인
   const handleSubmit = async () => {
     if (!audioBlob) return alert("녹음 파일이 없습니다.");
 
@@ -125,11 +127,19 @@ export default function RecordPage() {
     formData.append("file", audioBlob, "recording.webm");
 
     try {
-      await publicRequest.post("/api/audio/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const res =
+        (await publicRequest.post) <
+        { jobId: string } >
+        ("/api/audio/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      const jobId = res.data.jobId;
+
+      setJobId(jobId);
 
       router.push("/analyzing");
     } catch (err) {

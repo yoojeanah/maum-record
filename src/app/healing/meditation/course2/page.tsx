@@ -1,12 +1,13 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { useUser } from "@/context/UserContext"; 
+import { useRef, useState } from "react";
+import { useUser } from "@/context/UserContext";
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
+import { useToast } from "@/context/ToastContext";
 
 export default function MeditationPage() {
-  const { nickname } = useUser(); 
+  const { nickname } = useUser();
   const [started, setStarted] = useState(false);
   const [fade, setFade] = useState(true);
   const audioRef1 = useRef<HTMLAudioElement | null>(null);
@@ -32,6 +33,14 @@ export default function MeditationPage() {
     }, 300);
   };
 
+  // TODO: toast Mock 사용 지우기
+  // const { setJobId } = useToast();
+  // const onClickMock = () => {
+  //   // jobId 를 하나 넣으면, ToastContext 가 SSE 대신
+  //   // 바로 분석 완료 흐름을 띄우도록 임시로 처리할 수 있어요.
+  //   setJobId("MOCK_JOB_ID");
+  // };
+
   return (
     <div
       className="relative min-h-screen flex flex-col items-center justify-center px-4 py-10 bg-cover bg-center"
@@ -55,10 +64,21 @@ export default function MeditationPage() {
         ) : (
           <div className="text-xl sm:text-2xl md:text-3xl text-neutral-100 font-semibold leading-relaxed">
             <div>{nickname} 님,</div>
-            <div className="pl-4">조용한 이야기 속으로 걸어 들어가 볼까요? 📖</div>
+            <div className="pl-4">
+              조용한 이야기 속으로 걸어 들어가 볼까요? 📖
+            </div>
           </div>
         )}
       </div>
+
+      {/* TODO: Toast Mock 사용 지우기 */}
+
+      {/* <button
+        onClick={onClickMock}
+        className="px-4 py-2 bg-indigo-600 text-white rounded shadow"
+      >
+        토스트 테스트
+      </button> */}
 
       <div className="absolute top-2/3 text-xs text-center text-gray-300 z-20">
         이 콘텐츠는 VOLI의 AI보이스를 활용하여 제작되었습니다. <br />

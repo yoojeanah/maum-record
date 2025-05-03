@@ -1,4 +1,7 @@
 "use client";
+
+// src/app/components/FeedbackModal.tsx
+
 import React, { useState } from "react";
 
 type FeedbackModalProps = {
@@ -7,7 +10,11 @@ type FeedbackModalProps = {
   nickname: string;
 };
 
-export default function FeedbackModal({ show, onSelect, nickname }: FeedbackModalProps) {
+export default function FeedbackModal({
+  show,
+  onSelect,
+  nickname,
+}: FeedbackModalProps) {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   if (!show) return null;
@@ -21,7 +28,6 @@ export default function FeedbackModal({ show, onSelect, nickname }: FeedbackModa
   };
 
   const handleFeedback = (feedback: string) => {
-    // TODO: 백엔드 연동 시 아래 onSelect를 통해 피드백 텍스트와 선택된 카테고리 배열 전달
     onSelect(feedback, selectedCategories);
   };
 
@@ -38,7 +44,10 @@ export default function FeedbackModal({ show, onSelect, nickname }: FeedbackModa
 
         <div className="flex flex-col items-start gap-2 text-sm text-gray-800 mb-6">
           {["명상", "요가 스트레칭", "음악 감상"].map((category) => (
-            <label key={category} className="flex items-center gap-2 cursor-pointer">
+            <label
+              key={category}
+              className="flex items-center gap-2 cursor-pointer"
+            >
               <input
                 type="checkbox"
                 checked={selectedCategories.includes(category)}

@@ -1,11 +1,12 @@
 "use client";
 
 // src/app/admin/yoga/poses/page.tsx
-// 관리자 페이지 - 요가 포즈 개별 등록, 수정, 삭제 페이지입니다.
+// 관리자 페이지 - 전체 요가 포즈 목록 조회 + 신규 포즈 등록, 수정, 삭제 페이지입니다.
 
 import { Check, Images, Pencil, Plus, Timer, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { authRequest } from "@/lib/axiosInstance";
 
 // yoga 사진 type 정의
 export type YogaPose = {
@@ -16,34 +17,28 @@ export type YogaPose = {
   description: string;
 };
 
-export default function YogaPoseListPage() {
+export default function YogaPoseManagementPage() {
   const [poses, setPoses] = useState<YogaPose[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", description: "", duration: 30 });
   const [showModal, setShowModal] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
+  // 1) 초기 목록 조회 (GET /admin/yoga/poses)
   useEffect(() => {
-    // TODO: 백엔드 연동
-
-    const mockData: YogaPose[] = [
-      {
-        id: "pose1",
-        name: "아기 자세",
-        duration: 40,
-        image: "/public/mock-images/suryanamaskara-A-2.png",
-        description: "긴장을 풀고 마음을 안정시켜 줍니다.",
-      },
-      {
-        id: "pose2",
-        name: "누운 비틀기",
-        duration: 30,
-        image: "/public/mock-images/suryanamaskara-A-1.png",
-        description: "허리를 부드럽게 풀어주는 동작입니다.",
-      },
-    ];
-    setPoses(mockData);
+    const fetchPosesList = async () => {
+      try {
+        const res = await authRequest.get<YogaPose[]>("/admin/yoga/poses");
+        setPoses(res.data);
+      } catch (err) {
+        alert("요가 포즈 목록 데이터 불러오기에 실패");
+        console.error("요가 포즈 목록 불러오기 실패", err);
+      }
+    };
+    fetchPosesList();
   }, []);
 
+  // 기존에 있는 YogaPose 를 수정하는 버튼 클릭 시
   const handleEditClick = (pose: any) => {
     setEditingId(pose.id);
     setForm({
@@ -53,22 +48,75 @@ export default function YogaPoseListPage() {
     });
   };
 
-  const handleSave = (id: string) => {
-    setPoses((prev) => prev.map((p) => (p.id === id ? { ...p, ...form } : p)));
-    setEditingId(null);
+  // 2) 수정 저장 (PUT /admin/yoga/poses/:id) : 기존에 있는 YogaPose 를 수정 후 저장 버튼 클릭 시
+  const handleSave = async (id: string) => {
+    try {
+      const payload = {
+        name: form.name,
+        description: form.description,
+        duration: form.duration,
+      };
+      // 백엔드에 업데이트 요청
+      await authRequest.put(`admin/yoga/poses/${id}`, payload);
+      // 로컬 상태에도 반영
+      setPoses((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, ...payload } : p))
+      );
+      setEditingId(null);
+    } catch (err) {
+      alert("포즈 데이터 수정에 실패했습니다.");
+      console.error("포즈 데이터 수정 실패", err);
+    }
   };
 
-  const handleAddPose = () => {
-    const newPose = {
-      id: Date.now().toString(),
-      name: form.name,
-      description: form.description,
-      duration: form.duration,
-      image: "/image/yoga/placeholder.png",
-    };
-    setPoses([...poses, newPose]);
-    setShowModal(false);
-    setForm({ name: "", description: "", duration: 30 });
+  // 3) 삭제 (DELETE /admin/yoga/poses/:id): 기존에 있는 YogaPose 삭제 버튼 클릭 시
+  const handleDelete = async (id: string) => {
+    if (!confirm("정말 삭제하시겠습니까?")) return;
+
+    try {
+      await authRequest.delete(`admin/yoga/poses/${id}`);
+      setPoses((prev) => prev.filter((pose) => pose.id !== id));
+    } catch (err) {
+      alert("포즈 삭제에 실패했습니다.");
+      console.error("포즈 삭제 실패", err);
+    }
+  };
+
+  // 파일 선택 이벤트
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUploadedFile(e.target.files?.[0] ?? null);
+  };
+
+  // 4) 새로운 pose 추가 시 (POST /admin/yoga/poses + 파일 업로드)
+  const handleAddPose = async () => {
+    if (!uploadedFile) {
+      alert("이미지를 업로드 해주세요.");
+      return;
+    }
+    try {
+      // multipart/form-data 로 요청 생성
+      const formData = new FormData();
+      formData.append("name", form.name);
+      formData.append("description", form.description);
+      formData.append("duration", String(form.duration));
+      formData.append("image", uploadedFile);
+
+      const res = await authRequest.post<YogaPose>(
+        "/admin/yoga/poses",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      setPoses((prev) => [...prev, res.data]);
+      setShowModal(false);
+      setForm({ name: "", description: "", duration: 30 });
+      setUploadedFile(null);
+    } catch (err) {
+      console.error("포즈 추가 실패", err);
+      alert("새 포즈 등록에 실패했습니다.");
+    }
   };
 
   return (
@@ -90,7 +138,7 @@ export default function YogaPoseListPage() {
         {poses.map((pose) => (
           <div
             key={pose.id}
-            className="bg-white p-4 rounded shadow flex flex-col gap-2"
+            className="bg-white p-4 rounded shadow flex flex-col gap-2 h-full"
           >
             <Image
               src={pose.image}
@@ -108,7 +156,7 @@ export default function YogaPoseListPage() {
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                 />
                 <textarea
-                  className="w-full border rounded p-1 mb-2"
+                  className="w-full border rounded p-1 mb-2 flex-grow"
                   value={form.description}
                   onChange={(e) =>
                     setForm({ ...form, description: e.target.value })
@@ -122,7 +170,7 @@ export default function YogaPoseListPage() {
                     setForm({ ...form, duration: +e.target.value })
                   }
                 />
-                <div className="flex gap-2">
+                <div className="flex gap-2 mt-auto">
                   <button
                     onClick={() => handleSave(pose.id)}
                     className="flex items-center gap-1 px-3 py-1 bg-green-500 text-white rounded"
@@ -151,7 +199,10 @@ export default function YogaPoseListPage() {
                   >
                     <Pencil className="w-4 h-5 mr-1" /> 수정
                   </button>
-                  <button className="flex-1 inline-flex items-center justify-center px-2 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600">
+                  <button
+                    onClick={() => handleDelete(pose.id)}
+                    className="flex-1 inline-flex items-center justify-center px-2 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+                  >
                     <Trash2 className="w-4 h-4 mr-1" /> 삭제
                   </button>
                 </div>
@@ -161,10 +212,11 @@ export default function YogaPoseListPage() {
         ))}
       </div>
 
+      {/* 모달: 포즈 추가 */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-start pt-20 z-50">
           <div className="bg-white w-full max-w-md p-6 rounded shadow-lg relative">
-            <h2 className="text-xl font-bold mb-4">새 포즈 추가</h2>
+            <h2 className="text-xl font-bold mb-4">새로운 포즈 추가</h2>
             <input
               placeholder="포즈 이름"
               className="w-full border rounded p-2 mb-2"
@@ -181,12 +233,15 @@ export default function YogaPoseListPage() {
             />
             <input
               type="number"
-              placeholder="지속 시간 (초)"
+              placeholder="기본 duration (초)"
               className="w-full border rounded p-2 mb-4"
               value={form.duration}
               onChange={(e) => setForm({ ...form, duration: +e.target.value })}
             />
-            <input type="file" className="mb-4" />
+            <div className="border border-dashed rounded-lg p-4 text-sm text-gray-500">
+              이미지 드래그 또는 클릭하여 업로드
+              <input type="file" className="mt-1" onChange={handleFileChange} />
+            </div>
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setShowModal(false)}
@@ -207,3 +262,22 @@ export default function YogaPoseListPage() {
     </div>
   );
 }
+
+// Mock Data로 실행해보려면 아래 주석을 해제하시오.
+// const mockData: YogaPose[] = [
+//   {
+//     id: "pose1",
+//     name: "아기 자세",
+//     duration: 40,
+//     image: "/public/mock-images/suryanamaskara-A-2.png",
+//     description: "긴장을 풀고 마음을 안정시켜 줍니다.",
+//   },
+//   {
+//     id: "pose2",
+//     name: "누운 비틀기",
+//     duration: 30,
+//     image: "/public/mock-images/suryanamaskara-A-1.png",
+//     description: "허리를 부드럽게 풀어주는 동작입니다.",
+//   },
+// ];
+// setPoses(mockData);
