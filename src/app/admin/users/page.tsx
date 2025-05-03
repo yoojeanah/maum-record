@@ -128,6 +128,6 @@ function AdminUserPage() {
     </div>
   );
 }
-// TODO: 관리자 페이지 구현 완료시, 관리자 인증 HOC를 추가
+// TODO: 관리자 페이지 구현 완료 시, 관리자 인증 HOC를 추가
 // export default withAdminAuth(AdminUserPage);
 export default AdminUserPage;

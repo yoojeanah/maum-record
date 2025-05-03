@@ -18,19 +18,22 @@ export default function RecordPage() {
 
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState(null);
-  const [audioBlob, setAudioBlob] = useState(null);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
+    null
+  );
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [recordingTime, setRecordingTime] = useState("00:00");
   const [progress, setProgress] = useState(0);
 
-  const audioChunksRef = useRef([]);
-  const intervalRef = useRef(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const secondsRef = useRef(0);
-  const waveformContainerRef = useRef(null);
-  const wavesurferRef = useRef(null);
+  const waveformContainerRef = useRef<HTMLDivElement | null>(null);
+  const wavesurferRef = useRef<WaveSurfer | null>(null);
 
   const MAX_SECONDS = 600;
 
+  // 타이머 업데이트
   const updateTimer = () => {
     secondsRef.current += 1;
     const min = String(Math.floor(secondsRef.current / 60)).padStart(2, "0");
@@ -43,6 +46,7 @@ export default function RecordPage() {
     }
   };
 
+  // 녹음 시작
   const handleStart = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -61,6 +65,7 @@ export default function RecordPage() {
         setIsPaused(false);
         recorder.stream.getTracks().forEach((track) => track.stop());
 
+        // 녹음이 끝난 후 파형 표시
         if (waveformContainerRef.current) {
           if (wavesurferRef.current) {
             wavesurferRef.current.destroy();
@@ -97,14 +102,16 @@ export default function RecordPage() {
     }
   };
 
+  // 녹음 일시 정지
   const handlePause = () => {
     if (mediaRecorder) {
       mediaRecorder.pause();
       setIsPaused(true);
-      clearInterval(intervalRef.current);
+      if (intervalRef.current) clearInterval(intervalRef.current);
     }
   };
 
+  // 녹음 다시 시작
   const handleResume = () => {
     if (mediaRecorder) {
       mediaRecorder.resume();
@@ -113,13 +120,15 @@ export default function RecordPage() {
     }
   };
 
+  // 녹음 종료
   const handleStop = () => {
     if (mediaRecorder) {
       mediaRecorder.stop();
-      clearInterval(intervalRef.current);
+      if (intervalRef.current) clearInterval(intervalRef.current);
     }
   };
 
+  // 녹음 제출
   const handleSubmit = async () => {
     if (!audioBlob) return alert("녹음 파일이 없습니다.");
 
@@ -127,16 +136,15 @@ export default function RecordPage() {
     formData.append("file", audioBlob, "recording.webm");
 
     try {
-      const res =
-        (await publicRequest.post) <
-        { jobId: string } >
-        ("/api/audio/upload",
+      const res = await publicRequest.post<{ jobId: string }>(
+        "/api/audio/upload",
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        });
+        }
+      );
       const jobId = res.data.jobId;
 
       setJobId(jobId);
@@ -198,7 +206,6 @@ export default function RecordPage() {
               녹음 시작
             </button>
           )}
-
           {isRecording && isPaused && (
             <button
               onClick={handleResume}
@@ -207,7 +214,6 @@ export default function RecordPage() {
               다시 시작
             </button>
           )}
-
           {isRecording && !isPaused && (
             <button
               onClick={handlePause}
@@ -216,7 +222,6 @@ export default function RecordPage() {
               일시 정지
             </button>
           )}
-
           {isRecording && (
             <button
               onClick={handleStop}
@@ -225,7 +230,6 @@ export default function RecordPage() {
               녹음 종료
             </button>
           )}
-
           {audioBlob && !isRecording && (
             <button
               onClick={handleSubmit}

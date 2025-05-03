@@ -1,57 +1,87 @@
-// src/app/signup/page.js
-// 회원가입 페이지
-
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { publicRequest } from "@/lib/axiosInstance";
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
-// 이메일 정규식: 이메일 형식에 맞는지 검사
+// 이메일 정규식
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// 비밀번호 정규식: 소문자 최소 1개, 대문자 최소 1개, 숫자 최소 1개, 특수문자 중 최소 1개 포함, 전체 길이는 8~24자
+// 비밀번호 정규식
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 export default function SignupPage() {
   const router = useRouter();
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
-  const [validEmail, setValidEmail] = useState(false);
-  const [emailFocus, setEmailFocus] = useState(false);
-
   const [password, setPassword] = useState("");
-  const [validPwd, setValidPwd] = useState(false);
-  const [pwdFocus, setPwdFocus] = useState(false);
-
   const [confirmPwd, setConfirmPwd] = useState("");
+
+  const [validEmail, setValidEmail] = useState(false);
+  const [validPwd, setValidPwd] = useState(false);
   const [match, setMatch] = useState(false);
-  const [matchFocus, setMatchFocus] = useState(false);
 
-  const [error, setError] = useState("");
+  const [nicknameError, setNicknameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPwdError, setConfirmPwdError] = useState("");
 
-  // 이메일 유효성 검사 함수 (실시간)
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   useEffect(() => {
     setValidEmail(EMAIL_REGEX.test(email));
   }, [email]);
 
-  // 비밀번호 유효성 검사 함수 (실시간)
   useEffect(() => {
     setValidPwd(PWD_REGEX.test(password));
     setMatch(password === confirmPwd);
   }, [password, confirmPwd]);
 
-  // 회원가입 요청 핸들러
-  // 서버에 POST 요청을 보내고 응답 처리
-  // 응답이 성공적이면 로그인 페이지로 이동
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!validEmail || !validPwd || !match) {
-      setError("입력한 정보를 확인해 주세요.");
-      return;
+
+    let isValid = true;
+
+    // 닉네임 검증
+    if (nickname.trim() === "") {
+      setNicknameError("닉네임을 입력해 주세요.");
+      isValid = false;
+    } else if (nickname.trim().length > 5) {
+      setNicknameError("닉네임은 5자 이하로 입력해 주세요.");
+      isValid = false;
+    } else {
+      setNicknameError("");
     }
 
+    // 이메일 검증
+    if (!validEmail) {
+      setEmailError("이메일 형식이 올바르지 않습니다.");
+      isValid = false;
+    } else {
+      setEmailError("");
+    }
+
+    // 비밀번호 검증
+    if (!validPwd) {
+      setPasswordError("비밀번호는 대/소문자, 숫자, 특수문자를 포함한 8~24자여야 합니다.");
+      isValid = false;
+    } else {
+      setPasswordError("");
+    }
+
+    // 비밀번호 확인 검증
+    if (!match) {
+      setConfirmPwdError("비밀번호가 일치하지 않습니다.");
+      isValid = false;
+    } else {
+      setConfirmPwdError("");
+    }
+
+    if (!isValid) return;
+
     try {
-      const response = await publicRequest.post("/signup", {
+      await publicRequest.post("/signup", {
         nickname,
         email,
         password,
@@ -61,7 +91,7 @@ export default function SignupPage() {
       router.push("/login");
     } catch (err) {
       console.error("회원가입 실패: ", err);
-      setError("회원가입에 실패했습니다. 다시 시도해 주세요.");
+      alert("회원가입에 실패했습니다. 다시 시도해 주세요.");
     }
   };
 
@@ -79,12 +109,14 @@ export default function SignupPage() {
             </label>
             <input
               type="text"
-              required
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               placeholder="마음이"
               className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
+            {nicknameError && (
+              <p className="text-red-500 text-sm mt-1">{nicknameError}</p>
+            )}
           </div>
 
           {/* 이메일 */}
@@ -94,68 +126,61 @@ export default function SignupPage() {
             </label>
             <input
               type="email"
-              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              onFocus={() => setEmailFocus(true)}
-              onBlur={() => setEmailFocus(false)}
               placeholder="example@email.com"
               className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
-            {emailFocus && !validEmail && (
-              <p className="text-red-500 text-sm mt-1">
-                이메일 형식이 올바르지 않습니다.
-              </p>
+            {emailError && (
+              <p className="text-red-500 text-sm mt-1">{emailError}</p>
             )}
           </div>
 
           {/* 비밀번호 */}
-          <div>
+          <div className="relative">
             <label className="block mb-1 text-sm font-medium text-gray-700">
               비밀번호
             </label>
             <input
-              type="password"
-              required
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              onFocus={() => setPwdFocus(true)}
-              onBlur={() => setPwdFocus(false)}
               placeholder="••••••••"
-              className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 pr-10"
             />
-            {pwdFocus && !validPwd && (
-              <p className="text-red-500 text-sm mt-1">
-                비밀번호는 8~24자, 소문자, 대문자, 숫자, 특수문자를 포함해야
-                합니다.
-              </p>
+            <div
+              className="absolute top-9 right-3 cursor-pointer text-gray-500"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? <IoEyeOffOutline size={20} /> : <IoEyeOutline size={20} />}
+            </div>
+            {passwordError && (
+              <p className="text-red-500 text-sm mt-1">{passwordError}</p>
             )}
           </div>
 
           {/* 비밀번호 확인 */}
-          <div>
+          <div className="relative">
             <label className="block mb-1 text-sm font-medium text-gray-700">
               비밀번호 확인
             </label>
             <input
-              type="password"
-              required
+              type={showConfirmPassword ? "text" : "password"}
               value={confirmPwd}
               onChange={(e) => setConfirmPwd(e.target.value)}
-              onFocus={() => setMatchFocus(true)}
-              onBlur={() => setMatchFocus(false)}
               placeholder="••••••••"
-              className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 pr-10"
             />
-            {matchFocus && !match && (
-              <p className="text-red-500 text-sm mt-1">
-                비밀번호가 일치하지 않습니다.
-              </p>
+            <div
+              className="absolute top-9 right-3 cursor-pointer text-gray-500"
+              onClick={() => setShowConfirmPassword((prev) => !prev)}
+            >
+              {showConfirmPassword ? <IoEyeOffOutline size={20} /> : <IoEyeOutline size={20} />}
+            </div>
+            {confirmPwdError && (
+              <p className="text-red-500 text-sm mt-1">{confirmPwdError}</p>
             )}
           </div>
-
-          {/* 에러 메시지 */}
-          {error && <p className="text-sm text-red-500">{error}</p>}
 
           <button
             type="submit"

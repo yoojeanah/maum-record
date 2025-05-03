@@ -51,7 +51,7 @@ function InquiryDetailPage() {
   const handleAnswerSubmit = async () => {
     // 답변 등록 버튼 클릭 시, 빈 답변인지 확인
     if (!answer.trim()) {
-      alert("답변을 입력해주세요.");
+      alert("답변을 입력해 주세요.");
       return;
     }
 

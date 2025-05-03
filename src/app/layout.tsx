@@ -25,7 +25,11 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+type RootLayoutProps = {
+  children: React.ReactNode;
+};
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body

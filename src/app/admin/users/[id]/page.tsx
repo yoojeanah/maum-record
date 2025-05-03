@@ -3,7 +3,6 @@
   /*
 TODO: 관리자 페이지 user - 백엔드 연동 API
 TODO: 백엔드에 정리해서 요청
-
  */
 }
 
@@ -114,6 +113,6 @@ function UserDetailPage() {
     </div>
   );
 }
-// TODO: 관리자 페이지 구현 완료시, 관리자 인증 HOC를 추가
+// TODO: 관리자 페이지 구현 완료 시, 관리자 인증 HOC를 추가
 // export default withAdminAuth(UserDetailPage);
 export default UserDetailPage;
