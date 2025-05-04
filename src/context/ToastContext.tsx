@@ -25,7 +25,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   // 유저 정보에서 nickname 꺼내오기
-  const { user } = useUser();
+  const user = useUser();
   const nickname = user?.nickname ?? "마음이";
 
   const [jobId, _setJobId] = useState<string | null>(null);

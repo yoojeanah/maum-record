@@ -2,10 +2,12 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { logoutUser } from "@/lib/logout";
+import { useUser } from "@/context/UserContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function HamburgerMenu() {
   const router = useRouter();
+  const { setNickname, setProfileImage } = useUser();
   const [menuOpen, setMenuOpen] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -22,6 +24,8 @@ export default function HamburgerMenu() {
 
   const handleLogout = async () => {
     await logoutUser();
+    setNickname("");
+    setProfileImage("/profile-default.png");
     router.push("/login");
   };
 
@@ -48,9 +52,7 @@ export default function HamburgerMenu() {
         </div>
       </button>
 
-      <AnimatePresence
-        onExitComplete={() => setMenuOpen(false)}
-      >
+      <AnimatePresence onExitComplete={() => setMenuOpen(false)}>
         {showMenu && (
           <motion.div
             ref={menuRef}
