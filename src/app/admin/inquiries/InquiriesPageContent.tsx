@@ -121,7 +121,7 @@ export default function InquiriesPageContent() {
                     className="inline-flex items-center gap-1 text-blue-500 hover:text-blue-700 text-sm"
                   >
                     <Eye className="w-4 h-4" />
-                    <span>상세보기</span>
+                    <span>상세 보기</span>
                   </Link>
                 </td>
               </tr>
@@ -138,7 +138,7 @@ export default function InquiriesPageContent() {
 //     {
 //       id: 1,
 //       email: "mock1@example.com",
-//       title: "캘린더가 안보여요",
+//       title: "캘린더가 안 보여요",
 //       createdAt: "2025-04-07T10:12:00Z",
 //       status: "pending",
 //     },
@@ -152,7 +152,7 @@ export default function InquiriesPageContent() {
 //     {
 //       id: 3,
 //       email: "mock2@example.com",
-//       title: "요가 프로그램 추가해주세요",
+//       title: "요가 프로그램 추가해 주세요",
 //       createdAt: "2025-04-10T10:12:00Z",
 //       status: "pending",
 //     },

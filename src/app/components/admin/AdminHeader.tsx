@@ -11,7 +11,7 @@ export default function AdminHeader() {
 
   // 로그아웃 후 로그인 페이지로 리다이렉트
   const handleLogout = async () => {
-    await logoutUser();
+    await logoutUser(); // 쿠키 삭제 요청
     router.push("/login");
   };
 
