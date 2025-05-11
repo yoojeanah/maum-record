@@ -13,28 +13,6 @@ type YogaProgram = {
   locked: boolean;
 };
 
-// mock 데이터
-const mockPrograms: YogaProgram[] = [
-  {
-    id: 1,
-    title: "아침 기상 요가",
-    summary: "상쾌한 하루를 여는 스트레칭 루틴",
-    locked: true,
-  },
-  {
-    id: 2,
-    title: "오후 집중 요가",
-    summary: "집중력을 높여주는 간단한 동작 모음",
-    locked: false,
-  },
-  {
-    id: 3,
-    title: "저녁 릴렉스 요가",
-    summary: "편안한 숙면을 위한 요가 루틴",
-    locked: true,
-  },
-];
-
 // 1) GET /admin/yoga/programs - 서버에서 전체 요가 프로그램 목록 가져오는 함수
 async function fetchYogaPrograms(): Promise<YogaProgram[]> {
   const res = await authRequest.get<YogaProgram[]>("/admin/yoga/programs");
@@ -52,10 +30,7 @@ export default function YogaProgramsPage() {
     isError,
   } = useQuery({
     queryKey: ["programs"],
-    // TODO: mock 모드
-    queryFn: () => Promise.resolve(mockPrograms),
-    // 실제 API 준비되면 윗줄 대신 아랫줄
-    // queryFn: fetchYogaPrograms,
+    queryFn: fetchYogaPrograms,
     staleTime: 1000 * 60,
   });
 
@@ -167,3 +142,28 @@ export default function YogaProgramsPage() {
     </div>
   );
 }
+
+// mock 모드
+// queryFn: () => Promise.resolve(mockPrograms),
+
+// mock 데이터
+// const mockPrograms: YogaProgram[] = [
+//   {
+//     id: 1,
+//     title: "아침 기상 요가",
+//     summary: "상쾌한 하루를 여는 스트레칭 루틴",
+//     locked: true,
+//   },
+//   {
+//     id: 2,
+//     title: "오후 집중 요가",
+//     summary: "집중력을 높여주는 간단한 동작 모음",
+//     locked: false,
+//   },
+//   {
+//     id: 3,
+//     title: "저녁 릴렉스 요가",
+//     summary: "편안한 숙면을 위한 요가 루틴",
+//     locked: true,
+//   },
+// ];

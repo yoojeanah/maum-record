@@ -4,15 +4,23 @@ import { useRouter } from "next/navigation";
 import { IoIosArrowBack } from "react-icons/io";
 import Image from "next/image";
 import { useUser } from "@/context/UserContext";
+import { authRequest } from "@/lib/axiosInstance";
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { nickname: globalNickname, profileImage, setNickname: setGlobalNickname, setProfileImage } = useUser();
+  const {
+    nickname: globalNickname,
+    profileImage,
+    setNickname: setGlobalNickname,
+    setProfileImage,
+  } = useUser();
 
   const [nickname, setNickname] = useState(globalNickname || "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [preview, setPreview] = useState(profileImage || "/profile-default.png");
+  const [preview, setPreview] = useState(
+    profileImage || "/profile-default.png"
+  );
   const [file, setFile] = useState<File | null>(null);
 
   const [nicknameError, setNicknameError] = useState("");
@@ -66,7 +74,9 @@ export default function ProfilePage() {
 
     // 비밀번호가 입력됐는데 8자 미만이면 에러
     if (password && password.length < 8) {
-      setPasswordError("비밀번호는 대/소문자, 숫자, 특수문자를 포함한 8~24자여야 합니다.");
+      setPasswordError(
+        "비밀번호는 대/소문자, 숫자, 특수문자를 포함한 8~24자여야 합니다."
+      );
       isValid = false;
     } else {
       setPasswordError("");
@@ -84,18 +94,30 @@ export default function ProfilePage() {
     router.push("/record");
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     const confirmDelete = confirm("정말로 계정을 삭제하시겠습니까?");
-    if (confirmDelete) {
+    if (!confirmDelete) return;
+
+    try {
+      await authRequest.delete("/users/me"); // 백엔드에 계정 삭제 요청
       alert("계정이 삭제되었습니다. 안녕히 가세요!");
+
       router.push("/login");
+    } catch (error: any) {
+      console.error("계정 삭제 중 오류:", error);
+      alert(
+        error?.response?.data?.message ??
+          "계정 삭제 중 오류가 발생했습니다. 다시 시도해주세요."
+      );
     }
   };
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-blue-100 to-purple-200 flex flex-col items-center justify-center px-4 py-10">
       <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">회원정보 수정</h2>
+        <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">
+          회원정보 수정
+        </h2>
 
         <button
           onClick={() => router.back()}
@@ -130,7 +152,9 @@ export default function ProfilePage() {
         <form onSubmit={handleSave} className="space-y-4">
           {/* 닉네임 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">닉네임</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              닉네임
+            </label>
             <input
               type="text"
               value={nickname}
@@ -145,7 +169,9 @@ export default function ProfilePage() {
 
           {/* 새 비밀번호 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">새 비밀번호</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              새 비밀번호
+            </label>
             <input
               type="password"
               value={password}
@@ -160,7 +186,9 @@ export default function ProfilePage() {
 
           {/* 비밀번호 확인 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">비밀번호 확인</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              비밀번호 확인
+            </label>
             <input
               type="password"
               value={confirmPassword}
@@ -169,7 +197,9 @@ export default function ProfilePage() {
               className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
             {confirmPasswordError && (
-              <p className="text-red-500 text-sm mt-1">{confirmPasswordError}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {confirmPasswordError}
+              </p>
             )}
           </div>
 

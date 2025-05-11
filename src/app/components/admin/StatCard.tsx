@@ -23,7 +23,7 @@ export default function StatCard({
   return (
     <div
       onClick={onClick} // 미답변 문의 수 카드 클릭 가능하게 (클릭 시, 문의 목록 페이지로 이동)
-      className={`bg-white rounded-xl shadow-sm border border-transparent p-4 flex items-center gap-4 
+      className={`bg-white p-6 rounded-2xl shadow-md flex items-center gap-4 hover:shadow-lg transition 
       ${
         clickable
           ? "cursor-pointer hover:shadow-lg hover:border-blue-500 hover:border-2 transition"
@@ -31,12 +31,10 @@ export default function StatCard({
       }
       ${className}`}
     >
-      <div className="w-12 h-12 bg-blue-100 text-blue-600 flex items-center justify-center rounded-full text-xl">
-        {icon}
-      </div>
+      <div className="bg-blue-100 text-blue-600 rounded-full p-3">{icon}</div>
       <div>
         <div className="text-sm text-gray-500">{title}</div>
-        <div className="text-xl font-semibold">{value}</div>
+        <div className="text-2xl font-semibold">{value}</div>
       </div>
     </div>
   );

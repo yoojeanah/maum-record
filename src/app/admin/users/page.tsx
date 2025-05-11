@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import withAdminAuth from "@/app/components/auth/withAdminAuth";
 import { Users } from "lucide-react";
+import { authRequest } from "@/lib/axiosInstance";
 
 type User = {
   id: number;
@@ -22,11 +23,10 @@ function AdminUserPage() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch("/api/admin/users");
-        const data = await res.json();
-        setUsers(data);
-      } catch (err) {
-        console.error("사용자 데이터를 불러오지 못했습니다.", err);
+        const res = await authRequest.get("/admin/users");
+        setUsers(res.data);
+      } catch (error) {
+        console.error("사용자 데이터를 불러오는 중 오류 발생:", error);
       } finally {
         setLoading(false);
       }
@@ -34,32 +34,6 @@ function AdminUserPage() {
 
     fetchUsers();
   }, []);
-
-  /*
-    Spring Boot API 연동 버전 (token 필요하다면)
-  useEffect(() => {
-  	const fetchUsers = async () => {
-  	  try {
-  		const res = await fetch('https://api.myproject.com/admin/users', {
-  		  headers: {
-  			'Authorization': `Bearer ${accessToken}`,  // 토큰이 필요하다면
-  		  },
-  		});
-
-  		if (!res.ok) throw new Error('서버 오류');
-
-  		const data = await res.json();
-  		setUsers(data);
-  	  } catch (err) {
-  		console.error('사용자 데이터를 불러오지 못했습니다.', err);
-  	  } finally {
-  		setLoading(false);
-  	  }
-  	};
-
-  	fetchUsers();
-    }, []);
-    */
 
   if (loading) return <p className="p-6">로딩 중...</p>;
 
@@ -131,3 +105,53 @@ function AdminUserPage() {
 // TODO: 관리자 페이지 구현 완료 시, 관리자 인증 HOC를 추가
 // export default withAdminAuth(AdminUserPage);
 export default AdminUserPage;
+
+// mock data
+// const fetchMockUsers = async () => {
+//   const mockUsers: User[] = [
+//     {
+//       id: 1,
+//       email: "euuser@example.com",
+//       createdAt: "2024-12-01",
+//       journalCount: 14,
+//       active: true,
+//     },
+//     {
+//       id: 2,
+//       email: "causer@example.com",
+//       createdAt: "2025-01-10",
+//       journalCount: 7,
+//       active: false,
+//     },
+//     {
+//       id: 3,
+//       email: "kimuser1@example.com",
+//       createdAt: "2025-01-10T12:34:56Z",
+//       journalCount: 12,
+//       lastHealingProgram: "명상",
+//       lastHealingDate: "2025-04-30",
+//       active: true,
+//     },
+//     {
+//       id: 4,
+//       email: "leeuser2@example.com",
+//       createdAt: "2025-02-15T08:20:00Z",
+//       journalCount: 0,
+//       active: false,
+//     },
+//     {
+//       id: 5,
+//       email: "parkuser3@example.com",
+//       createdAt: "2025-03-01T15:00:00Z",
+//       journalCount: 7,
+//       lastHealingProgram: "요가",
+//       lastHealingDate: "2025-05-04",
+//       active: true,
+//     },
+//   ];
+//   await new Promise((r) => setTimeout(r, 300)); // 로딩 흉내
+//   setUsers(mockUsers);
+//   setLoading(false);
+// };
+
+// fetchMockUsers();

@@ -27,25 +27,6 @@ export default function NewYogaProgramPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  // TODO: Mock Data
-  const mockPoses: YogaPose[] = [
-    {
-      id: "pose1",
-      name: "아기 자세",
-      duration: 40,
-      image: "/images/yoga/child.png",
-      description: "긴장을 풀고 마음을 안정시켜 줍니다.",
-    },
-    {
-      id: "pose2",
-      name: "누운 비틀기",
-      duration: 30,
-      image: "/images/yoga/twist.png",
-      description: "허리를 부드럽게 풀어주는 동작입니다.",
-    },
-    // … 추가 mock 포즈
-  ];
-
   // 1) 전체 포즈 조회
   const { data: poses, isPending: posesLoading } = useQuery<YogaPose[]>({
     queryKey: ["admin", "yoga", "poses"],
@@ -53,8 +34,7 @@ export default function NewYogaProgramPage() {
       const res = await authRequest.get<YogaPose[]>("/admin/yoga/poses");
       return res.data;
     },
-    // TODO: mockPoses를 초기 데이터로 사용 -> 화면 바로 렌더링
-    initialData: mockPoses,
+
     staleTime: 5 * 60_000,
   });
 
@@ -224,3 +204,24 @@ export default function NewYogaProgramPage() {
     </div>
   );
 }
+
+//  Mock Data
+// const mockPoses: YogaPose[] = [
+//   {
+//     id: "pose1",
+//     name: "아기 자세",
+//     duration: 40,
+//     image: "/images/yoga/child.png",
+//     description: "긴장을 풀고 마음을 안정시켜 줍니다.",
+//   },
+//   {
+//     id: "pose2",
+//     name: "누운 비틀기",
+//     duration: 30,
+//     image: "/images/yoga/twist.png",
+//     description: "허리를 부드럽게 풀어주는 동작입니다.",
+//   },
+//   // … 추가 mock 포즈
+// ];
+//  mockPoses를 초기 데이터로 사용 -> 화면 바로 렌더링
+// initialData: mockPoses,
