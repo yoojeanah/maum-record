@@ -1,11 +1,20 @@
 "use client";
-import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { FaPlay, FaPause } from 'react-icons/fa';
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { FaPlay, FaPause } from "react-icons/fa";
 import { useUser } from "@/context/UserContext";
-import HamburgerMenu from '@/app/components/HamburgerMenu';
-import ProfileIcon from '@/app/components/ProfileIcon';
-import FooterLogo from '@/app/components/FooterLogo';
+import HamburgerMenu from "@/app/components/HamburgerMenu";
+import ProfileIcon from "@/app/components/ProfileIcon";
+import FooterLogo from "@/app/components/FooterLogo";
+
+interface MusicTrack {
+  id: string;
+  title: string;
+  src: string;
+  artist?: string;
+  coverImage?: string;
+  loop?: boolean;
+}
 
 function ChalkboardCanvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -15,20 +24,22 @@ function ChalkboardCanvas() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
     ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = '#ffffff';
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#ffffff";
 
     const getPos = (e: MouseEvent | TouchEvent) => {
       const rect = canvas.getBoundingClientRect();
-      const clientX = (e instanceof TouchEvent ? e.touches[0]?.clientX : e.clientX) ?? 0;
-      const clientY = (e instanceof TouchEvent ? e.touches[0]?.clientY : e.clientY) ?? 0;
+      const clientX =
+        e instanceof TouchEvent ? e.touches[0]?.clientX : e.clientX;
+      const clientY =
+        e instanceof TouchEvent ? e.touches[0]?.clientY : e.clientY;
       return {
         x: clientX - rect.left,
         y: clientY - rect.top,
@@ -53,22 +64,22 @@ function ChalkboardCanvas() {
       isDrawing.current = false;
     };
 
-    canvas.addEventListener('mousedown', startDrawing);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', stopDrawing);
-    canvas.addEventListener('mouseleave', stopDrawing);
-    canvas.addEventListener('touchstart', startDrawing);
-    canvas.addEventListener('touchmove', draw);
-    canvas.addEventListener('touchend', stopDrawing);
+    canvas.addEventListener("mousedown", startDrawing);
+    canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("mouseup", stopDrawing);
+    canvas.addEventListener("mouseleave", stopDrawing);
+    canvas.addEventListener("touchstart", startDrawing);
+    canvas.addEventListener("touchmove", draw);
+    canvas.addEventListener("touchend", stopDrawing);
 
     return () => {
-      canvas.removeEventListener('mousedown', startDrawing);
-      canvas.removeEventListener('mousemove', draw);
-      canvas.removeEventListener('mouseup', stopDrawing);
-      canvas.removeEventListener('mouseleave', stopDrawing);
-      canvas.removeEventListener('touchstart', startDrawing);
-      canvas.removeEventListener('touchmove', draw);
-      canvas.removeEventListener('touchend', stopDrawing);
+      canvas.removeEventListener("mousedown", startDrawing);
+      canvas.removeEventListener("mousemove", draw);
+      canvas.removeEventListener("mouseup", stopDrawing);
+      canvas.removeEventListener("mouseleave", stopDrawing);
+      canvas.removeEventListener("touchstart", startDrawing);
+      canvas.removeEventListener("touchmove", draw);
+      canvas.removeEventListener("touchend", stopDrawing);
     };
   }, []);
 
@@ -76,7 +87,7 @@ function ChalkboardCanvas() {
     <canvas
       ref={canvasRef}
       className="fixed top-0 left-0 w-full h-full z-0"
-      style={{ touchAction: 'none', pointerEvents: 'auto' }}
+      style={{ touchAction: "none", pointerEvents: "auto" }}
     />
   );
 }
@@ -84,18 +95,32 @@ function ChalkboardCanvas() {
 export default function MusicPage() {
   const { nickname } = useUser();
   const router = useRouter();
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState('');
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const tracks = [
-    '/music/1.mp3',
-    '/music/2.mp3',
-    '/music/3.mp3',
-    '/music/4.mp3',
-    '/music/5.mp3',
-    '/music/6.mp3',
-  ];
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [tracks, setTracks] = useState<MusicTrack[]>([]);
+  const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
+
+  useEffect(() => {
+    fetch("/api/music-tracks")
+      .then((res) => res.json())
+      .then((data) => setTracks(data))
+      .catch((err) => console.error("음악 목록 불러오기 실패", err));
+  }, []);
+
+  const playTrack = (track: MusicTrack) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    setCurrentTrack(track);
+    audio.src = track.src;
+    audio.loop = track.loop ?? false;
+    audio.load();
+    audio
+      .play()
+      .then(() => setIsPlaying(true))
+      .catch((err) => console.warn("재생 실패:", err.message));
+  };
 
   const togglePlay = () => {
     const audio = audioRef.current;
@@ -105,35 +130,19 @@ export default function MusicPage() {
       audio.pause();
       setIsPlaying(false);
     } else {
-      if (!currentTrack) {
-        const newTrack = tracks[Math.floor(Math.random() * tracks.length)];
-        setCurrentTrack(newTrack);
-        audio.src = newTrack;
-        audio.load();
-        audio
-          .play()
-          .then(() => setIsPlaying(true))
-          .catch((err: any) => console.warn('재생 실패:', err.message));
+      if (!currentTrack && tracks.length > 0) {
+        const random = tracks[Math.floor(Math.random() * tracks.length)];
+        playTrack(random);
       } else {
-        audio
-          .play()
-          .then(() => setIsPlaying(true))
-          .catch((err: any) => console.warn('재생 실패:', err.message));
+        audio.play().then(() => setIsPlaying(true));
       }
     }
   };
 
   const handleTrackEnd = () => {
-    const nextTrack = tracks[Math.floor(Math.random() * tracks.length)];
-    setCurrentTrack(nextTrack);
-    const audio = audioRef.current;
-    if (audio) {
-      audio.src = nextTrack;
-      audio.load();
-      audio.play().catch((err: any) => {
-        console.warn('다음 트랙 재생 실패:', err.message);
-      });
-    }
+    if (!tracks.length) return;
+    const next = tracks[Math.floor(Math.random() * tracks.length)];
+    playTrack(next);
   };
 
   return (
