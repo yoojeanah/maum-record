@@ -1,14 +1,9 @@
 "use client";
-{
-  /*
-TODO: 관리자 페이지 user - 백엔드 연동 API
-TODO: 백엔드에 정리해서 요청
- */
-}
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import withAdminAuth from "@/app/components/auth/withAdminAuth";
+import { authRequest } from "@/lib/axiosInstance";
 
 type UserDetail = {
   id: number;
@@ -22,22 +17,6 @@ type UserDetail = {
   }[];
 };
 
-// mock 데이터 (백엔드 연결 전 임시용)
-// const mockUser = {
-//   id: 1,
-//   email: "yoojin@example.com",
-//   createdAt: "2024-12-01T10:00:00Z",
-//   journalCount: 14,
-//   active: true,
-//   healingLogs: [
-//     { program: "명상", usedAt: "2025-03-23" },
-//     { program: "요가", usedAt: "2025-03-21" },
-//     { program: "음악 감상", usedAt: "2025-03-19" },
-//   ],
-// };
-
-// type UserDetail = typeof mockUser;
-
 function UserDetailPage() {
   const { id } = useParams();
   const [user, setUser] = useState<UserDetail | null>(null);
@@ -46,13 +25,13 @@ function UserDetailPage() {
   useEffect(() => {
     const fetchUserDetail = async () => {
       try {
-        const res = await fetch(`/api/admin/users/${id}`);
-        const data = await res.json();
-
-        // const data = mockUser;
-        setUser(data);
-      } catch (err) {
+        const res = await authRequest.get(`/admin/users/${id}`);
+        setUser(res.data);
+      } catch (err: any) {
         console.error("사용자 상세 정보를 불러오지 못했습니다.", err);
+        if (err.response?.status === 404) {
+          notFound(); // 해당 유저 존재하지 않는 경우, Next.js 내장 404 페이지로 이동
+        }
       } finally {
         setLoading(false);
       }
@@ -116,3 +95,18 @@ function UserDetailPage() {
 // TODO: 관리자 페이지 구현 완료 시, 관리자 인증 HOC를 추가
 // export default withAdminAuth(UserDetailPage);
 export default UserDetailPage;
+
+// mock data
+// const mockUser = {
+//   id: 1,
+//   email: "yoojin@example.com",
+//   createdAt: "2024-12-01T10:00:00Z",
+//   journalCount: 14,
+//   active: true,
+//   healingLogs: [
+//     { program: "명상", usedAt: "2025-03-23" },
+//     { program: "요가", usedAt: "2025-03-21" },
+//     { program: "음악 감상", usedAt: "2025-03-19" },
+//   ],
+// };
+// type UserDetail = typeof mockUser;

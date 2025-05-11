@@ -32,25 +32,6 @@ type YogaProgramDetail = {
   poses: ProgramPose[];
 };
 
-//TODO: === Mock Data ===
-const mockPoses: YogaPose[] = [
-  {
-    id: "pose1",
-    name: "아기 자세",
-    duration: 40,
-    image: "/images/yoga/child.png",
-    description: "긴장을 풀고 마음을 안정시켜 줍니다.",
-  },
-  {
-    id: "pose2",
-    name: "누운 비틀기",
-    duration: 30,
-    image: "/images/yoga/twist.png",
-    description: "허리를 부드럽게 풀어주는 동작입니다.",
-  },
-  // ...추가 mock 포즈
-];
-
 // id 기반으로 mock detail 생성
 function getMockProgram(id: string): YogaProgramDetail {
   return {
@@ -87,15 +68,12 @@ export default function EditYogaProgramPage({
     isError: programError,
   } = useQuery<YogaProgramDetail>({
     queryKey: ["program", id],
-    // queryFn: async () => {
-    //   const res = await authRequest.get<YogaProgramDetail>(
-    //     `/admin/yoga/programs/${id}`
-    //   );
-    //   return res.data;
-    // },
-    // TODO: mock
-    queryFn: () => Promise.resolve(getMockProgram(id)),
-    initialData: getMockProgram(id),
+    queryFn: async () => {
+      const res = await authRequest.get<YogaProgramDetail>(
+        `/admin/yoga/programs/${id}`
+      );
+      return res.data;
+    },
 
     staleTime: 1000 * 60,
   });
@@ -103,13 +81,10 @@ export default function EditYogaProgramPage({
   // 2) 전체 요가 포즈 목록 조회
   const { data: poses, isLoading: posesLoading } = useQuery<YogaPose[]>({
     queryKey: ["admin", "yoga", "poses"],
-    // queryFn: async () => {
-    //   const res = await authRequest.get<YogaPose[]>("/admin/yoga/poses");
-    //   return res.data;
-    // },
-    //TODO: mock
-    queryFn: () => Promise.resolve(mockPoses),
-    initialData: mockPoses,
+    queryFn: async () => {
+      const res = await authRequest.get<YogaPose[]>("/admin/yoga/poses");
+      return res.data;
+    },
 
     staleTime: 5 * 60_000,
   });
@@ -288,3 +263,29 @@ export default function EditYogaProgramPage({
     </div>
   );
 }
+
+// mock
+// queryFn: () => Promise.resolve(getMockProgram(id)),
+// initialData: getMockProgram(id),
+
+// === Mock Data ===
+// const mockPoses: YogaPose[] = [
+//   {
+//     id: "pose1",
+//     name: "아기 자세",
+//     duration: 40,
+//     image: "/images/yoga/child.png",
+//     description: "긴장을 풀고 마음을 안정시켜 줍니다.",
+//   },
+//   {
+//     id: "pose2",
+//     name: "누운 비틀기",
+//     duration: 30,
+//     image: "/images/yoga/twist.png",
+//     description: "허리를 부드럽게 풀어주는 동작입니다.",
+//   },
+//   // ...추가 mock 포즈
+// ];
+
+//     queryFn: () => Promise.resolve(mockPoses),
+//     initialData: mockPoses,

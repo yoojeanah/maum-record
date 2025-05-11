@@ -23,7 +23,6 @@ export default function InquiriesPageContent() {
   const filter = searchParams.get("filter"); // null 혹은 pending
 
   useEffect(() => {
-    // 백엔드 연동
     const fetchInquiries = async () => {
       try {
         const res = await authRequest.get("/admin/inquiries");

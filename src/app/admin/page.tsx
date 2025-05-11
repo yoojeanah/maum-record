@@ -56,7 +56,7 @@ function AdminDashboardPage() {
   }, []);
 
   return (
-    <div className="p-6">
+    <div className="p-8 space-y-8">
       <h2 className="inline-flex items-center gap-2 text-2xl font-bold">
         <LayoutDashboard className="w-8 h-8" />
         관리자 대시보드
@@ -102,3 +102,74 @@ function AdminDashboardPage() {
 // TODO: 관리자 페이지 구현 완료 시, 관리자 인증 HOC 적용
 // export default withAdminAuth(AdminDashboardPage);
 export default AdminDashboardPage;
+
+// const fetchMockData = async () => {
+//   // 📊 mock data 정의
+//   const mockStats = {
+//     userCount: 1234,
+//     todayJournalCount: 56,
+//     unansweredCount: 3,
+//   };
+
+//   const mockUserTrend = [
+//     { date: "2025-04-29", signUps: 12, activeUsers: 34 },
+//     { date: "2025-04-30", signUps: 15, activeUsers: 40 },
+//     { date: "2025-05-01", signUps: 8, activeUsers: 28 },
+//     { date: "2025-05-02", signUps: 10, activeUsers: 35 },
+//     { date: "2025-05-03", signUps: 17, activeUsers: 42 },
+//     { date: "2025-05-04", signUps: 20, activeUsers: 50 },
+//     { date: "2025-05-05", signUps: 18, activeUsers: 45 },
+//   ];
+
+//   const mockHealingTrend = [
+//     {
+//       date: "2025-04-29",
+//       명상: 10,
+//       요가: 8,
+//       음악감상: 5,
+//     },
+//     {
+//       date: "2025-04-30",
+//       명상: 14,
+//       요가: 12,
+//       음악감상: 6,
+//     },
+//     {
+//       date: "2025-05-01",
+//       명상: 13,
+//       요가: 9,
+//       음악감상: 7,
+//     },
+//     {
+//       date: "2025-05-02",
+//       명상: 15,
+//       요가: 14,
+//       음악감상: 9,
+//     },
+//     {
+//       date: "2025-05-03",
+//       명상: 17,
+//       요가: 10,
+//       음악감상: 11,
+//     },
+//     {
+//       date: "2025-05-04",
+//       명상: 19,
+//       요가: 13,
+//       음악감상: 10,
+//     },
+//     {
+//       date: "2025-05-05",
+//       명상: 20,
+//       요가: 15,
+//       음악감상: 12,
+//     },
+//   ];
+
+//   // state 세팅
+//   setStats(mockStats);
+//   setUserTrend(mockUserTrend);
+//   setHealingTrend(mockHealingTrend);
+// };
+
+// fetchMockData();

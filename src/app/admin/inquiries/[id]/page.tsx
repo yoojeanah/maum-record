@@ -31,19 +31,35 @@ function InquiryDetailPage() {
   const [answer, setAnswer] = useState("");
 
   useEffect(() => {
-    // 백엔드 연동
-    const fetchInquiryDetail = async () => {
-      try {
-        const res = await authRequest.get(`/admin/inquiries/${params.id}`);
-        setInquiryDetail(res.data);
-      } catch (err) {
-        console.error("문의사항 상세 데이터 불러오기 실패", err);
-        alert("문의사항 상세 데이터 불러오기 실패");
-        router.replace("/admin/inquiries");
-      }
+    // TODO: mock data (useEffect 내에 넣기)
+    const mockInquiry: InquiryDetail = {
+      id: Number(params.id),
+      email: "yoojin@example.com",
+      title: "앱 오류 문의합니다.",
+      createdAt: "2025-04-01T10:12:00Z",
+      content:
+        "명상 프로그램으로 들어가려고 하는데, 이 페이지에서 계속 클릭이 안 돼요.",
+      imageUrl: "/mock-images/inquiry-example.png",
+      status: "pending",
+      answer:
+        "안녕하세요. 현재 앱에서 발생한 오류는 확인 중에 있으며, 곧 수정 업데이트가 진행될 예정입니다.\n불편을 드려 죄송합니다.",
+      answeredAt: "2025-04-02T14:10:00Z",
     };
+    setInquiryDetail(mockInquiry);
 
-    fetchInquiryDetail();
+    // 백엔드 연동
+    // const fetchInquiryDetail = async () => {
+    //   try {
+    //     const res = await authRequest.get(`/admin/inquiries/${params.id}`);
+    //     setInquiryDetail(res.data);
+    //   } catch (err) {
+    //     console.error("문의사항 상세 데이터 불러오기 실패", err);
+    //     alert("문의사항 상세 데이터 불러오기 실패");
+    //     router.replace("/admin/inquiries");
+    //   }
+    // };
+
+    // fetchInquiryDetail();
   }, [params.id, router]);
 
   // `답변 등록`버튼 클릭 시, 답변 내용 백엔드로 전달
