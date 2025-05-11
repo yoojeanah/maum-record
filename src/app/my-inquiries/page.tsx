@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { publicRequest } from "@/lib/axiosInstance";
+import HamburgerMenu from "@/app/components/HamburgerMenu";
 
 interface Inquiry {
   id: number;
@@ -33,6 +34,7 @@ export default function MyInquiriesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 flex justify-center">
+      <HamburgerMenu />
       <div className="w-full max-w-2xl bg-white rounded-xl shadow p-6 space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-gray-800">내 문의 내역</h2>

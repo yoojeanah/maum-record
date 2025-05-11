@@ -2,6 +2,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { publicRequest } from "@/lib/axiosInstance";
+import HamburgerMenu from "@/app/components/HamburgerMenu";
 
 export default function ContactAdminPage() {
   const router = useRouter();
@@ -36,6 +37,7 @@ export default function ContactAdminPage() {
 
   return (
     <div className="h-screen w-full bg-gray-100 flex items-center justify-center px-4">
+      <HamburgerMenu />
       <div className="w-full max-w-lg bg-white rounded-xl shadow-lg p-8 flex flex-col justify-between space-y-6">
         {submitted ? (
           <div className="flex flex-col justify-center items-center flex-1 space-y-4">
