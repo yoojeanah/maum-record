@@ -110,7 +110,7 @@ export default function MusicPage() {
   };
 
   useEffect(() => {
-    fetch("/api/music-tracks")
+    fetch("/music-tracks")
       .then((res) => res.json())
       .then((data) => {
         setTracks(data);

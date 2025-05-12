@@ -137,7 +137,7 @@ export default function RecordPage() {
 
     try {
       const res = await publicRequest.post<{ jobId: string }>(
-        "/api/audio/upload",
+        "/audio/upload",
         formData,
         {
           headers: {

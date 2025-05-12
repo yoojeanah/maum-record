@@ -20,7 +20,7 @@ export default function CalendarPage() {
   useEffect(() => {
     const fetchEmotionData = async () => {
       try {
-        const res = await publicRequest.get("/api/emotions");
+        const res = await publicRequest.get("/emotions");
         setEmotionData(res.data);
       } catch (error) {
         console.error("감정 기록 조회 실패:", error);
@@ -186,7 +186,7 @@ export default function CalendarPage() {
               <button
                 onClick={async () => {
                   try {
-                    await publicRequest.patch(`/api/emotions/${selectedDate}/memo`, {
+                    await publicRequest.patch(`/emotions/${selectedDate}/memo`, {
                       memo: emotionData[selectedDate].memo || "",
                     });
                     setSelectedDate(null);

@@ -31,7 +31,7 @@ export default function Course4Page() {
   useEffect(() => {
     const fetchPoses = async () => {
       try {
-        const res = await publicRequest.get(`/api/yoga-courses/4`);
+        const res = await publicRequest.get(`/yoga-courses/4`);
         setPoses(res.data.poses);
         setTimeLeft(res.data.poses[0]?.duration || 0);
       } catch (err) {

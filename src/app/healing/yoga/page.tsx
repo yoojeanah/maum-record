@@ -40,7 +40,7 @@ export default function YogaPage() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await publicRequest.get<{ courses: YogaCourse[] }>("/api/yoga-courses");
+        const res = await publicRequest.get<{ courses: YogaCourse[] }>("/yoga-courses");
         setCourses(res.data.courses);
       } catch (error) {
         console.error("코스 데이터를 불러오는 중 오류 발생:", error);

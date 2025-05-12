@@ -37,7 +37,7 @@ export default function Course2() {
   const audioIntervals = useRef<NodeJS.Timeout[]>([]);
 
   useEffect(() => {
-    publicRequest.get(`/api/meditation-courses/${courseId}`).then((res) => {
+    publicRequest.get(`/meditation-courses/${courseId}`).then((res) => {
       if (res.data.locked) {
         alert("아직 공개되지 않은 코스입니다.");
         router.push("/healing/meditation");

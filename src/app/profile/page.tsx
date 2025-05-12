@@ -18,9 +18,7 @@ export default function ProfilePage() {
   const [nickname, setNickname] = useState(globalNickname || "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [preview, setPreview] = useState(
-    profileImage || "/profile-default.png"
-  );
+  const [preview, setPreview] = useState(profileImage || "/profile-default.png");
   const [file, setFile] = useState<File | null>(null);
 
   const [nicknameError, setNicknameError] = useState("");
@@ -50,7 +48,7 @@ export default function ProfilePage() {
     reader.readAsDataURL(selected);
   };
 
-  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     let isValid = true;
@@ -72,7 +70,6 @@ export default function ProfilePage() {
       setConfirmPasswordError("");
     }
 
-    // 비밀번호가 입력됐는데 8자 미만이면 에러
     if (password && password.length < 8) {
       setPasswordError(
         "비밀번호는 대/소문자, 숫자, 특수문자를 포함한 8~24자여야 합니다."
@@ -84,14 +81,37 @@ export default function ProfilePage() {
 
     if (!isValid) return;
 
-    setGlobalNickname(nickname);
-    if (file) {
-      const tempUrl = URL.createObjectURL(file);
-      setProfileImage(tempUrl);
-    }
+    const formData = new FormData();
+    formData.append("nickname", nickname);
+    if (password) formData.append("password", password);
+    if (file) formData.append("profileImage", file);
 
-    alert("회원정보가 저장되었습니다!");
-    router.push("/record");
+    try {
+      const response = await authRequest.patch("/users/me", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const { nickname: updatedNickname, profileImageUrl } = response.data;
+
+      setGlobalNickname(updatedNickname || nickname);
+      if (profileImageUrl) {
+        setProfileImage(profileImageUrl);
+      } else if (file) {
+        const tempUrl = URL.createObjectURL(file);
+        setProfileImage(tempUrl);
+      }
+
+      alert("회원정보가 저장되었습니다!");
+      router.push("/record");
+    } catch (error: any) {
+      console.error("회원정보 수정 오류:", error);
+      alert(
+        error?.response?.data?.message ??
+          "회원정보 수정 중 오류가 발생했습니다. 다시 시도해 주세요."
+      );
+    }
   };
 
   const handleDelete = async () => {
@@ -99,9 +119,8 @@ export default function ProfilePage() {
     if (!confirmDelete) return;
 
     try {
-      await authRequest.delete("/users/me"); // 백엔드에 계정 삭제 요청
+      await authRequest.delete("/users/me");
       alert("계정이 삭제되었습니다. 안녕히 가세요!");
-
       router.push("/login");
     } catch (error: any) {
       console.error("계정 삭제 중 오류:", error);
@@ -150,7 +169,6 @@ export default function ProfilePage() {
         </div>
 
         <form onSubmit={handleSave} className="space-y-4">
-          {/* 닉네임 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               닉네임
@@ -167,7 +185,6 @@ export default function ProfilePage() {
             )}
           </div>
 
-          {/* 새 비밀번호 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               새 비밀번호
@@ -184,7 +201,6 @@ export default function ProfilePage() {
             )}
           </div>
 
-          {/* 비밀번호 확인 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               비밀번호 확인

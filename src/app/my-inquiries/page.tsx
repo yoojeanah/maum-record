@@ -22,7 +22,7 @@ export default function MyInquiriesPage() {
   useEffect(() => {
     const fetchInquiries = async () => {
       try {
-        const res = await publicRequest.get("/api/inquiries");
+        const res = await publicRequest.get("/inquiries");
         setInquiries(res.data);
       } catch (error) {
         console.error("문의 내역 조회 실패:", error);

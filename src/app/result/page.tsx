@@ -16,7 +16,7 @@ export default function Page() {
   useEffect(() => {
     const fetchResult = async () => {
       try {
-        const res = await publicRequest.get("/api/diary/today");
+        const res = await publicRequest.get("/diary/today");
         setResult(res.data);
       } catch (err) {
         console.error("결과 조회 실패:", err);

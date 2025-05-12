@@ -52,7 +52,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     //   return;
     // }
 
-    const es = new EventSource(`/api/analysis/stream?jobId=${jobId}`);
+    const es = new EventSource(`/analysis/stream?jobId=${jobId}`);
 
     es.addEventListener("analysisCompleted", () => {
       // 분석이 완료되었다는 신호가 오면 토스트를 띄우고 SSE 연결은 닫음
@@ -81,7 +81,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     categories: string[]
   ) => {
     try {
-      await authRequest.post("/api/analysis/feedback", {
+      await authRequest.post("/analysis/feedback", {
         jobId,
         feedback,
         categories,

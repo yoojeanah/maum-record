@@ -38,7 +38,7 @@ export default function MeditationListPage() {
   ]);
 
   useEffect(() => {
-    publicRequest.get("/api/meditation-courses").then((res) => {
+    publicRequest.get("/meditation-courses").then((res) => {
       const updated = courses.map((defaultCourse) => {
         const fromServer = res.data.courses.find(
           (c: MeditationCourse) => c.id === defaultCourse.id

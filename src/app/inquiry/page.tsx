@@ -22,7 +22,7 @@ export default function ContactAdminPage() {
     if (file) formData.append("file", file);
 
     try {
-      await publicRequest.post("/api/inquiries", formData, {
+      await publicRequest.post("/inquiries", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setSubmitted(true);
