@@ -23,10 +23,14 @@ export default function HamburgerMenu() {
   }, []);
 
   const handleLogout = async () => {
-    await logoutUser();
-    setNickname("");
-    setProfileImage("/profile-default.png");
-    router.push("/login");
+    try {
+      await logoutUser();
+      setNickname("");
+      setProfileImage("/profile-default.png");
+      router.push("/login");
+    } catch (err) {
+      router.push("/login"); // 실패해도 강제 이동
+    }
   };
 
   const toggleMenu = () => {
