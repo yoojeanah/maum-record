@@ -13,7 +13,6 @@ interface MusicTrack {
   src: string;
   artist?: string;
   coverImage?: string;
-  loop?: boolean;
 }
 
 function ChalkboardCanvas() {
@@ -23,13 +22,11 @@ function ChalkboardCanvas() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
     ctx.lineWidth = 3;
     ctx.lineCap = "round";
     ctx.strokeStyle = "#ffffff";
@@ -99,22 +96,41 @@ export default function MusicPage() {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [tracks, setTracks] = useState<MusicTrack[]>([]);
+  const [shuffled, setShuffled] = useState<MusicTrack[]>([]);
+  const [shuffleIndex, setShuffleIndex] = useState(0);
   const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
+
+  const shuffleTracks = (list: MusicTrack[]) => {
+    const copy = [...list];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  };
 
   useEffect(() => {
     fetch("/api/music-tracks")
       .then((res) => res.json())
-      .then((data) => setTracks(data))
+      .then((data) => {
+        setTracks(data);
+        const shuffledList = shuffleTracks(data);
+        setShuffled(shuffledList);
+        setShuffleIndex(0);
+      })
       .catch((err) => console.error("음악 목록 불러오기 실패", err));
   }, []);
 
-  const playTrack = (track: MusicTrack) => {
+  const playTrackByIndex = (index: number) => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio || !shuffled.length) return;
 
+    const track = shuffled[index];
     setCurrentTrack(track);
+    setShuffleIndex(index);
+
     audio.src = track.src;
-    audio.loop = track.loop ?? false;
+    audio.loop = false;
     audio.load();
     audio
       .play()
@@ -130,9 +146,8 @@ export default function MusicPage() {
       audio.pause();
       setIsPlaying(false);
     } else {
-      if (!currentTrack && tracks.length > 0) {
-        const random = tracks[Math.floor(Math.random() * tracks.length)];
-        playTrack(random);
+      if (!currentTrack && shuffled.length > 0) {
+        playTrackByIndex(0);
       } else {
         audio.play().then(() => setIsPlaying(true));
       }
@@ -140,9 +155,17 @@ export default function MusicPage() {
   };
 
   const handleTrackEnd = () => {
-    if (!tracks.length) return;
-    const next = tracks[Math.floor(Math.random() * tracks.length)];
-    playTrack(next);
+    if (!shuffled.length) return;
+
+    const nextIndex = shuffleIndex + 1;
+    if (nextIndex >= shuffled.length) {
+      const reshuffled = shuffleTracks(tracks);
+      setShuffled(reshuffled);
+      setShuffleIndex(0);
+      playTrackByIndex(0);
+    } else {
+      playTrackByIndex(nextIndex);
+    }
   };
 
   return (

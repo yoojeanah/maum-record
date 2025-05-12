@@ -29,43 +29,43 @@ export async function GET() {
         title: "코스 4",
         summary: "업데이트 예정입니다.",
         locked: true,
-        poses: [],
+        poses: []
       },
       {
         id: 5,
         title: "코스 5",
         summary: "업데이트 예정입니다.",
         locked: true,
-        poses: [],
+        poses: []
       },
       {
         id: 6,
         title: "코스 6",
         summary: "업데이트 예정입니다.",
         locked: true,
-        poses: [],
+        poses: []
       },
       {
         id: 7,
         title: "코스 7",
         summary: "업데이트 예정입니다.",
         locked: true,
-        poses: [],
+        poses: []
       },
       {
         id: 8,
         title: "코스 8",
         summary: "업데이트 예정입니다.",
         locked: true,
-        poses: [],
+        poses: []
       },
       {
         id: 9,
         title: "코스 9",
         summary: "업데이트 예정입니다.",
         locked: true,
-        poses: [],
-      },
+        poses: []
+      }
     ]
   });
 }
