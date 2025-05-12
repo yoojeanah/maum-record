@@ -8,21 +8,21 @@ export async function GET() {
         title: "코스 1",
         summary: "업데이트 예정입니다.",
         locked: true,
-        poses: []
+        poses: [],
       },
       {
         id: 2,
         title: "코스 2",
         summary: "업데이트 예정입니다.",
         locked: true,
-        poses: []
+        poses: [],
       },
       {
         id: 3,
         title: "코스 3",
         summary: "업데이트 예정입니다.",
         locked: true,
-        poses: []
+        poses: [],
       },
       {
         id: 4,

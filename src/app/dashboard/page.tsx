@@ -3,6 +3,7 @@ import HealingLineChart from "./components/HealingLineChart";
 import EmotionBarChart from "./components/EmotionBarChart";
 import EmotionYearlyBarChart from "./components/EmotionYearlyBarChart";
 import HealingPieChart from "./components/HealingPieChart";
+import HamburgerMenu from "@/app/components/HamburgerMenu";
 import { healingFeedbackData } from "@/lib/healingFeedbackData";
 
 export default function DashboardPage() {
@@ -12,6 +13,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen px-6 py-10 bg-gray-50">
+      <HamburgerMenu />
       <h1 className="text-2xl font-bold text-center text-gray-800 mb-10">나의 감정 대시보드 🌿</h1>
 
       <div className="flex flex-col lg:flex-row gap-6">

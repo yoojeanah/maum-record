@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Edit2, Trash2, Lock, Unlock } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -15,12 +14,13 @@ type YogaProgram = {
 
 // 1) GET /admin/yoga/programs - 서버에서 전체 요가 프로그램 목록 가져오는 함수
 async function fetchYogaPrograms(): Promise<YogaProgram[]> {
-  const res = await authRequest.get<YogaProgram[]>("/admin/yoga/programs");
+  const res = await authRequest.get<YogaProgram[]>(
+    "/admin/healing/yoga/courses"
+  );
   return res.data;
 }
 
 export default function YogaProgramsPage() {
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   // 2) useQuery: 프로그램 목록을 불러오고 로딩/에러 상태를 관리
@@ -36,8 +36,10 @@ export default function YogaProgramsPage() {
 
   // 3) DELETE /admin/yoga/programs/${id} - useMutation: 삭제 요청 후, 캐시 무효화
   const deleteMutation = useMutation({
-    mutationFn: (id: number) =>
-      authRequest.delete(`/admin/yoga/programs/${id}`),
+    mutationFn: (title: string) =>
+      authRequest.delete(
+        `/admin/healing/yoga/delete/${encodeURIComponent(title)}`
+      ),
     onSuccess: () => {
       // 삭제 요청 성공하면, 프로그램 목록을 재요청
       // programs에 저장된 데이터를 무효화 -> 다음 렌더링에서 다시 fetchYogaPrograms 실행하여 최신 정보 업데이트
@@ -127,7 +129,7 @@ export default function YogaProgramsPage() {
                       <Edit2 className="w-4 h-4" /> 수정
                     </Link>
                     <button
-                      onClick={() => deleteMutation.mutate(p.id)}
+                      onClick={() => deleteMutation.mutate(p.title)}
                       className="inline-flex items-center gap-1 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                     >
                       <Trash2 className="w-4 h-4" /> 삭제

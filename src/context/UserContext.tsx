@@ -1,5 +1,12 @@
 "use client";
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { authRequest } from "@/lib/axiosInstance";
 
 type UserContextType = {
@@ -7,6 +14,8 @@ type UserContextType = {
   setNickname: (nickname: string) => void;
   profileImage: string;
   setProfileImage: (profileImage: string) => void;
+  role: string;
+  setRole: (role: string) => void;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -18,13 +27,15 @@ type UserProviderProps = {
 export function UserProvider({ children }: UserProviderProps) {
   const [nickname, setNickname] = useState("");
   const [profileImage, setProfileImage] = useState("/profile-default.png");
+  const [role, setRole] = useState("");
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await authRequest.get("/api/users/me");
-        setNickname(res.data.nickname || ""); 
+        const res = await authRequest.get("/users/me");
+        setNickname(res.data.nickname || "");
         setProfileImage(res.data.profileImage || "/profile-default.png");
+        setRole(res.data.role || "");
       } catch (err) {
         console.error("❌ 사용자 정보 불러오기 실패:", err);
       }
@@ -34,7 +45,16 @@ export function UserProvider({ children }: UserProviderProps) {
   }, []);
 
   return (
-    <UserContext.Provider value={{ nickname, setNickname, profileImage, setProfileImage }}>
+    <UserContext.Provider
+      value={{
+        nickname,
+        setNickname,
+        profileImage,
+        setProfileImage,
+        role,
+        setRole,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

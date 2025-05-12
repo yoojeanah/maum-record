@@ -4,7 +4,7 @@
 
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "http://localhost:8080/api";
 
 // 비인증 요청용 axios 인스턴스 (ex. 로그인, 회원가입, 토큰 갱신 등)
 export const publicRequest = axios.create({
@@ -24,16 +24,14 @@ authRequest.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // 401: 토큰 재발급 시도
     if (
-      // 응답이 401 또는 403이면 자동으로 토큰 재발급
-      (error.response?.status === 401 || error.response?.status === 403) &&
+      error.response?.status === 401 &&
       !originalRequest._retry // 같은 요청 중복 재시도 방지
     ) {
       originalRequest._retry = true;
-
       try {
         const res = await publicRequest.post("/newToken");
-
         return authRequest(originalRequest); //새 토큰이 발급되었으니, 실패했던 원래 요청을 다시 보냄
       } catch (refreshError) {
         console.error("재로그인 필요: ", refreshError); // refresh token까지 만료되었거나 오류 발생 시 에러 처리
@@ -43,6 +41,14 @@ authRequest.interceptors.response.use(
           window.location.href = "/login";
         }
         return Promise.reject(refreshError);
+      }
+    }
+
+    // 403: 권한 없음 → 바로 로그인 페이지로 이동
+    if (error.response?.status === 403) {
+      console.warn("접근 권한 없음: 로그인 페이지로 이동합니다.");
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
       }
     }
 

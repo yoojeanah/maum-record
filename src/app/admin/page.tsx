@@ -11,7 +11,6 @@ import UserTrendChart, {
 import HealingProgramTrendChart, {
   HealingTrendItem,
 } from "@/app/components/admin/HealingProgramTrendChart";
-import withAdminAuth from "@/app/components/auth/withAdminAuth";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -99,8 +98,6 @@ function AdminDashboardPage() {
   );
 }
 
-// TODO: 관리자 페이지 구현 완료 시, 관리자 인증 HOC 적용
-// export default withAdminAuth(AdminDashboardPage);
 export default AdminDashboardPage;
 
 // const fetchMockData = async () => {

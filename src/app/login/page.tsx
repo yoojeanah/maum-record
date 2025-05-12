@@ -12,7 +12,6 @@ export default function LoginPage() {
 
   // 로그인 핸들러
   // httpOnly Cookie 기반 로그인
-  // 로그인 성공 시, 백엔드에서 role: 'admin'을 응답받으면 -> admin 페이지로 이동
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -23,17 +22,11 @@ export default function LoginPage() {
 
     try {
       // httpOnly Cookie 기반 로그인
-      const response = await publicRequest.post("/auth/login", {
+      const response = await publicRequest.post("/login", {
         email,
         password,
       });
-
-      // 백엔드에서 role: 'admin'을 응답
-      if (response.data.role === "admin") {
-        router.push("/admin");
-      } else {
-        router.push("/record");
-      }
+      router.push("/record");
     } catch (err) {
       console.error("로그인 실패: ", err);
       setError("로그인에 실패했습니다. 이메일과 비밀번호를 확인해 주세요.");
