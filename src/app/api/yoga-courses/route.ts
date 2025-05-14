@@ -1,3 +1,4 @@
+// 백엔드 연동 후 삭제
 import { NextResponse } from "next/server";
 
 export async function GET() {
