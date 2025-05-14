@@ -13,6 +13,80 @@ interface MusicTrack {
   src: string;
 }
 
+function ChalkboardCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const isDrawing = useRef(false);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#ffffff";
+
+    const getPos = (e: MouseEvent | TouchEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const clientX =
+        e instanceof TouchEvent ? e.touches[0]?.clientX : e.clientX;
+      const clientY =
+        e instanceof TouchEvent ? e.touches[0]?.clientY : e.clientY;
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top,
+      };
+    };
+
+    const startDrawing = (e: MouseEvent | TouchEvent) => {
+      const { x, y } = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      isDrawing.current = true;
+    };
+
+    const draw = (e: MouseEvent | TouchEvent) => {
+      if (!isDrawing.current) return;
+      const { x, y } = getPos(e);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    };
+
+    const stopDrawing = () => {
+      isDrawing.current = false;
+    };
+
+    canvas.addEventListener("mousedown", startDrawing);
+    canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("mouseup", stopDrawing);
+    canvas.addEventListener("mouseleave", stopDrawing);
+    canvas.addEventListener("touchstart", startDrawing);
+    canvas.addEventListener("touchmove", draw);
+    canvas.addEventListener("touchend", stopDrawing);
+
+    return () => {
+      canvas.removeEventListener("mousedown", startDrawing);
+      canvas.removeEventListener("mousemove", draw);
+      canvas.removeEventListener("mouseup", stopDrawing);
+      canvas.removeEventListener("mouseleave", stopDrawing);
+      canvas.removeEventListener("touchstart", startDrawing);
+      canvas.removeEventListener("touchmove", draw);
+      canvas.removeEventListener("touchend", stopDrawing);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed top-0 left-0 w-full h-full z-0"
+      style={{ touchAction: "none", pointerEvents: "auto" }}
+    />
+  );
+}
+
 export default function MusicPage() {
   const { nickname } = useUser();
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -86,6 +160,7 @@ export default function MusicPage() {
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-pink-100 via-purple-200 to-blue-200 flex flex-col items-center justify-center px-4 py-10 overflow-hidden">
+      <ChalkboardCanvas />
       <HamburgerMenu />
       <ProfileIcon />
       <h1 className="text-2xl text-center mb-8 mt-6">
