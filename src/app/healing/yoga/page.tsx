@@ -25,7 +25,7 @@ interface YogaCourse {
 export default function YogaPage() {
   const router = useRouter();
 
-  const [courses, setCourses] = useState<YogaCourse[]>([
+  const defaultCourses: YogaCourse[] = [
     { id: 1, title: "코스 1", summary: "업데이트 예정입니다.", locked: true, poses: [] },
     { id: 2, title: "코스 2", summary: "업데이트 예정입니다.", locked: true, poses: [] },
     { id: 3, title: "코스 3", summary: "업데이트 예정입니다.", locked: true, poses: [] },
@@ -35,13 +35,21 @@ export default function YogaPage() {
     { id: 7, title: "코스 7", summary: "업데이트 예정입니다.", locked: true, poses: [] },
     { id: 8, title: "코스 8", summary: "업데이트 예정입니다.", locked: true, poses: [] },
     { id: 9, title: "코스 9", summary: "업데이트 예정입니다.", locked: true, poses: [] },
-  ]);
+  ];
+
+  const [courses, setCourses] = useState<YogaCourse[]>(defaultCourses);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         const res = await publicRequest.get<{ courses: YogaCourse[] }>("/yoga-courses");
-        setCourses(res.data.courses);
+
+        const updated = defaultCourses.map((defaultCourse) => {
+          const serverCourse = res.data.courses.find((c) => c.id === defaultCourse.id);
+          return serverCourse ? { ...defaultCourse, ...serverCourse } : defaultCourse;
+        });
+
+        setCourses(updated);
       } catch (error) {
         console.error("코스 데이터를 불러오는 중 오류 발생:", error);
       }
@@ -50,8 +58,8 @@ export default function YogaPage() {
     fetchCourses();
   }, []);
 
-  const handleNavigate = (course: number) => {
-    router.push(`/healing/yoga/course${course}`);
+  const handleNavigate = (courseId: number) => {
+    router.push(`/healing/yoga/course${courseId}`);
   };
 
   return (

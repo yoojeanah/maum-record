@@ -25,7 +25,7 @@ interface MeditationCourseData {
   showVoliCredit: boolean;
 }
 
-export default function Course2() {
+export default function Course1() {
   const courseId = 1;
   const { nickname } = useUser();
   const router = useRouter();
