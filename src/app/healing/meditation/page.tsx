@@ -50,14 +50,20 @@ export default function MeditationListPage() {
     <div className="relative min-h-screen bg-gradient-to-br from-pink-100 via-purple-200 to-blue-200 px-4 py-10 flex flex-col items-center justify-center overflow-hidden">
       <HamburgerMenu />
       <ProfileIcon />
-      <h1 className="text-2xl text-center mb-8">원하는 명상 코스를 선택해 보세요. 🧘‍♀️</h1>
+
+      <h1 className="text-xl sm:text-2xl md:text-3xl text-gray-700 font-semibold text-center mb-8 mt-6 z-10">
+        원하는 명상 코스를 선택해 보세요. 🧘‍♀️
+      </h1>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-5xl z-10">
         {courses.map((course) => (
           <div
             key={course.id}
             onClick={() => !course.locked && handleNavigate(course.id)}
             className={`rounded-xl shadow-md p-6 flex flex-col justify-center items-center min-h-[150px] transition ${
-              course.locked ? "opacity-60 cursor-default" : "hover:bg-purple-50 cursor-pointer"
+              course.locked
+                ? "bg-white opacity-60 cursor-default"
+                : "bg-white hover:bg-purple-50 cursor-pointer"
             }`}
             style={course.locked ? { pointerEvents: "none" } : {}}
           >
@@ -66,6 +72,7 @@ export default function MeditationListPage() {
           </div>
         ))}
       </div>
+
       <FooterLogo />
     </div>
   );

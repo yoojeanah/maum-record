@@ -31,10 +31,8 @@ function ChalkboardCanvas() {
 
     const getPos = (e: MouseEvent | TouchEvent) => {
       const rect = canvas.getBoundingClientRect();
-      const clientX =
-        e instanceof TouchEvent ? e.touches[0]?.clientX : e.clientX;
-      const clientY =
-        e instanceof TouchEvent ? e.touches[0]?.clientY : e.clientY;
+      const clientX = e instanceof TouchEvent ? e.touches[0]?.clientX : e.clientX;
+      const clientY = e instanceof TouchEvent ? e.touches[0]?.clientY : e.clientY;
       return {
         x: clientX - rect.left,
         y: clientY - rect.top,
@@ -97,7 +95,8 @@ export default function MusicPage() {
   const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
 
   useEffect(() => {
-    publicRequest.get<MusicTrack[]>("/music-tracks")
+    publicRequest
+      .get<MusicTrack[]>("/music-tracks")
       .then((res) => {
         setTracks(res.data);
         const shuffledList = shuffleTracks(res.data);
@@ -126,9 +125,12 @@ export default function MusicPage() {
     setShuffleIndex(index);
     audio.src = track.src;
     audio.load();
-    audio.play().then(() => setIsPlaying(true)).catch((err) => {
-      console.warn("재생 실패:", err.message);
-    });
+    audio
+      .play()
+      .then(() => setIsPlaying(true))
+      .catch((err) => {
+        console.warn("재생 실패:", err.message);
+      });
   };
 
   const togglePlay = () => {
@@ -163,14 +165,34 @@ export default function MusicPage() {
       <ChalkboardCanvas />
       <HamburgerMenu />
       <ProfileIcon />
-      <h1 className="text-2xl text-center mb-8 mt-6">
-        {nickname} 님, <br /> 평화로운 피아노 음악과 함께 힐링을 느껴보세요. 🎶
+      <h1 className="text-xl sm:text-2xl md:text-3xl text-gray-700 font-semibold text-center mb-8 mt-6 animate-sway relative z-10">
+        {nickname} 님, <br />
+        평화로운 피아노 음악과 함께 힐링을 느껴 보세요. 🎶
       </h1>
-      <button onClick={togglePlay} className="text-white text-3xl mb-6">
+      <button onClick={togglePlay} className="text-white text-3xl mb-6 relative z-10">
         {isPlaying ? <FaPause /> : <FaPlay />}
       </button>
       <audio ref={audioRef} onEnded={handleTrackEnd} />
       <FooterLogo />
+
+      <style jsx>{`
+        @keyframes sway {
+          0% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+          100% {
+            transform: translateY(0);
+          }
+        }
+
+        .animate-sway {
+          display: inline-block;
+          animation: sway 3s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }
