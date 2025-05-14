@@ -33,7 +33,6 @@ export default function RecordPage() {
 
   const MAX_SECONDS = 600;
 
-  // 타이머 업데이트
   const updateTimer = () => {
     secondsRef.current += 1;
     const min = String(Math.floor(secondsRef.current / 60)).padStart(2, "0");
@@ -46,7 +45,6 @@ export default function RecordPage() {
     }
   };
 
-  // 녹음 시작
   const handleStart = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -65,7 +63,6 @@ export default function RecordPage() {
         setIsPaused(false);
         recorder.stream.getTracks().forEach((track) => track.stop());
 
-        // 녹음이 끝난 후 파형 표시
         if (waveformContainerRef.current) {
           if (wavesurferRef.current) {
             wavesurferRef.current.destroy();
@@ -102,7 +99,6 @@ export default function RecordPage() {
     }
   };
 
-  // 녹음 일시 정지
   const handlePause = () => {
     if (mediaRecorder) {
       mediaRecorder.pause();
@@ -111,7 +107,6 @@ export default function RecordPage() {
     }
   };
 
-  // 녹음 다시 시작
   const handleResume = () => {
     if (mediaRecorder) {
       mediaRecorder.resume();
@@ -120,7 +115,6 @@ export default function RecordPage() {
     }
   };
 
-  // 녹음 종료
   const handleStop = () => {
     if (mediaRecorder) {
       mediaRecorder.stop();
@@ -128,7 +122,6 @@ export default function RecordPage() {
     }
   };
 
-  // 녹음 제출
   const handleSubmit = async () => {
     if (!audioBlob) return alert("녹음 파일이 없습니다.");
 
