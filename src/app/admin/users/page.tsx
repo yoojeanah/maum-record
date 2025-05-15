@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import withAdminAuth from "@/app/components/auth/withAdminAuth";
 import { Users } from "lucide-react";
 import { authRequest } from "@/lib/axiosInstance";
 
@@ -102,8 +101,7 @@ function AdminUserPage() {
     </div>
   );
 }
-// TODO: 관리자 페이지 구현 완료 시, 관리자 인증 HOC를 추가
-// export default withAdminAuth(AdminUserPage);
+
 export default AdminUserPage;
 
 // mock data

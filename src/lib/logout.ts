@@ -1,4 +1,3 @@
-import { useRouter } from "next/navigation";
 import { authRequest } from "./axiosInstance";
 
 /**
@@ -8,8 +7,6 @@ import { authRequest } from "./axiosInstance";
  */
 
 export const logoutUser = async () => {
-  const router = useRouter();
-
   try {
     await authRequest.post("/logout");
   } catch (err) {

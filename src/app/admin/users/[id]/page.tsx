@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { notFound, useParams } from "next/navigation";
-import withAdminAuth from "@/app/components/auth/withAdminAuth";
 import { authRequest } from "@/lib/axiosInstance";
 
 type UserDetail = {
@@ -92,8 +91,7 @@ function UserDetailPage() {
     </div>
   );
 }
-// TODO: 관리자 페이지 구현 완료 시, 관리자 인증 HOC를 추가
-// export default withAdminAuth(UserDetailPage);
+
 export default UserDetailPage;
 
 // mock data

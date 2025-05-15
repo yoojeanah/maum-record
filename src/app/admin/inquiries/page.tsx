@@ -18,6 +18,5 @@ function AdminInquiryPage() {
     </div>
   );
 }
-// TODO: 관리자 페이지 구현 완료 시, 관리자 인증 HOC 적용
-// export default withAdminAuth(AdminInquiryPage);
+
 export default AdminInquiryPage;
