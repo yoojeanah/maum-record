@@ -10,14 +10,13 @@ interface Inquiry {
   content: string;
   status: string;
   date: string;
-  reply: string;
+  reply: string | null;
   answeredAt?: string;
 }
 
 export default function MyInquiriesPage() {
   const router = useRouter();
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
-  const [selected, setSelected] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchInquiries = async () => {
@@ -76,7 +75,7 @@ export default function MyInquiriesPage() {
                   </td>
                   <td className="py-2 text-right">
                     <button
-                      onClick={() => setSelected(q.id)}
+                      onClick={() => router.push(`/inquiry/${q.id}`)}
                       className="text-blue-500 hover:underline"
                     >
                       상세 보기
@@ -87,35 +86,6 @@ export default function MyInquiriesPage() {
             )}
           </tbody>
         </table>
-
-        {selected && (
-          <div className="mt-6 border-t pt-4">
-            {(() => {
-              const inquiry = inquiries.find((i) => i.id === selected);
-              return (
-                inquiry && (
-                  <div className="space-y-3">
-                    <h3 className="font-semibold text-gray-800">{inquiry.title}</h3>
-                    <p className="text-sm text-gray-700 whitespace-pre-wrap">{inquiry.content}</p>
-                    {inquiry.reply ? (
-                      <div className="bg-gray-100 p-3 rounded text-sm">
-                        <p className="text-gray-600">📩 관리자 답변</p>
-                        <p className="mt-1 text-gray-800">{inquiry.reply}</p>
-                        {inquiry.answeredAt && (
-                          <p className="text-gray-400 text-xs mt-2">
-                            답변일시: {inquiry.answeredAt}
-                          </p>
-                        )}
-                      </div>
-                    ) : (
-                      <p className="text-sm text-gray-400">아직 답변이 등록되지 않았습니다.</p>
-                    )}
-                  </div>
-                )
-              );
-            })()}
-          </div>
-        )}
       </div>
     </div>
   );
