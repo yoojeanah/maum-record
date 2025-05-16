@@ -9,7 +9,9 @@ import FooterLogo from "@/app/components/FooterLogo";
 
 interface MusicTrack {
   id: number;
-  title?: string;
+  title: string;
+  category: string;
+  description: string;
   src: string;
 }
 
@@ -93,19 +95,28 @@ export default function MusicPage() {
   const [shuffled, setShuffled] = useState<MusicTrack[]>([]);
   const [shuffleIndex, setShuffleIndex] = useState(0);
   const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    publicRequest
-      .get<MusicTrack[]>("/music-tracks")
-      .then((res) => {
-        setTracks(res.data);
-        const shuffledList = shuffleTracks(res.data);
+    const fetchTracks = async () => {
+      try {
+        const res = await publicRequest.get<Omit<MusicTrack, "src">[]>("/user/healing/music");
+        const tracksWithSrc = res.data.map((track) => ({
+          ...track,
+          src: `/audios/${encodeURIComponent(track.title)}.mp3`,
+        }));
+        setTracks(tracksWithSrc);
+        const shuffledList = shuffleTracks(tracksWithSrc);
         setShuffled(shuffledList);
         setShuffleIndex(0);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("음악 목록 불러오기 실패:", err);
-      });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTracks();
   }, []);
 
   const shuffleTracks = (list: MusicTrack[]) => {
@@ -165,13 +176,48 @@ export default function MusicPage() {
       <ChalkboardCanvas />
       <HamburgerMenu />
       <ProfileIcon />
+
       <h1 className="text-xl sm:text-2xl md:text-3xl text-gray-700 font-semibold text-center mb-8 mt-6 animate-sway relative z-10">
         {nickname} 님, <br />
         평화로운 피아노 음악과 함께 힐링을 느껴 보세요. 🎶
       </h1>
-      <button onClick={togglePlay} className="text-white text-3xl mb-6 relative z-10">
-        {isPlaying ? <FaPause /> : <FaPlay />}
-      </button>
+
+      {isLoading ? (
+        <>
+          <button
+            className="text-white text-3xl mb-4 relative z-10 opacity-50 cursor-not-allowed"
+            disabled
+          >
+            <FaPlay />
+          </button>
+          <p className="text-center text-gray-600 text-lg mb-6 z-10">로딩 중...</p>
+        </>
+      ) : tracks.length === 0 ? (
+        <>
+          <button
+            className="text-white text-3xl mb-4 relative z-10 opacity-50 cursor-not-allowed"
+            disabled
+          >
+            <FaPlay />
+          </button>
+          <p className="text-center text-gray-600 text-lg mb-6 z-10">준비 중입니다.</p>
+        </>
+      ) : (
+        <>
+          <button
+            onClick={togglePlay}
+            className="text-white text-3xl mb-4 relative z-10"
+          >
+            {isPlaying ? <FaPause /> : <FaPlay />}
+          </button>
+          {currentTrack && (
+            <p className="text-white text-lg font-medium mb-6 z-10 text-center">
+              🎵 지금 재생 중: "{currentTrack.title}"
+            </p>
+          )}
+        </>
+      )}
+
       <audio ref={audioRef} onEnded={handleTrackEnd} />
       <FooterLogo />
 

@@ -6,7 +6,7 @@ import HamburgerMenu from "@/app/components/HamburgerMenu";
 
 export default function ContactAdminPage() {
   const router = useRouter();
-  const [title, setTitle] = useState(""); // 제목 상태 추가
+  const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -17,16 +17,16 @@ export default function ContactAdminPage() {
     if (!title.trim() && !message.trim() && !file) return;
 
     const formData = new FormData();
-    formData.append("title", title);        // 제목 추가
+    formData.append("title", title);        
     formData.append("message", message);
     if (file) formData.append("file", file);
 
     try {
-      await publicRequest.post("/inquiries", formData, {
+      await publicRequest.post("/user/inquiry", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setSubmitted(true);
-      setTitle("");    // 제목 초기화
+      setTitle("");   
       setMessage("");
       setFile(null);
     } catch (error) {
@@ -54,7 +54,6 @@ export default function ContactAdminPage() {
                 </p>
               </div>
 
-              {/* 제목 입력 필드 */}
               <input
                 type="text"
                 value={title}

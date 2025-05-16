@@ -9,36 +9,25 @@ import FooterLogo from "@/app/components/FooterLogo";
 interface MeditationCourse {
   id: number;
   title: string;
-  summary: string;
-  locked: boolean;
+  description: string;
 }
 
 export default function MeditationListPage() {
   const router = useRouter();
-  const [courses, setCourses] = useState<MeditationCourse[]>([
-    { id: 1, title: "코스 1", summary: "업데이트 예정입니다.", locked: true },
-    { id: 2, title: "코스 2", summary: "업데이트 예정입니다.", locked: true },
-    { id: 3, title: "코스 3", summary: "업데이트 예정입니다.", locked: true },
-  ]);
+  const [courses, setCourses] = useState<MeditationCourse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    publicRequest.get<MeditationCourse[]>("/meditation-courses")
+    publicRequest
+      .get<MeditationCourse[]>("/user/healing/meditation")
       .then((res) => {
-        const updated = courses.map((defaultCourse) => {
-          const fromServer = res.data.find((c) => c.id === defaultCourse.id);
-          return fromServer
-            ? {
-                ...defaultCourse,
-                locked: fromServer.locked,
-                title: fromServer.locked ? defaultCourse.title : fromServer.title,
-                summary: fromServer.locked ? defaultCourse.summary : fromServer.summary,
-              }
-            : defaultCourse;
-        });
-        setCourses(updated);
+        setCourses(res.data);
       })
       .catch((err) => {
         console.error("명상 코스 불러오기 실패:", err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
@@ -55,23 +44,26 @@ export default function MeditationListPage() {
         원하는 명상 코스를 선택해 보세요. 🧘‍♀️
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-5xl z-10">
-        {courses.map((course) => (
-          <div
-            key={course.id}
-            onClick={() => !course.locked && handleNavigate(course.id)}
-            className={`rounded-xl shadow-md p-6 flex flex-col justify-center items-center min-h-[150px] transition ${
-              course.locked
-                ? "bg-white opacity-60 cursor-default"
-                : "bg-white hover:bg-purple-50 cursor-pointer"
-            }`}
-            style={course.locked ? { pointerEvents: "none" } : {}}
-          >
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">{course.title}</h2>
-            <p className="text-sm text-gray-600 text-center">{course.summary}</p>
-          </div>
-        ))}
-      </div>
+      {isLoading || courses.length === 0 ? (
+        <div className="flex justify-center items-center w-full max-w-5xl min-h-[160px] z-10">
+          <p className="text-center text-gray-600 text-lg">
+            {isLoading ? "로딩 중..." : "준비 중입니다."}
+          </p>
+        </div>
+      ) : (
+        <div className="flex flex-wrap justify-center gap-6 w-full max-w-5xl z-10">
+          {courses.map((course) => (
+            <div
+              key={course.id}
+              onClick={() => handleNavigate(course.id)}
+              className="rounded-xl shadow-md p-6 flex flex-col justify-center items-center min-h-[150px] w-[250px] bg-white hover:bg-purple-50 cursor-pointer transition"
+            >
+              <h2 className="text-lg font-semibold text-gray-800 mb-2">{course.title}</h2>
+              <p className="text-sm text-gray-600 text-center">{course.description}</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       <FooterLogo />
     </div>

@@ -21,7 +21,7 @@ export default function InquiryDetailPage() {
   useEffect(() => {
     const fetchInquiry = async () => {
       try {
-        const res = await publicRequest.get(`/inquiries/${id}`);
+        const res = await publicRequest.get(`/user/my-inquiry/${id}`);
         setInquiry(res.data);
       } catch (error) {
         console.error("문의 상세 조회 실패:", error);
