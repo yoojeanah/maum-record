@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IoIosArrowBack } from "react-icons/io";
 import Image from "next/image";
@@ -24,6 +24,26 @@ export default function ProfilePage() {
   const [nicknameError, setNicknameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+
+  // 유저 정보 GET 요청
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await authRequest.get("/user/profile");
+        const { nickName, image } = response.data;
+
+        setNickname(nickName);
+        setGlobalNickname(nickName);
+        setPreview(image || "/profile-default.png");
+        setProfileImage(image || "/profile-default.png");
+      } catch (error: any) {
+        console.error("사용자 정보 불러오기 실패:", error);
+        alert("사용자 정보를 불러오는 중 오류가 발생했습니다.");
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
@@ -82,22 +102,22 @@ export default function ProfilePage() {
     if (!isValid) return;
 
     const formData = new FormData();
-    formData.append("nickname", nickname);
+    formData.append("nickName", nickname);
     if (password) formData.append("password", password);
     if (file) formData.append("profileImage", file);
 
     try {
-      const response = await authRequest.patch("/users/me", formData, {
+      const response = await authRequest.patch("/user/profile", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      const { nickname: updatedNickname, profileImageUrl } = response.data;
+      const { nickName: updatedNickName, image } = response.data;
 
-      setGlobalNickname(updatedNickname || nickname);
-      if (profileImageUrl) {
-        setProfileImage(profileImageUrl);
+      setGlobalNickname(updatedNickName || nickname);
+      if (image) {
+        setProfileImage(image);
       } else if (file) {
         const tempUrl = URL.createObjectURL(file);
         setProfileImage(tempUrl);
@@ -119,7 +139,7 @@ export default function ProfilePage() {
     if (!confirmDelete) return;
 
     try {
-      await authRequest.delete("/users/me");
+      await authRequest.delete("/user/profile");
       alert("계정이 삭제되었습니다. 안녕히 가세요!");
       router.push("/login");
     } catch (error: any) {
