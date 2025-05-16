@@ -32,7 +32,7 @@ export default function MeditationListPage() {
   }, []);
 
   const handleNavigate = (id: number) => {
-    router.push(`/healing/meditation/course${id}`);
+    router.push(`/meditation/${id}`);
   };
 
   return (

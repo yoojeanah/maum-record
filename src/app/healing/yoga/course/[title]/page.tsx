@@ -1,21 +1,25 @@
 "use client";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { publicRequest } from "@/lib/axiosInstance";
 import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
+import Image from "next/image";
 
 interface Pose {
-  id: string;
-  name: string;
-  duration: number;
-  description: string;
+  elementId: number;
+  poseId: number;
+  poseTitle: string;
+  time: number;
+  sequenceOrder: number;
   image: string;
+  description: string;
 }
 
-export default function Course3Page() {
+export default function CourseDetailPage() {
+  const { title } = useParams();
+  const courseTitle = Array.isArray(title) ? title[0] : title;
   const router = useRouter();
 
   const [poses, setPoses] = useState<Pose[]>([]);
@@ -31,16 +35,16 @@ export default function Course3Page() {
   useEffect(() => {
     const fetchPoses = async () => {
       try {
-        const res = await publicRequest.get(`/yoga-courses/3`);
-        setPoses(res.data.poses);
-        setTimeLeft(res.data.poses[0]?.duration || 0);
+        const res = await publicRequest.get(`/api/user/healing/yoga/courses/${courseTitle}`);
+        setPoses(res.data);
+        setTimeLeft(res.data[0]?.time || 0);
       } catch (err) {
         console.error("요가 포즈 불러오기 실패:", err);
       }
     };
 
     fetchPoses();
-  }, []);
+  }, [courseTitle]);
 
   useEffect(() => {
     if (!isStarted || poses.length === 0) return;
@@ -50,43 +54,43 @@ export default function Course3Page() {
         if (prev === 1) {
           clearInterval(timer);
 
+          const bell = bellRef.current;
+
           if (isPreparing) {
-            bellRef.current?.play();
+            if (bell && bell.readyState >= 2) {
+              bell.play().catch(() => {});
+            } else if (bell) {
+              bell.addEventListener("canplaythrough", () => bell.play().catch(() => {}), { once: true });
+            }
+
             setTimeout(() => {
               setIsPreparing(false);
-              setTimeLeft(poses[0].duration);
+              setTimeLeft(poses[0].time);
             }, 1000);
           } else {
             if (index < poses.length - 1) {
               const nextIndex = index + 1;
 
-              const playAndGoNext = () => {
-                bellRef.current?.play().catch(() => {});
+              const playAndNext = () => {
+                bell?.play().catch(() => {});
                 setTimeout(() => {
                   setIndex(nextIndex);
-                  setTimeLeft(poses[nextIndex].duration);
+                  setTimeLeft(poses[nextIndex].time);
                 }, 600);
               };
 
-              if (bellRef.current && bellRef.current.readyState >= 2) {
-                playAndGoNext();
-              } else if (bellRef.current) {
-                bellRef.current.addEventListener("canplaythrough", playAndGoNext, { once: true });
+              if (bell && bell.readyState >= 2) {
+                playAndNext();
+              } else if (bell) {
+                bell.addEventListener("canplaythrough", playAndNext, { once: true });
               }
             } else {
               setTimeout(() => {
-                const playBell = () => {
-                  bellRef.current?.play().catch((err) => {
-                    console.warn("🔕 마지막 종소리 실패:", err);
-                  });
-                };
-
-                if (bellRef.current && bellRef.current.readyState >= 2) {
-                  playBell();
-                } else if (bellRef.current) {
-                  bellRef.current.addEventListener("canplaythrough", playBell, { once: true });
+                if (bell && bell.readyState >= 2) {
+                  bell.play().catch((err) => console.warn("🔕 마지막 종소리 실패:", err));
+                } else if (bell) {
+                  bell.addEventListener("canplaythrough", () => bell.play().catch(() => {}), { once: true });
                 }
-
                 setFinished(true);
               }, 300);
             }
@@ -94,12 +98,13 @@ export default function Course3Page() {
 
           return 0;
         }
+
         return prev - 1;
       });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [index, isPreparing, isStarted, poses]);
+  }, [isPreparing, isStarted, index, poses]);
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-pink-100 via-purple-200 to-blue-200 flex flex-col items-center px-4 py-10 pb-28 overflow-hidden">
@@ -108,7 +113,7 @@ export default function Course3Page() {
 
       {!isStarted ? (
         <div className="flex flex-col items-center justify-center flex-grow text-center mt-20">
-          <h2 className="text-2xl text-gray-700 font-semibold">요가를 시작해 볼까요?</h2>
+          <h2 className="text-2xl text-gray-700 font-semibold">{courseTitle} 요가를 시작해 볼까요?</h2>
           <button
             onClick={() => {
               setIsStarted(true);
@@ -130,7 +135,7 @@ export default function Course3Page() {
           <div className="w-full max-w-md mt-6">
             <Image
               src={current.image}
-              alt={current.name}
+              alt={current.poseTitle}
               width={800}
               height={800}
               className="w-full h-auto object-contain rounded-xl shadow-md bg-white"
@@ -138,7 +143,7 @@ export default function Course3Page() {
           </div>
 
           <div className="text-center mt-6">
-            <h2 className="text-2xl font-semibold text-gray-800">{current.name}</h2>
+            <h2 className="text-2xl font-semibold text-gray-800">{current.poseTitle}</h2>
             <p className="mt-2 text-gray-600">{current.description}</p>
           </div>
         </>
@@ -146,10 +151,10 @@ export default function Course3Page() {
         <div className="flex flex-col items-center justify-center flex-grow text-center text-gray-700 text-2xl font-bold mt-10">
           🧎 코스를 모두 완료했어요! 🎉
           <button
-            onClick={() => router.push("/healing")}
+            onClick={() => router.push("/yoga")}
             className="mt-4 text-sm text-gray-600 underline hover:text-gray-600 transition"
           >
-            홈으로 돌아가기
+            코스 목록으로 돌아가기
           </button>
         </div>
       )}
@@ -164,7 +169,7 @@ export default function Course3Page() {
                   width: `${
                     isPreparing
                       ? ((20 - timeLeft) / 20) * 100
-                      : ((poses[index]?.duration - timeLeft) / poses[index]?.duration) * 100
+                      : ((poses[index]?.time - timeLeft) / poses[index]?.time) * 100
                   }%`,
                 }}
               />

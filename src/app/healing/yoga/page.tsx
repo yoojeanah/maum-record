@@ -28,7 +28,7 @@ export default function YogaPage() {
 
   const handleNavigate = (title: string) => {
     const encodedTitle = encodeURIComponent(title);
-    router.push(`/user/healing/yoga/${encodedTitle}`);
+    router.push(`/yoga/course/${encodedTitle}`);
   };
 
   return (
