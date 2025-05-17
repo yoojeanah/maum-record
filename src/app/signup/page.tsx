@@ -12,6 +12,7 @@ const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 export default function SignupPage() {
   const router = useRouter();
+
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,7 +44,6 @@ export default function SignupPage() {
 
     let isValid = true;
 
-    // 닉네임 검증
     if (nickname.trim() === "") {
       setNicknameError("닉네임을 입력해 주세요.");
       isValid = false;
@@ -54,7 +54,6 @@ export default function SignupPage() {
       setNicknameError("");
     }
 
-    // 이메일 검증
     if (!validEmail) {
       setEmailError("이메일 형식이 올바르지 않습니다.");
       isValid = false;
@@ -62,7 +61,6 @@ export default function SignupPage() {
       setEmailError("");
     }
 
-    // 비밀번호 검증
     if (!validPwd) {
       setPasswordError("비밀번호는 대/소문자, 숫자, 특수문자를 포함한 8~24자여야 합니다.");
       isValid = false;
@@ -70,7 +68,6 @@ export default function SignupPage() {
       setPasswordError("");
     }
 
-    // 비밀번호 확인 검증
     if (!match) {
       setConfirmPwdError("비밀번호가 일치하지 않습니다.");
       isValid = false;
@@ -82,7 +79,7 @@ export default function SignupPage() {
 
     try {
       await publicRequest.post("/signup", {
-        nickname,
+        nickName: nickname,
         email,
         password,
       });

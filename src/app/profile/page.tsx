@@ -25,7 +25,7 @@ export default function ProfilePage() {
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
-  // 유저 정보 GET 요청
+  // 사용자 정보 불러오기 (password는 제외)
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -83,13 +83,6 @@ export default function ProfilePage() {
       setNicknameError("");
     }
 
-    if (password !== confirmPassword) {
-      setConfirmPasswordError("비밀번호가 일치하지 않습니다.");
-      isValid = false;
-    } else {
-      setConfirmPasswordError("");
-    }
-
     if (password && password.length < 8) {
       setPasswordError(
         "비밀번호는 대/소문자, 숫자, 특수문자를 포함한 8~24자여야 합니다."
@@ -99,31 +92,35 @@ export default function ProfilePage() {
       setPasswordError("");
     }
 
+    if (password !== confirmPassword) {
+      setConfirmPasswordError("비밀번호가 일치하지 않습니다.");
+      isValid = false;
+    } else {
+      setConfirmPasswordError("");
+    }
+
     if (!isValid) return;
 
-    const formData = new FormData();
-    formData.append("nickName", nickname);
-    if (password) formData.append("password", password);
-    if (file) formData.append("profileImage", file);
-
     try {
-      const response = await authRequest.patch("/user/profile", formData, {
+      const formData = new FormData();
+      formData.append("nickName", nickname);
+      if (password) formData.append("password", password);
+      if (file) formData.append("image", file);
+
+      const response = await authRequest.patch("/user/update", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      const { nickName: updatedNickName, image } = response.data;
+      alert(response.data.result || "회원 정보 수정 완료");
 
-      setGlobalNickname(updatedNickName || nickname);
-      if (image) {
-        setProfileImage(image);
-      } else if (file) {
+      setGlobalNickname(nickname);
+      if (file) {
         const tempUrl = URL.createObjectURL(file);
         setProfileImage(tempUrl);
       }
 
-      alert("회원정보가 저장되었습니다!");
       router.push("/record");
     } catch (error: any) {
       console.error("회원정보 수정 오류:", error);
@@ -233,9 +230,7 @@ export default function ProfilePage() {
               className="appearance-none w-full px-4 py-2 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
             {confirmPasswordError && (
-              <p className="text-red-500 text-sm mt-1">
-                {confirmPasswordError}
-              </p>
+              <p className="text-red-500 text-sm mt-1">{confirmPasswordError}</p>
             )}
           </div>
 
