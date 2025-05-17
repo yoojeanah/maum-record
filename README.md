@@ -44,17 +44,10 @@ maumrecord
 ├─ package.json
 ├─ postcss.config.js
 ├─ public
-│  ├─ audio
-│  │  ├─ bell.mp3
-│  │  ├─ essay-meditation-part1.wav
-│  │  ├─ essay-meditation-part2.wav
-│  │  ├─ fireplace.mp3
-│  │  └─ VOLI_TTS_설아.wav
 │  ├─ favicon.ico
 │  ├─ file.svg
 │  ├─ globe.svg
 │  ├─ images
-│  │  ├─ book-bg.jpg
 │  │  ├─ calendar-example.png
 │  │  ├─ healing-example.png
 │  │  ├─ record-example.png
@@ -65,7 +58,18 @@ maumrecord
 │  │  ├─ tree-sprout.png
 │  │  └─ tree-taller.png
 │  ├─ mock-images
-│  │  └─ inquiry-example.png
+│  │  ├─ inquiry-example.png
+│  │  ├─ suryanamaskara-A-1.png
+│  │  ├─ suryanamaskara-A-10.png
+│  │  ├─ suryanamaskara-A-11.png
+│  │  ├─ suryanamaskara-A-2.png
+│  │  ├─ suryanamaskara-A-3.png
+│  │  ├─ suryanamaskara-A-4.png
+│  │  ├─ suryanamaskara-A-5.png
+│  │  ├─ suryanamaskara-A-6.png
+│  │  ├─ suryanamaskara-A-7.png
+│  │  ├─ suryanamaskara-A-8.png
+│  │  └─ suryanamaskara-A-9.png
 │  ├─ music
 │  │  ├─ 1.mp3
 │  │  ├─ 2.mp3
@@ -73,14 +77,40 @@ maumrecord
 │  │  ├─ 4.mp3
 │  │  ├─ 5.mp3
 │  │  └─ 6.mp3
-│  ├─ poses
 │  ├─ profile-default.png
+│  ├─ test
+│  │  ├─ test v1.0
+│  │  │  ├─ meditation-course1
+│  │  │  │  ├─ 1.mp4
+│  │  │  │  ├─ 2.mp4
+│  │  │  │  ├─ 3.mp4
+│  │  │  │  ├─ 4.mp4
+│  │  │  │  ├─ bell.mp3
+│  │  │  │  └─ VOLI_TTS_설아.wav
+│  │  │  ├─ meditation-course2
+│  │  │  │  ├─ book-bg.jpg
+│  │  │  │  ├─ essay-meditation-part1.wav
+│  │  │  │  └─ essay-meditation-part2.wav
+│  │  │  └─ meditation-course3
+│  │  │     ├─ fireplace.mp3
+│  │  │     └─ fireplace.mp4
+│  │  └─ test v2.0
+│  │     ├─ meditation-course1
+│  │     │  ├─ 1.mp4
+│  │     │  ├─ 2.mp4
+│  │     │  ├─ 3.mp4
+│  │     │  ├─ 4.mp4
+│  │     │  └─ course1_final.mp3
+│  │     ├─ meditation-course2
+│  │     │  ├─ book-bg.jpg
+│  │     │  └─ course2_final.mp3
+│  │     └─ meditation-course3
+│  │        ├─ course3_final.mp3
+│  │        └─ fireplace.mp4
 │  ├─ video
-│  │  ├─ 1.mp4
-│  │  ├─ 2.mp4
-│  │  ├─ 3.mp4
-│  │  ├─ 4.mp4
-│  │  └─ fireplace.mp4
+│  │  ├─ course1.mp4
+│  │  ├─ course2.mp4
+│  │  └─ course3.mp4
 │  └─ window.svg
 ├─ README.md
 ├─ src
@@ -93,22 +123,21 @@ maumrecord
 │  │  │  │     └─ page.tsx
 │  │  │  ├─ layout.tsx
 │  │  │  ├─ page.tsx
-│  │  │  └─ users
-│  │  │     ├─ page.tsx
-│  │  │     └─ [id]
-│  │  │        └─ page.tsx
+│  │  │  ├─ users
+│  │  │  │  ├─ page.tsx
+│  │  │  │  └─ [id]
+│  │  │  │     └─ page.tsx
+│  │  │  └─ yoga
+│  │  │     ├─ poses
+│  │  │     │  └─ page.tsx
+│  │  │     └─ programs
+│  │  │        ├─ new
+│  │  │        │  └─ page.tsx
+│  │  │        ├─ page.tsx
+│  │  │        └─ [id]
+│  │  │           └─ page.tsx
 │  │  ├─ analyzing
 │  │  │  └─ page.tsx
-│  │  ├─ api
-│  │  │  ├─ admin
-│  │  │  │  └─ users
-│  │  │  │     └─ route.ts
-│  │  │  ├─ meditation-courses
-│  │  │  │  └─ route.ts
-│  │  │  ├─ music-tracks
-│  │  │  │  └─ route.ts
-│  │  │  └─ yoga-courses
-│  │  │     └─ route.ts
 │  │  ├─ calendar
 │  │  │  └─ page.tsx
 │  │  ├─ colors
@@ -121,8 +150,6 @@ maumrecord
 │  │  │  │  ├─ StatCard.tsx
 │  │  │  │  └─ UserTrendChart.tsx
 │  │  │  ├─ AnalysisToast.tsx
-│  │  │  ├─ auth
-│  │  │  │  └─ withAdminAuth.tsx
 │  │  │  ├─ FeedbackModal.tsx
 │  │  │  ├─ FooterLogo.tsx
 │  │  │  ├─ HamburgerMenu.tsx
@@ -131,42 +158,24 @@ maumrecord
 │  │  ├─ dashboard
 │  │  │  ├─ components
 │  │  │  │  ├─ EmotionBarChart.tsx
-│  │  │  │  ├─ EmotionYearlyBarChart.tsx
+│  │  │  │  ├─ EmotionDailyBarChart.tsx
 │  │  │  │  ├─ HealingLineChart.tsx
 │  │  │  │  └─ HealingPieChart.tsx
 │  │  │  └─ page.tsx
 │  │  ├─ globals.css
 │  │  ├─ healing
 │  │  │  ├─ meditation
-│  │  │  │  ├─ course1
-│  │  │  │  │  └─ page.tsx
-│  │  │  │  ├─ course2
-│  │  │  │  │  └─ page.tsx
-│  │  │  │  ├─ course3
-│  │  │  │  │  └─ page.tsx
+│  │  │  │  ├─ course
+│  │  │  │  │  └─ [id]
+│  │  │  │  │     └─ page.tsx
 │  │  │  │  └─ page.tsx
 │  │  │  ├─ music
 │  │  │  │  └─ page.tsx
 │  │  │  ├─ page.tsx
 │  │  │  └─ yoga
-│  │  │     ├─ course1
-│  │  │     │  └─ page.tsx
-│  │  │     ├─ course2
-│  │  │     │  └─ page.tsx
-│  │  │     ├─ course3
-│  │  │     │  └─ page.tsx
-│  │  │     ├─ course4
-│  │  │     │  └─ page.tsx
-│  │  │     ├─ course5
-│  │  │     │  └─ page.tsx
-│  │  │     ├─ course6
-│  │  │     │  └─ page.tsx
-│  │  │     ├─ course7
-│  │  │     │  └─ page.tsx
-│  │  │     ├─ course8
-│  │  │     │  └─ page.tsx
-│  │  │     ├─ course9
-│  │  │     │  └─ page.tsx
+│  │  │     ├─ course
+│  │  │     │  └─ [title]
+│  │  │     │     └─ page.tsx
 │  │  │     └─ page.tsx
 │  │  ├─ inquiry
 │  │  │  └─ page.tsx
@@ -174,7 +183,9 @@ maumrecord
 │  │  ├─ login
 │  │  │  └─ page.tsx
 │  │  ├─ my-inquiries
-│  │  │  └─ page.tsx
+│  │  │  ├─ page.tsx
+│  │  │  └─ [id]
+│  │  │     └─ page.tsx
 │  │  ├─ page.tsx
 │  │  ├─ profile
 │  │  │  └─ page.tsx
@@ -187,11 +198,12 @@ maumrecord
 │  ├─ components
 │  │  └─ ResultPage.tsx
 │  ├─ context
+│  │  ├─ ToastContext.tsx
 │  │  └─ UserContext.tsx
 │  └─ lib
 │     ├─ axiosInstance.ts
-│     ├─ healingFeedbackData.ts
-│     └─ logout.ts
+│     ├─ logout.ts
+│     └─ userDashboard.ts
 ├─ tailwind.config.js
 └─ tsconfig.json
 

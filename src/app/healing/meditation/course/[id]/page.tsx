@@ -14,7 +14,7 @@ interface MeditationCourseData {
   postStartText: string;
 }
 
-export default function MeditationDetailPage() {
+export default function MeditationPage() {
   const { id } = useParams();
   const courseId = Array.isArray(id) ? parseInt(id[0]) : parseInt(id as string);
   const { nickname } = useUser();
