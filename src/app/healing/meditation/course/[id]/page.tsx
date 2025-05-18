@@ -8,10 +8,7 @@ import FooterLogo from "@/app/components/FooterLogo";
 import { useUser } from "@/context/UserContext";
 
 interface MeditationCourseData {
-  id: number;
-  video: string;
-  preStartText: string;
-  postStartText: string;
+  fileUrl: string;
 }
 
 export default function MeditationPage() {
@@ -27,7 +24,7 @@ export default function MeditationPage() {
   useEffect(() => {
     if (isNaN(courseId)) return;
     publicRequest
-      .get(`/user/healing/{id}`)
+      .get(`/user/healing/${courseId}`)
       .then((res) => setData(res.data))
       .catch((err) => console.error("명상 데이터 불러오기 실패:", err));
   }, [courseId]);
@@ -55,7 +52,7 @@ export default function MeditationPage() {
         className={`absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-500 ${
           started ? "opacity-100" : "opacity-0"
         }`}
-        src={data.video}
+        src={data.fileUrl}
         loop
         playsInline
       />
@@ -79,11 +76,12 @@ export default function MeditationPage() {
             className="text-xl sm:text-2xl md:text-3xl text-gray-700 font-semibold leading-relaxed cursor-pointer"
             onClick={handleStart}
           >
-            {data.preStartText}
+            명상을 시작하시려면 이곳을 클릭하세요.
           </h1>
         ) : (
-          <h1 className="text-xl sm:text-2xl md:text-3xl text-white font-semibold leading-relaxed whitespace-pre-line">
-            {data.postStartText.replace("{{nickname}}", nickname)}
+          <h1 className="text-xl sm:text-2xl md:text-3xl text-white font-semibold leading-relaxed">
+            {nickname} 님,<br />
+            마음을 편안하게 가라앉히세요.
           </h1>
         )}
       </div>

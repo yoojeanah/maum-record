@@ -6,12 +6,12 @@ import HamburgerMenu from "@/app/components/HamburgerMenu";
 
 interface Inquiry {
   id: number;
+  email: string; // 화면에 표시하지 않음
   title: string;
-  content: string;
-  status: string;
+  message: string;
+  file?: string | null;
   date: string;
-  reply: string | null;
-  answeredAt?: string;
+  status: "PENDING" | "ANSWERED";
 }
 
 export default function MyInquiriesPage() {
@@ -30,6 +30,21 @@ export default function MyInquiriesPage() {
 
     fetchInquiries();
   }, []);
+
+  const formatDate = (isoDate: string) => {
+    const date = new Date(isoDate);
+    const datePart = date.toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const timePart = date.toLocaleTimeString("ko-KR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    return `${datePart} ${timePart}`;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 flex justify-center">
@@ -65,12 +80,12 @@ export default function MyInquiriesPage() {
               inquiries.map((q) => (
                 <tr key={q.id} className="border-b">
                   <td className="py-2">{q.title}</td>
-                  <td className="py-2">{q.date}</td>
+                  <td className="py-2">{formatDate(q.date)}</td>
                   <td className="py-2">
-                    {q.status === "답변 완료" ? (
-                      <span className="text-green-600">{q.status}</span>
+                    {q.status === "ANSWERED" ? (
+                      <span className="text-green-600">답변 완료</span>
                     ) : (
-                      <span className="text-gray-400">{q.status}</span>
+                      <span className="text-gray-400">답변 대기</span>
                     )}
                   </td>
                   <td className="py-2 text-right">

@@ -8,11 +8,9 @@ import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
 
 interface MusicTrack {
-  id: number;
   title: string;
   category: string;
-  description: string;
-  src: string;
+  fileUrl: string;
 }
 
 function ChalkboardCanvas() {
@@ -100,13 +98,13 @@ export default function MusicPage() {
   useEffect(() => {
     const fetchTracks = async () => {
       try {
-        const res = await publicRequest.get<Omit<MusicTrack, "src">[]>("/user/healing/music");
-        const tracksWithSrc = res.data.map((track) => ({
-          ...track,
-          src: `/audios/${encodeURIComponent(track.title)}.mp3`,
-        }));
-        setTracks(tracksWithSrc);
-        const shuffledList = shuffleTracks(tracksWithSrc);
+        const res = await publicRequest.get<MusicTrack[]>("/user/healing/music");
+
+        // music 카테고리만 필터링
+        const musicOnly = res.data.filter((track) => track.category === "music");
+
+        setTracks(musicOnly);
+        const shuffledList = shuffleTracks(musicOnly);
         setShuffled(shuffledList);
         setShuffleIndex(0);
       } catch (err) {
@@ -134,7 +132,7 @@ export default function MusicPage() {
     const track = shuffled[index];
     setCurrentTrack(track);
     setShuffleIndex(index);
-    audio.src = track.src;
+    audio.src = track.fileUrl;
     audio.load();
     audio
       .play()

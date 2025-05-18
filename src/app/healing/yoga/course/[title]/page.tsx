@@ -35,7 +35,7 @@ export default function CourseDetailPage() {
   useEffect(() => {
     const fetchPoses = async () => {
       try {
-        const res = await publicRequest.get(`/api/user/healing/yoga/courses/${courseTitle}`);
+        const res = await publicRequest.get(`/user/healing/yoga/courses/${courseTitle}`);
         setPoses(res.data);
         setTimeLeft(res.data[0]?.time || 0);
       } catch (err) {
