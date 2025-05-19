@@ -55,7 +55,6 @@ export default function YogaPage() {
               className="rounded-xl shadow-md p-6 flex flex-col justify-center items-center min-h-[150px] w-[250px] bg-white hover:bg-purple-50 cursor-pointer transition"
             >
               <h2 className="text-lg font-semibold text-gray-800 mb-2">{title}</h2>
-              <p className="text-sm text-gray-600 text-center">코스를 선택해 보세요.</p>
             </div>
           ))}
         </div>
