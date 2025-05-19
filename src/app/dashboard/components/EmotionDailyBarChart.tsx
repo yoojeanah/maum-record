@@ -43,7 +43,7 @@ export default function EmotionDailyBarChart() {
       <p className="text-gray-400 text-sm text-center">
         일일 감정 데이터가 부족합니다.
         <br />
-        음성 일기를 며칠 더 작성해보세요.
+        음성 일기를 며칠 더 작성해 보세요.
       </p>
     );
   }

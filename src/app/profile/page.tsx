@@ -143,7 +143,7 @@ export default function ProfilePage() {
       console.error("계정 삭제 중 오류:", error);
       alert(
         error?.response?.data?.message ??
-          "계정 삭제 중 오류가 발생했습니다. 다시 시도해주세요."
+          "계정 삭제 중 오류가 발생했습니다. 다시 시도해 주세요."
       );
     }
   };

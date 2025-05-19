@@ -10,6 +10,7 @@ interface MeditationCourse {
   id: number;
   title: string;
   description: string;
+  category: string;
 }
 
 export default function MeditationListPage() {
@@ -19,9 +20,12 @@ export default function MeditationListPage() {
 
   useEffect(() => {
     publicRequest
-      .get<MeditationCourse[]>("/user/healing/meditation")
+      .get<MeditationCourse[]>("/user/healing")
       .then((res) => {
-        setCourses(res.data);
+        const meditationOnly = res.data.filter(
+          (item) => item.category === "meditation"
+        );
+        setCourses(meditationOnly);
       })
       .catch((err) => {
         console.error("명상 코스 불러오기 실패:", err);
@@ -32,7 +36,7 @@ export default function MeditationListPage() {
   }, []);
 
   const handleNavigate = (id: number) => {
-    router.push(`/meditation/${id}`);
+    router.push(`/healing/meditation/course/${id}`);
   };
 
   return (

@@ -31,7 +31,7 @@ export default function HealingProgramTrendChart({ trends }: Props) {
   // trends(객체의 배열) 데이터에서 동적 key 추출
   useEffect(() => {
     if (trends.length > 0) {
-      const keys = Object.keys(trends[0]).filter((key) => key !== "date"); // 첫번째 객체에서 'date' 제외한 key들 추출
+      const keys = Object.keys(trends[0]).filter((key) => key !== "date"); // 첫 번째 객체에서 'date' 제외한 key들 추출
       setProgramKeys(keys);
     }
   }, [trends]);

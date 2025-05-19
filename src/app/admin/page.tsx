@@ -101,7 +101,7 @@ function AdminDashboardPage() {
 export default AdminDashboardPage;
 
 // const fetchMockData = async () => {
-//   // 📊 mock data 정의
+//   // mock data 정의
 //   const mockStats = {
 //     userCount: 1234,
 //     todayJournalCount: 56,

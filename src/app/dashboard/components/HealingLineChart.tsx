@@ -21,7 +21,7 @@ export default function HealingLineChart({ data }: Props) {
       <div className="text-gray-400 text-sm text-center">
         아직 힐링 프로그램 피드백 데이터가 없습니다.
         <br />
-        힐링 프로그램을 사용하시면 그래프가 표시돼요 🌱
+        힐링 프로그램을 사용하시면 그래프가 표시돼요. 🌱
       </div>
     );
   }
