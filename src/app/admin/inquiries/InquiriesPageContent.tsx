@@ -132,7 +132,7 @@ export default function InquiriesPageContent() {
   );
 }
 
-// 백엔드 연동 전에 임시로 화면 보고 싶을 때, 위 백연동 코드 주석처리하고, 이 코드를 실행시키세요
+// 백엔드 연동 전에 임시로 화면 보고 싶을 때, 위 백 연동 코드 주석처리하고, 이 코드를 실행시키세요.
 //   const mockData: Inquiry[] = [
 //     {
 //       id: 1,

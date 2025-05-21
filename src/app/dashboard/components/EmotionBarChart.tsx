@@ -43,7 +43,7 @@ export default function EmotionBarChart() {
       <p className="text-gray-400 text-sm text-center">
         감정 데이터가 아직 없습니다.
         <br />
-        음성 일기를 작성하시면 긍정 지수가 기록돼요 ✨
+        음성 일기를 작성하시면 긍정 지수가 기록돼요. ✨
       </p>
     );
   }

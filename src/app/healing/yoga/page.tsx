@@ -6,6 +6,11 @@ import HamburgerMenu from "@/app/components/HamburgerMenu";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FooterLogo from "@/app/components/FooterLogo";
 
+// camelCase -> 공백 삽입 + 첫 글자 대문자
+function formatTitle(title: string): string {
+  return title.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^./, (s) => s.toUpperCase());
+}
+
 export default function YogaPage() {
   const router = useRouter();
   const [courseTitles, setCourseTitles] = useState<string[]>([]);
@@ -14,7 +19,7 @@ export default function YogaPage() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await publicRequest.get<string[]>("/user/healing/yoga/courses");
+        const res = await publicRequest.get<string[]>("/api/user/healing/yoga/courses");
         setCourseTitles(res.data);
       } catch (error) {
         console.error("요가 코스 목록 불러오기 실패:", error);
@@ -28,7 +33,7 @@ export default function YogaPage() {
 
   const handleNavigate = (title: string) => {
     const encodedTitle = encodeURIComponent(title);
-    router.push(`/yoga/course/${encodedTitle}`);
+    router.push(`/healing/yoga/course/${encodedTitle}`);
   };
 
   return (
@@ -43,19 +48,18 @@ export default function YogaPage() {
       {isLoading || courseTitles.length === 0 ? (
         <div className="flex justify-center items-center w-full max-w-5xl min-h-[160px] z-10">
           <p className="text-center text-gray-600 text-lg">
-            {isLoading ? "로딩 중..." : "준비 중입니다."}
+            {isLoading ? "로딩 중..." : "등록된 요가 코스가 없습니다."}
           </p>
         </div>
       ) : (
-        <div className="flex flex-wrap justify-center gap-6 w-full max-w-5xl z-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-5xl z-10">
           {courseTitles.map((title, index) => (
             <div
               key={index}
               onClick={() => handleNavigate(title)}
-              className="rounded-xl shadow-md p-6 flex flex-col justify-center items-center min-h-[150px] w-[250px] bg-white hover:bg-purple-50 cursor-pointer transition"
+              className="rounded-xl shadow-md p-6 flex flex-col justify-center items-center min-h-[150px] bg-white hover:bg-purple-50 cursor-pointer transition"
             >
-              <h2 className="text-lg font-semibold text-gray-800 mb-2">{title}</h2>
-              <p className="text-sm text-gray-600 text-center">코스를 선택해 보세요.</p>
+              <h2 className="text-lg font-semibold text-gray-800">{formatTitle(title)}</h2>
             </div>
           ))}
         </div>

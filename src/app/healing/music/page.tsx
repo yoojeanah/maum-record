@@ -98,9 +98,8 @@ export default function MusicPage() {
   useEffect(() => {
     const fetchTracks = async () => {
       try {
-        const res = await publicRequest.get<MusicTrack[]>("/user/healing/music");
+        const res = await publicRequest.get<MusicTrack[]>("/user/healing");
 
-        // music 카테고리만 필터링
         const musicOnly = res.data.filter((track) => track.category === "music");
 
         setTracks(musicOnly);

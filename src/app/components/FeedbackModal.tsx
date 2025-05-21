@@ -1,6 +1,5 @@
-"use client";
-
 // src/app/components/FeedbackModal.tsx
+"use client";
 
 import React, { useState } from "react";
 
@@ -35,7 +34,7 @@ export default function FeedbackModal({
     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl shadow-xl p-8 w-96 text-center animate-toast">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">
-          힐링 프로그램이 도움이 되었나요?
+          힐링 프로그램이 도움이 되셨나요?
         </h3>
 
         <div className="text-sm text-gray-700 mb-3">

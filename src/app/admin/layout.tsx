@@ -25,7 +25,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <main className="p-6">{children}</main>
         </div>
       </div>
-      {/*TODO: 개발 중에만 켜두기, 배포 전 주석 처리 */}
+      {/* TODO: 개발 중에만 켜두기, 배포 전 주석 처리 */}
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
