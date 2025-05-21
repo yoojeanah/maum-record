@@ -1,3 +1,4 @@
+// src/app/admin/users/page.tsx
 "use client";
 
 import Link from "next/link";
@@ -8,10 +9,13 @@ import { authRequest } from "@/lib/axiosInstance";
 type User = {
   id: number;
   email: string;
+  nickName: string;
+  image: string | null;
+  role: "USER" | "ADMIN";
   createdAt: string;
-  journalCount: number;
-  lastHealingProgram?: string; // e.g., '명상'
-  lastHealingDate?: string; // e.g., '2025-03-22'
+  count: number;
+  lastHealingProgram: string | null;
+  lastHealingDate: string | null;
   active: boolean;
 };
 
@@ -30,7 +34,6 @@ function AdminUserPage() {
         setLoading(false);
       }
     };
-
     fetchUsers();
   }, []);
 
@@ -50,31 +53,32 @@ function AdminUserPage() {
         사용자 관리
       </h2>
       <div className="overflow-x-auto shadow border rounded-lg bg-white">
-        <table className="min-w-full bg-white text-sm text-left whitespace-nowrap">
-          <thead className="bg-gray-100 text-left text-gray-600 font-medium">
+        <table className="min-w-full bg-white text-sm whitespace-nowrap">
+          <thead className="bg-gray-100 text-gray-600 font-medium">
             <tr>
-              <th className="px-4 py-3">이메일</th>
-              <th className="px-4 py-3">가입일</th>
-              <th className="px-4 py-3">일기 수</th>
-              <th className="px-4 py-3">최근 힐링</th>
-              <th className="px-4 py-3">상태</th>
-              <th className="px-4 py-3">관리</th>
+              <th className="px-4 py-3 text-left">이메일</th>
+              <th className="px-4 py-3 text-left">가입일</th>
+              <th className="px-4 py-3 text-center">일기 수</th>
+              <th className="px-4 py-3 text-center">최근 힐링</th>
+              <th className="px-4 py-3 text-center">상태</th>
+              <th className="px-4 py-3 text-center">권한</th>
+              <th className="px-4 py-3 text-center">관리</th>
             </tr>
           </thead>
           <tbody className="divide-y text-gray-700">
             {users.map((user) => (
               <tr key={user.id}>
-                <td className="px-4 py-2">{maskEmail(user.email)}</td>
-                <td className="px-4 py-2">
+                <td className="px-4 py-2 text-left">{maskEmail(user.email)}</td>
+                <td className="px-4 py-2 text-left">
                   {new Date(user.createdAt).toLocaleDateString()}
                 </td>
-                <td className="px-4 py-2 text-center">{user.journalCount}</td>
+                <td className="px-4 py-2 text-center">{user.count}</td>
                 <td className="px-4 py-2 text-center">
                   {user.lastHealingProgram
                     ? `${user.lastHealingProgram} (${user.lastHealingDate})`
                     : "없음"}
                 </td>
-                <td className="px-4 py-2">
+                <td className="px-4 py-2 text-center">
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-semibold ${
                       user.active
@@ -85,7 +89,18 @@ function AdminUserPage() {
                     {user.active ? "활성" : "비활성"}
                   </span>
                 </td>
-                <td className="px-4 py-2">
+                <td className="px-4 py-2 text-center">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-bold ${
+                      user.role === "ADMIN"
+                        ? "bg-purple-100 text-purple-700"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    {user.role}
+                  </span>
+                </td>
+                <td className="px-4 py-2 text-center">
                   <Link
                     href={`/admin/users/${user.id}`}
                     className="text-blue-600 hover:underline text-sm"
@@ -104,52 +119,49 @@ function AdminUserPage() {
 
 export default AdminUserPage;
 
-// mock data
-// const fetchMockUsers = async () => {
-//   const mockUsers: User[] = [
-//     {
-//       id: 1,
-//       email: "euuser@example.com",
-//       createdAt: "2024-12-01",
-//       journalCount: 14,
-//       active: true,
-//     },
-//     {
-//       id: 2,
-//       email: "causer@example.com",
-//       createdAt: "2025-01-10",
-//       journalCount: 7,
-//       active: false,
-//     },
-//     {
-//       id: 3,
-//       email: "kimuser1@example.com",
-//       createdAt: "2025-01-10T12:34:56Z",
-//       journalCount: 12,
-//       lastHealingProgram: "명상",
-//       lastHealingDate: "2025-04-30",
-//       active: true,
-//     },
-//     {
-//       id: 4,
-//       email: "leeuser2@example.com",
-//       createdAt: "2025-02-15T08:20:00Z",
-//       journalCount: 0,
-//       active: false,
-//     },
-//     {
-//       id: 5,
-//       email: "parkuser3@example.com",
-//       createdAt: "2025-03-01T15:00:00Z",
-//       journalCount: 7,
-//       lastHealingProgram: "요가",
-//       lastHealingDate: "2025-05-04",
-//       active: true,
-//     },
-//   ];
-//   await new Promise((r) => setTimeout(r, 300)); // 로딩 흉내
+// ✅ MOCK DATA
+// 아래 mockUsers를 useEffect에서 setUsers(mockUsers)로 사용 가능
+const mockUsers: User[] = [
+  {
+    id: 1,
+    email: "admin@example.com",
+    nickName: "관리자",
+    image: null,
+    role: "ADMIN",
+    createdAt: "2024-12-01T10:00:00Z",
+    count: 14,
+    lastHealingProgram: "명상",
+    lastHealingDate: "2025-05-20",
+    active: true,
+  },
+  {
+    id: 2,
+    email: "user1@example.com",
+    nickName: "유저1",
+    image: null,
+    role: "USER",
+    createdAt: "2025-01-10T14:22:00Z",
+    count: 5,
+    lastHealingProgram: "요가",
+    lastHealingDate: "2025-05-19",
+    active: true,
+  },
+  {
+    id: 3,
+    email: "user2@example.com",
+    nickName: "유저2",
+    image: null,
+    role: "USER",
+    createdAt: "2025-03-05T09:00:00Z",
+    count: 0,
+    lastHealingProgram: null,
+    lastHealingDate: null,
+    active: false,
+  },
+];
+
+// 모의 데이터로 실행하고 싶을 경우 여기를 주석 해제하고 위 fetchUsers()를 주석 처리하세요
+// setTimeout(() => {
 //   setUsers(mockUsers);
 //   setLoading(false);
-// };
-
-// fetchMockUsers();
+// }, 300);

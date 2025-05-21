@@ -1,4 +1,4 @@
-// src/app/admin/yoga/programs/new/page.tsx
+// src/app/admin/healing/yoga-programs/new/page.tsx
 // 요가 신규 프로그램 추가
 "use client";
 
@@ -9,18 +9,17 @@ import { authRequest } from "@/lib/axiosInstance";
 import { ArrowUp, ArrowDown, Plus, Check } from "lucide-react";
 
 type YogaPose = {
-  id: string;
-  name: string;
-  duration: number;
-  image: string;
-  description: string;
+  id: number;
+  title: string;
 };
 
-type NewProgram = {
+type NewProgramPayload = {
   title: string;
-  summary: string;
-  locked: boolean;
-  poses: { id: string; order: number }[];
+  description: string;
+  poses: {
+    poseId: number;
+    time: number;
+  }[];
 };
 
 export default function NewYogaProgramPage() {
@@ -31,21 +30,20 @@ export default function NewYogaProgramPage() {
   const { data: poses, isPending: posesLoading } = useQuery<YogaPose[]>({
     queryKey: ["admin", "yoga", "poses"],
     queryFn: async () => {
-      const res = await authRequest.get<YogaPose[]>("/admin/yoga/poses");
+      const res = await authRequest.get<YogaPose[]>("/admin/healing/yogaPose");
       return res.data;
     },
-
     staleTime: 5 * 60_000,
   });
 
   // 2) 새 프로그램 생성 mutation
   const createMutation = useMutation({
-    mutationFn: (dto: NewProgram) =>
-      authRequest.post("/admin/yoga/programs", dto),
+    mutationFn: (dto: NewProgramPayload) =>
+      authRequest.post("/admin/healing/yoga/create", dto),
     onSuccess: () => {
       // 생성 후 리스트 리패치
       queryClient.invalidateQueries({ queryKey: ["programs"] });
-      router.push("/admin/yoga/programs");
+      router.push("/admin/healing/yoga-programs");
     },
     onError: (err) => {
       console.error("프로그램 생성 실패", err);
@@ -55,17 +53,22 @@ export default function NewYogaProgramPage() {
 
   // 3) 폼 state
   const [title, setTitle] = useState("");
-  const [summary, setSummary] = useState("");
-  const [selected, setSelected] = useState<YogaPose[]>([]);
-  const locked = true; // 신규 생성 시 항상 locked
+  const [description, setDescription] = useState("");
+  const [selected, setSelected] = useState<
+    {
+      id: number;
+      title: string;
+      time: number;
+    }[]
+  >([]);
 
   // 4) 포즈 추가 / 제거
   const addPose = (pose: YogaPose) => {
     if (!selected.find((p) => p.id === pose.id)) {
-      setSelected((s) => [...s, pose]);
+      setSelected((s) => [...s, { id: pose.id, title: pose.title, time: 30 }]);
     }
   };
-  const removePose = (id: string) => {
+  const removePose = (id: number) => {
     setSelected((s) => s.filter((p) => p.id !== id));
   };
 
@@ -87,22 +90,21 @@ export default function NewYogaProgramPage() {
     });
   };
 
+  const updateTime = (id: number, time: number) => {
+    setSelected((s) => s.map((p) => (p.id === id ? { ...p, time } : p)));
+  };
+
   // 6) 제출 핸들러
   const handleSubmit = () => {
-    if (!title.trim() || !summary.trim() || selected.length === 0) {
-      return alert("제목, 요약, 포즈를 모두 입력·선택해주세요.");
+    if (!title.trim() || !description.trim() || selected.length === 0) {
+      return alert("제목, 설명, 포즈를 모두 입력·선택해주세요.");
     }
-    createMutation.mutate({
+    const payload: NewProgramPayload = {
       title,
-      summary,
-      locked,
-      poses: selected.map((pose, index) => ({
-        // index === selected 배열에서 pose가 몇 번째 요소인지 (0부터 시작)을 의미
-        // map 함수에서 내부적으로 index 제공
-        id: pose.id,
-        order: index + 1,
-      })),
-    });
+      description,
+      poses: selected.map((p) => ({ poseId: p.id, time: p.time })),
+    };
+    createMutation.mutate(payload);
   };
 
   return (
@@ -124,8 +126,8 @@ export default function NewYogaProgramPage() {
         <div>
           <label className="block mb-1 font-medium">요약</label>
           <textarea
-            value={summary}
-            onChange={(e) => setSummary(e.target.value)}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             className="w-full border rounded px-3 py-2"
             placeholder="예) 상쾌한 하루를 여는 스트레칭 루틴"
             rows={3}
@@ -140,10 +142,10 @@ export default function NewYogaProgramPage() {
           {posesLoading ? (
             <p>로딩 중...</p>
           ) : (
-            <ul className="space-y-2 max-h-96 overflow-auto border rounded p-2">
+            <ul className="space-y-2 border rounded p-2">
               {poses!.map((pose) => (
                 <li key={pose.id} className="flex justify-between items-center">
-                  <span>{pose.name}</span>
+                  <span>{pose.title}</span>
                   <button
                     onClick={() => addPose(pose)}
                     disabled={!!selected.find((p) => p.id === pose.id)}
@@ -163,25 +165,38 @@ export default function NewYogaProgramPage() {
           {selected.length === 0 ? (
             <p className="text-gray-500">아직 추가된 포즈가 없습니다.</p>
           ) : (
-            <ul className="space-y-2 max-h-96 overflow-auto border rounded p-2">
+            <ul className="space-y-2 border rounded p-2">
               {selected.map((pose, i) => (
-                <li key={pose.id} className="flex justify-between items-center">
-                  <span>
-                    {i + 1}. {pose.name}
-                  </span>
-                  <div className="flex items-center gap-1">
-                    <button onClick={() => moveUp(i)} className="p-1">
-                      <ArrowUp className="w-4 h-4" />
-                    </button>
-                    <button onClick={() => moveDown(i)} className="p-1">
-                      <ArrowDown className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => removePose(pose.id)}
-                      className="p-1 text-red-500"
-                    >
-                      <Check className="w-4 h-4" /> 제거
-                    </button>
+                <li key={pose.id} className="border-b pb-2">
+                  <div className="flex justify-between items-center mb-1">
+                    <span>
+                      {i + 1}. {pose.title}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <button onClick={() => moveUp(i)} className="p-1">
+                        <ArrowUp className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => moveDown(i)} className="p-1">
+                        <ArrowDown className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => removePose(pose.id)}
+                        className="p-1 text-red-500"
+                      >
+                        <Check className="w-4 h-4" /> 제거
+                      </button>
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    시간(초):
+                    <input
+                      type="number"
+                      value={pose.time}
+                      onChange={(e) =>
+                        updateTime(pose.id, Number(e.target.value))
+                      }
+                      className="ml-2 border rounded px-2 py-1 w-24"
+                    />
                   </div>
                 </li>
               ))}
@@ -205,23 +220,18 @@ export default function NewYogaProgramPage() {
   );
 }
 
-//  Mock Data
+// Mock 데이터
 // const mockPoses: YogaPose[] = [
-//   {
-//     id: "pose1",
-//     name: "아기 자세",
-//     duration: 40,
-//     image: "/images/yoga/child.png",
-//     description: "긴장을 풀고 마음을 안정시켜 줍니다.",
-//   },
-//   {
-//     id: "pose2",
-//     name: "누운 비틀기",
-//     duration: 30,
-//     image: "/images/yoga/twist.png",
-//     description: "허리를 부드럽게 풀어주는 동작입니다.",
-//   },
-//   // … 추가 mock 포즈
+//   { id: 1, title: "다운독" },
+//   { id: 2, title: "코브라 자세" },
+//   { id: 3, title: "전사 자세" },
+//   { id: 4, title: "아기 자세" },
+//   { id: 5, title: "나무 자세" },
+//   { id: 6, title: "삼각형 자세" },
+//   { id: 7, title: "비둘기 자세" },
+//   { id: 8, title: "다리 올리기" },
+//   { id: 9, title: "고양이 소 자세" },
+//   { id: 10, title: "앉은 전사 자세" },
 // ];
-//  mockPoses를 초기 데이터로 사용 -> 화면 바로 렌더링
-// initialData: mockPoses,
+
+// initialData: mockPoses, // Mock 데이터 사용

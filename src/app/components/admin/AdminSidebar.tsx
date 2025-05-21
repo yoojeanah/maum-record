@@ -57,13 +57,31 @@ export default function AdminSidebar() {
             1:1 문의 관리
           </button>
           <button
-            onClick={() => handleNavClick("/admin/yoga/poses")}
+            onClick={() => handleNavClick("/admin/healing/create")}
+            className="hover:text-blue-600"
+          >
+            힐링 콘텐츠 추가
+          </button>
+          <button
+            onClick={() => handleNavClick("/admin/healing/meditation")}
+            className="hover:text-blue-600"
+          >
+            명상 콘텐츠 관리
+          </button>
+          <button
+            onClick={() => handleNavClick("/admin/healing/music")}
+            className="hover:text-blue-600"
+          >
+            음악 감상 콘텐츠 관리
+          </button>
+          <button
+            onClick={() => handleNavClick("/admin/healing/yoga-poses")}
             className="hover:text-blue-600"
           >
             요가 포즈 관리
           </button>
           <button
-            onClick={() => handleNavClick("/admin/yoga/programs")}
+            onClick={() => handleNavClick("/admin/healing/yoga-programs")}
             className="hover:text-blue-600"
           >
             요가 프로그램 관리
